@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+    <!-- Bootstrap CSS -->
+
+    {% load staticversion %} {% load my_filters %} {% load client_tags %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/aecon/daterangepicker.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/aecon/daterangepicker.css"/>
+    <link rel="stylesheet" href="https://use.typekit.net/qhi7zfc.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+          integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css"/>
+    <link rel="stylesheet" href="{% staticversion 'aecon/leaflet.awesome-markers.css' %}" type="text/css"/>
+    {% if DEBUG %}
+        <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css"/> {% else %}
+        <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css"/> {% endif %}
+    <link rel="stylesheet" href="{% staticversion 'aecon/nouislider.css' %}" type="text/css"/>
+    <link rel="stylesheet" href="{% staticversion 'aecon/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% staticversion 'aecon/cv2-base.css' %}" type="text/css"/>
+    {% comment %} <script src="{% staticversion 'aecon/cv2-graphs.js' %}"></script> {% endcomment %}
+    {% comment %} <script src="{% staticversion 'aecon/cv2-map.js' %}"></script> {% endcomment %}
+    <link rel="stylesheet" href="{% staticversion 'aecon/checkbox-style.css' %}" type="text/css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"/>
+    <script src="https://mapbox.github.io/geojson-vt/geojson-vt-dev.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"/>
+    <script src="/static/aecon/moment.min.js"></script>
+    {% comment %} <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script> {% endcomment %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <script src="https://mapbox.github.io/geojson-vt/geojson-vt-dev.js"></script>
+
+    <script src="{% staticversion 'aecon/leaflet.polylineDecorator.js' %}"></script>
+    <script src="{% staticversion 'aecon/L.Line3.js' %}"></script>
+    <script src="{% staticversion 'aecon/nouislider.js' %}"></script>
+    <script src="{% staticversion 'aecon/leaflet.lineextremities.js' %}"></script>
+
+    <script src="{% staticversion 'aecon/cv2-data-func.js' %}"></script>
+    <script src="{% staticversion 'aecon/cv2-base.js' %}"></script>
+    <script src="{% staticversion 'aecon/cv2-local-storage.js' %}"></script>
+    <script src="{% staticversion 'aecon/cv2-graphs.js' %}"></script>
+    <script src="{% staticversion 'aecon/labels_plugin.js' %}"></script>
+    <script src="{% staticversion 'aecon/cv2-map.js' %}"></script>
+    <script src="{% staticversion 'aecon/atc.js' %}"></script>
+    <script src="{% staticversion 'aecon/cv2-main.js' %}"></script>
+    {% comment %} <script src="{% staticversion 'aecon/cv2-atc-view.js' %}"></script> {% endcomment %}
+
+    <link rel="stylesheet" href="/static/aecon/select2.min.css">
+    <script src="/static/aecon/select2.min.js"></script>
+
+    <title>Tracsis AECON</title>
+</head>
+
+<body>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: #EFEFEF;
+    }
+
+    .pb-6 {
+        padding-bottom: 9rem !important;
+    }
+
+    .modal,
+    .modal-backdrop {
+        position: absolute !important;
+    }
+
+    .modal-dialog {
+        max-width: 90% !important;
+    }
+
+    .modal-dialog,
+    .modal-content {
+        /* 80% of window height */
+        height: 90%;
+    }
+
+    .modal-body {
+        /* 100% = dialog height, 120px = header + footer */
+        overflow: hidden;
+    }
+
+    .footer-bottom div {
+        background: #141b4d;
+
+    }
+
+    .footer-bottom p {
+        float: left;
+        font-size: 14px;
+        word-spacing: 2px;
+        text-transform: capitalize;
+    }
+
+    .footer-bottom p img {
+        justify-content: center;
+    }
+
+    .footer-bottom span {
+        text-transform: uppercase;
+        opacity: .4;
+        font-weight: 200;
+    }
+
+    .footer-menu {
+        float: right;
+    }
+
+    .footer-menu ul {
+        display: flex;
+    }
+
+    .footer-menu ul li {
+        padding-right: 10px;
+        display: block;
+    }
+
+    .footer-menu ul li a {
+        color: #fff;
+        text-decoration: none;
+        background-color: #ffffff;
+    }
+
+    .footer-menu ul li a:hover {
+        color: #fff;
+    }
+
+    .socials {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0px;
+    }
+
+    {% comment %} .socials li{
+		margin: 0 10px;
+	} {% endcomment %}
+
+    .socials a {
+        text-decoration: none;
+        color: #fff;
+        border: 1.1px solid white;
+        padding: 5px;
+        border-radius: 50%;
+    }
+
+    .socials a i {
+        font-size: 1.1rem;
+        width: 18px;
+        transition: color .4s ease;
+        text-align: center;
+        color: #1d2fa9;
+    }
+
+    .socials a:hover i {
+        color: #1b144d;
+    }
+
+    .footer {
+        height: 60px;
+        margin-top: 20px;
+    }
+
+    .footer {
+        background-color: #1b144d;
+        height: auto;
+        width: 100%;
+    {% comment %} position: fixed; {% endcomment %} bottom: 0;
+    }
+
+    .ht-40 {
+        height: 35rem !important;
+    }
+
+    @media (max-width: 500px) {
+        .footer-menu ul {
+            display: flex;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+    }
+
+    /****Headline Column Data****/
+    .col-text1 {
+        font-weight: 800;
+        margin-left: 58px;
+    }
+
+    .col-text2 {
+        font-weight: 800;
+        margin-left: 58px;
+    }
+
+    .col-text3 {
+        font-weight: 800;
+        margin-left: 58px;
+    }
+
+    .col-data {
+        margin-top: 50px;
+        margin-left: 64px;
+        font-size: 19px;
+    }
+
+    .totalVol-text {
+        font-weight: bold;
+        margin-left: -64px;
+        font-size: 24px
+    }
+
+    .totalVol-data {
+        margin-left: -66px;
+        font-size: 24px;
+    }
+
+    /****colgraph UL Nums*******/
+    ul.colgraph-nums {
+        list-style: none;
+        list-style-type: none;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    /****colgraph Ul Text*******/
+    ul.colgraph-text {
+        list-style: none;
+        list-style-type: none;
+        overflow: hidden;
+        white-space: pre;
+
+    }
+
+    ul.colgraph-text li {
+        /* margin-left: 50px; */
+        width: 160px;
+    }
+
+    ul.colgraph-text li:nth-child(1) > h5 {
+        /* margin-left:120px; */
+    }
+
+    ul.colgraph-text li:nth-child(2) > h5 {
+        /* margin-left:155px; */
+        margin-top: 20px;
+    }
+
+    ul.colgraph-text li:nth-child(3) > h5 {
+        /* margin-left:155px; */
+        margin-top: 20px;
+    }
+
+    ul.colgraph-text li:nth-child(1) > div.square {
+        height: 25px;
+        width: 25px;
+        background-color: #1b144d;
+        margin-top: -30px;
+        z-index: 16;
+        position: absolute;
+        margin-left: 180px;
+    }
+
+    ul.colgraph-text li:nth-child(2) > div.square {
+        height: 25px;
+        width: 25px;
+        background-color: #00FF00;
+        margin-top: -30px;
+        z-index: 16;
+        position: absolute;
+        margin-left: 180px;
+    }
+
+    ul.colgraph-text li:nth-child(3) > div.square {
+        height: 25px;
+        width: 25px;
+        background-color: red;
+        margin-top: -30px;
+        z-index: 16;
+        position: absolute;
+        margin-left: 180px;
+    }
+
+
+    .test_selected::before {
+    font-family: 'Font Awesome 5 Free';
+    content: '\f00c'; 
+    font-weight: 900;
+    display: inline-block;
+    position: absolute;
+    width: 48px;
+    height: 24px;
+    left: 90%; 
+    top: 50%;
+    transform: translateY(-50%);
+    color: #12D231;
+    /* ADHAMS */
+    margin-right: 8px;
+    }
+
+    .select2-results__options{
+    overflow-x: hidden;
+    } 
+
+    .test_selected {
+        position: relative; 
+        padding-left: 30px; 
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: white;
+    }
+
+    #date-button{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+      }
+    
+      #date-button span{
+          padding: 0;
+          font-weight: 400;
+      }
+
+
+</style>
+{% csrf_token %}
+{% block class %}
+    <div id="classes-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu multi" id="conduit-selectable-menu-selection">
+            {{ classes | safe }}
+        </div>
+    </div>
+{% endblock %}
+<div id="directions-popup" style="width:auto;" class="conduit-popup">
+    <div class="conduit-selectable-menu min-1" data-header="directions-header">
+        {{ directions | safe }}
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="/static/aecon/select2.min.css"></script>
+<script src="/static/aecon/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+<script src="/static/aecon/moment.min.js"></script>
+<script type="text/javascript" src="/static/aecon/daterangepicker.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+<div id="view-selector-popup" style="width: 250px" class="conduit-popup">
+    <div class="conduit-selectable-menu min-1" data-header="view-selector">
+        {% views_as_popup_list %}
+    </div>
+</div>
+<div class="header">
+    <nav class="navbar navbar-expand-lg py-4">
+        <div class="container-fluid flex-fill">
+            <a class="navbar-brand px-3" href="#">
+                <img height="50" width="150" class="h-75" src="/static/aecon/conduit_logo_color.png"
+                     alt="TCS" onclick="openNav()"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon fa-solid fa-bars"></span>
+            </button>
+            <div class="collapse navbar-collapse align-content-center text-center" id="navbarSupportedContent">
+                <ul class="navbar-nav m-auto">
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item ">
+                            <a class="nav-link" aria-current="page"
+                               onclick="location.href = '/aecon/map-full-view';"> <i class="pin-icon"></i>
+                                Map View </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link active" aria-current="page"> <i class="atc-icon-green"></i>
+                                Sensor Data </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" aria-current="page"
+                               onclick="location.href = '/aecon/atc-data';"> <i class="ATC_Data_Icon
+"></i>
+                                ATC Data </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" aria-current="page"
+                               onclick="location.href = '/aecon/radar-data';"> <i class="vas-icon"></i>
+                                Radar Data</a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" aria-current="page"
+                               onclick="location.href = '/aecon/link-data';"> <i class="link-icon"></i>
+                                Link Data </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" aria-current="page"
+                               onclick="location.href = '/aecon/jtc-data';"> <i class="jtc-icon"></i>
+                                JTC Data </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item ">
+                            <a class="nav-link" aria-current="page"
+                               onclick="location.href = '/aecon/map-full-view';"> <i class="pin-icon"></i>
+                                Map View </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link active" aria-current="page"> <i class="atc-icon-green"></i>
+                                ATC Data </a>
+                        </li>
+                    {% endif %}
+                </ul>
+                {% if request.user.is_authenticated %}
+                    <a class="btn " aria-current="page" href="/aecon/logoff"
+                       style="border-radius: 5px !important; padding: 10px 15px;">
+                        Logout <i class="fas fa-chevron-down ps-1"></i></a>
+                {% else %}
+                    <a class="btn " aria-current="page" href="/aecon"
+                       style="border-radius: 5px !important; padding: 10px 15px;">
+                        Login <i class="fas fa-chevron-up ps-1"></i></a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <div class="subnavbar py-2">
+        {% if request.user.is_authenticated %}
+            <div class="container-fluid row flex-wrap align-items-center justify-content-between">
+                <ul class="nav col-10">
+                    <li class="nav-item">
+                        <a id="Headline" href="/aecon/sensor-data/sensor-headata" class="nav-link"
+                           aria-current="page">
+                            Headline Data
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="Volumes" href="/aecon/sensor-data/sensor-trafficvol" class="nav-link"
+                           aria-current="page">
+                            Traffic Volumes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="Classification" href="/aecon/sensor-data/sensor-classify" class="nav-link "
+                           aria-current="page">
+                            Classification Data
+                        </a>
+                    </li>
+                    {% comment %} 
+                    <li class="nav-item">
+                        <a id="Comparsion" href="tabContent('Comparsion');" class="nav-link " aria-current="page">
+                          Comparison
+                        </a>
+                    </li>
+                    {% endcomment %}
+
+                    <li class="nav-item">
+                        <!-- ash-task 2:(2) problem: make "Download" tab have green line beneath it upon clicking it in "Sensor Data" section -->
+                        <!-- removed href="{% url 'sensor_data_download'%}" -->
+                        <!-- and instead used id=... and onclick=... , also, added a single space after "nav-link"-->
+                        <a id="Download" onclick="tabContent('Download');" class="nav-link " aria-current="page">
+                            Download
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        {% else %}
+            <div class="container-fluid roww flex-wrap align-items-center justify-content-between">
+                <h5 class="text-white col-12 text-right p-3" style="margin-bottom: 0 !important">&nbsp;</h5>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<div class="col-md-12">
+    <div class="row mt-3 px-1">
+        <div class="col-md-3 col-sm-12 lg-view">
+            <div class="floating-card mt-4">
+                <div class="sidee carddd2 card">
+                    <div class="card-body px-5 my-4" id="location-info">
+                        <!-- Search bar to be here -->
+                        <div class="customScroll atcList pr-3 mt-4" id="atcList">
+                            <label class="popup-label mt-1 ml-3">Sensor Data</label>
+                            <select class="operator d-none" id="site-selection-dropdown">
+                                {% for area,locations in location_data.items %}
+                                    <optgroup label="{{ area }}">
+                                        {% for location in locations %}
+                                            <option
+                                                    name="direction"
+                                                    id="{{ location.id }}_radio"
+                                                    data-id="{{ location.id }}"
+                                                    class="css-checkbox"
+                                                    value="{{ location.name }}"
+                                                    data-temp={{ location.temp }}
+                                                            onselect="toggleSite('{{ location.name }}','{{ location.id }}')"
+                                            >{{ location.name }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!-- Search bar to stop here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="contentTab col-sm-12 col-md-9 mt-2">
+            <div class="content">
+                <div class="px-5 py-3 bg-white mt-4" style="box-shadow: 0px 0px 10px #0000001A; border-radius: 5px;">
+                    <div class="row h-100">
+                        <div class="col-12 text-center pb-3"> Please note, all data is in UTC</div>
+                        <div class="col-7 h-100">
+
+                            <form id="d-form" method="post"
+                                  onsubmit="setTimeout(function() { alert('Your download Process has started, An email with a link to your download will be sent shortly!'); }, 1);">
+                                <div class="form-row align-items-center">
+                                    <div class="col-4 d-flex align-items-center" style="color:#646c9a;font-weight:600;">
+                                        Date Range
+                                    </div>
+                                    <div class="calendar_green selection-header col-sm-auto shadow px-3" id="calendar">
+                                        <div id="date-button" class="date-text"><span>Select Date Range</span></div>
+                                        <span><img id="changing-calender-icon" class="icon-calendar" src="/static/aecon/calendar_icon_white.svg"></span>
+                                    </div>
+                                    <div class="col-8 form-input d-none align-items-center">
+                                        <input type="date" name="startDate" required style="width:50%"
+                                               class="form-control m-2" id="date_from">
+                                        <input type="date" name="endDate" required style="width:50%"
+                                               class="form-control m-2" id="date_to">
+                                    </div>
+                                </div>
+                                <div class="form-row align-items-center" style="height:50px">
+                                    <div class="col-4 d-flex align-items-center" style="color:#646c9a;font-weight:600;">
+                                        Directions
+                                    </div>
+                                    <div class="col-4 col-xl-4 form-input">
+                                        <input type="radio" name="direction" id="radio1" class="css-checkbox"
+                                               value="split" checked="checked">
+                                        <label for="radio1" class="css-label cb0 radGroup2">Split by direction</label>
+                                    </div>
+                                    <div class="col-4 col-xl-4 form-input">
+                                        <input type="radio" name="direction" id="radio2" class="css-checkbox"
+                                               value="combine">
+                                        <label for="radio2" class="css-label cb0 radGroup2">Combine directions</label>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+
+                                    <div class="col-12 col-xl-6">
+
+                                        <div class="row ">
+                                            <div style="display: none" class="col-12 p-3"
+                                                 style="color:#646c9a;font-weight:600;">Calculations
+                                            </div>
+                                            <div style="display: none" class="col-12 col-xl-12 form-input"
+                                                 style="height:50px">
+                                                <input type="radio" name="calc" id="radio4" class="css-checkbox"
+                                                       value="totals" checked="checked">
+                                                <label for="radio4" class="css-label cb0 radGroup2"
+                                                       data-target="interval-column">Totals</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-xl-6" id="interval-column">
+                                        <div class="row ">
+                                            <div class="col-12 p-3" style="color:#646c9a;font-weight:600;">Intervals
+                                            </div>
+                                            <div class="col-12 col-xl-6 form-input" style="height:50px">
+                                                <input type="radio" name="period" id="radio8" class="css-checkbox"
+                                                       value="15">
+                                                <label for="radio8" class="css-label cb0 radGroup2">15 Minutes</label>
+                                            </div>
+                                            <div class="col-12 col-xl-6 form-input" style="height:50px">
+                                                <input type="radio" name="period" id="radio9" class="css-checkbox"
+                                                       value="30">
+                                                <label for="radio9" class="css-label cb0 radGroup2">30 Minutes</label>
+                                            </div>
+                                            <div class="col-12 col-xl-6 form-input" style="height:50px">
+                                                <input type="radio" name="period" id="radio10" class="css-checkbox"
+                                                       value="60">
+                                                <label for="radio10" class="css-label cb0 radGroup2">60 Minutes</label>
+                                            </div>
+                                            <div class="col-12 col-xl-6 form-input" style="height:50px">
+                                                <input type="radio" name="period" id="radio11" class="css-checkbox"
+                                                       value="D" checked="checked">
+                                                <label for="radio11" class="css-label cb0 radGroup2">Daily</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row ">
+                                    <div class="col-6 d-flex align-items-center" style="color:#646c9a;font-weight:600;">
+                                        Email Address
+                                    </div>
+                                    <div class="col-6 d-flex align-items-center">
+                                        <input class="form-control m-2 " name="email">
+                                    </div>
+                                    <div>
+                                        <input type="hidden" name="ids" id="myField" value="">
+                                    </div>
+                                    <div>
+                                        <input type="hidden" name="classes" id="myCField" value="">
+                                    </div>
+                                </div>
+                                <div class="row main">
+                                    <div class="col text-center">
+                                        {% csrf_token %}
+                                        <button for="d-form" class="mt-3 btn shadow my-auto" id="download-btn"> Sensor
+                                            Data Download
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                        <div class="col-5 p-3 h-100">
+                            <div class="d-flex flex-column h-100">
+                                <div class="row justify-content-center">
+                                    <div class="col-12">
+                                        <button class="btn btn-outline-dark" onclick="selectAllSites();">Select All
+                                        </button>
+                                        <button class="btn btn-outline-dark" onclick="clearAllSites();">Clear All
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row justify-content-center flex-grow-1 h-100">
+                                    <div class="col-12 h-100 p-3" style="overflow:auto">
+                                        <div class="table-responsive h-100">
+                                            <table class="table table-striped" id="selected-table">
+                                                <thead>
+                                                <th>Selected Sites</th>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- <script type="text/javascript" src="static/aecon/download-view.js"></script> -->
+</body>
+
+<script>
+    var choice_calender = document.getElementById("calendar");
+    var changing_calender = document.getElementById("changing-calender-icon");
+    choice_calender.addEventListener('mouseenter', () => {
+        changing_calender.src = "/static/aecon/calendar_icon_green.svg";
+    });
+    
+    choice_calender.addEventListener('mouseleave', () => {
+        changing_calender.src = "/static/aecon/calendar_icon_white.svg";
+    });
+</script>
+
+<script>
+
+    // ash-task 2:(2) problem: make "Download" tab have green line beneath it upon clicking it in "Sensor Data" section.
+    // added logic for "Download" tab, and specific condition since download page url doesn't have "/sensor-data/" in its url
+    function tabContent(type, flg = "") {
+        var id_list = {
+            "Headline": "sensor-headata",
+            "Volumes": "sensor-trafficvol",
+            "Classification": "sensor-classify",
+            // "Comparsion": "sensor-download",
+            // "Analysis": "sensor-analysis",
+            "Download": "download-view",
+        };
+        var class_lst = ['compIcon', 'singleNumber'];
+        var keys = Object.keys(id_list);
+        for (let i = 0; i < keys.length; i++) {
+            if (type == keys[i] && type != "") {
+                // $("#"+keys[i]).show();
+                if (keys[i] != "Download") {
+                    var base_url = "/aecon/sensor-data/";
+                } else {
+                    var base_url = "/";
+                }
+                window.location.href = base_url + id_list[keys[i]];
+            } else if (keys[i] == "Download" || flg != "" && flg == id_list[keys[i]]) {
+                document.getElementById(keys[i]).classList.add("active");
+            }
+        }
+    }
+
+    // apparently, calling onclick="tabContent('Download'); is not enough.
+    // tabContent has to be also called here
+    // i do not know why this is the case...
+    tabContent("", '{{flg}}')
+
+    // ash-task 3:(2) problem: checkboxes are not working properly: when de-selecting a location, checkbox is kept, and it is added again to table on the right section of the page
+    // changed addSite() and addSelected() logics and they are now called only by toggleSite()
+
+    function addHoverListenersToOptions() {
+        var options = document.getElementsByClassName("select2-results__option");
+        var menu = document.getElementsByClassName("select2-selection--single")[0];
+        var search_bars = document.getElementsByClassName("select2-search__field");
+        var selected_options = document.getElementsByClassName("select2-results__option--selected");
+
+        menu.addEventListener("click", function () {
+            checkForSelcted()
+        });
+
+        for (var i = 0; i < selected_options.length; i++) {
+            var selected_option = selected_options[i];
+            selected_option.addEventListener("click", function (event) {
+                console.log("lol");
+            });
+        }
+
+
+        for (var i = 0; i < search_bars.length; i++) {
+            var search_bar = search_bars[i];
+
+            search_bar.addEventListener("input", function () {
+                checkForSelcted()
+            });
+        }
+
+
+        // Loop through each element with the class 'select2-results__option'
+        for (var i = 0; i < options.length; i++) {
+            var option = options[i];
+
+            option.addEventListener("click", function () {
+                checkForSelcted()
+            });
+        }
+    }
+
+    function checkForSelcted() {
+        var selected = document.getElementById("selected-table").getElementsByTagName("tbody")[0].querySelectorAll('tr');
+        var options = document.getElementsByClassName("select2-results__option");
+        var selected_names = [];
+
+        for (var i = 0; i < selected.length; i++) {
+            var location = selected[i];
+            selected_names.push(location.textContent);
+        }
+
+        for (var i = 0; i < options.length; i++) {
+            var option = options[i];
+            if (selected_names.includes(option.textContent)) {
+                var option_value = option.value;
+                option.classList.add("test_selected");
+                option.classList.remove("select2-results__option--selected");
+                option.setAttribute("value", option_value);
+
+
+            } else {
+                option.className = "select2-results__option select2-results__option--selectable";
+            }
+        }
+    }
+
+    // also changed logic of clearAllSites() and selectAllSites() to reflect the changes done to functions above
+    function toggleSite(content, id) {
+        checkForSelcted();
+        if (id.includes("_radio")) {
+            var id_with_radio = id;
+            id = id.split("_")[0];
+        } else {
+            var id_with_radio = id + "_radio";
+        }
+        var is_checkbox_selected = (document.getElementById(id_with_radio).classList.contains('selected'));
+        if (!is_checkbox_selected) {
+            addSite(content, id);
+        } else {
+            removeSite(id);
+        }
+        addHoverListenersToOptions();
+    }
+
+
+    function removeSite(id) {
+        // removing element from selected table
+        ele = document.getElementById("selected_" + id);
+        ele.parentNode.removeChild(ele);
+        // removing "selected" class from classList of the de-selected location
+        document.getElementById(id + "_radio").classList.remove("selected");
+    }
+
+    function addSite(content, id) {
+        var tbody = document.getElementById("selected-table").getElementsByTagName("tbody")[0];
+        var tr = document.createElement("tr");
+        tr.id = "selected_" + id
+        var td = document.createElement("td");
+        td.innerText = content;
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+
+        document.getElementById("myField").value = getIds();
+
+        document.getElementById(id + "_radio").classList.add("selected");
+    }
+
+
+    function getIds() {
+        var ids = [];
+        var selected = document.getElementById("selected-table").getElementsByTagName("tbody")[0].querySelectorAll('tr');
+        var length = selected.length;
+        for (var i = 0; i < selected.length; i++) {
+            var myarray = selected[i].id.split("_");
+            ids.push(myarray[1]);
+        }
+        return JSON.stringify(ids);
+    }
+
+    function getClasses() {
+        var classes = [
+            '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
+            '13', '14', '15', '16', '167', '168', '169', '170', '171', '172',
+            '173', '174', '3034', '3035', '3036', '3037', '3038', '43071', '43072',
+            '43073', '43074', '43075', '43097', '43098', '43099', '43100', '43101',
+            '43102', '43103', '43104', '43105', '43106', '43107', '43108', '43109',
+            '43110', '43111', '43112', '43113', '43114', '43115', '43116', '43117', '43118'
+        ];
+        return JSON.stringify(classes);
+    }
+
+    document.getElementById("myCField").value = getClasses();
+
+
+    function clearAllSites() {
+        console.log("clearing all sites");
+        var tbody = document.getElementById("selected-table").getElementsByTagName("tbody")[0];
+        if (tbody.innerHTML == "") {
+            return;
+        }
+        var trs = tbody.querySelectorAll('tr');
+        trs.forEach((tr) => {
+            var location_id = tr.id.split("_")[1];
+            var location_name = tr.querySelector('td').innerText;
+            toggleSite(location_name, location_id)
+        })
+    }
+
+    function selectAllSites() {
+        console.log("selecting all");
+
+        location_items = document.querySelectorAll('#atcList');
+        console.log(location_items);
+        location_items.forEach(function (ele) {
+            var inputs = ele.querySelectorAll('option');
+            var value;
+            for (value of inputs.values()) {
+                console.log(value.id);
+                toggleSite(value.value, value.id);
+            }
+        });
+
+//    for(var i=0;i<sites.length;i++){
+//        if(sites){
+//            addSite(sites[i].getAttribute("data-content"),sites[i].getElementsByTagName("a")[0].id);
+//            sites[i].getElementsByTagName("a")[0].classList.add("selected");
+//        }
+//    }
+    }
+
+
+    function toggleSidebarFunctionality() {
+        if (userGuideActive) {
+            toggleUserGuide();
+        }
+        if (downloadActive) {
+            if (!sidebarMulti) {
+                document.getElementById("sidebar").classList.remove("multi");
+            }
+            downloadActive = false;
+            $('#exampleModalCenter').modal('hide');
+            //document.getElementById("main-container-greyed-out").classList.add("d-none");
+            unpinSideBar();
+            var leaves = document.getElementById("sidebar").getElementsByClassName("leaf");
+            for (var i = 0; i < leaves.length; i++) {
+                leaves[i].getElementsByTagName("a")[0].classList.remove("selected");
+            }
+            for (var i = 0; i < selectedSites.length; i++) {
+                selectedSites[i].classList.add("selected");
+            }
+            document.getElementById("sidebar").getElementsByClassName("sidebar-brand-button")[0].onclick = toggleSideBar;
+            return;
+        } else {
+            //document.getElementById("main-container-greyed-out").classList.remove("d-none");
+            $('#exampleModalCenter').modal('show');
+            pinSideBar();
+            sidebarMulti = document.getElementById("sidebar").classList.contains("multi");
+            document.getElementById("sidebar").classList.add("multi");
+            selectedSites = [];
+            var sites = document.getElementById("sidebar").getElementsByClassName("selected");
+            for (var i = 0; i < sites.length; i++) {
+                selectedSites.push(sites[i]);
+            }
+            var leaves = document.getElementById("sidebar").getElementsByClassName("leaf");
+            downloadActive = true;
+            document.getElementById("sidebar").getElementsByClassName("sidebar-brand-button")[0].onclick = function () {
+            };
+        }
+    }
+
+</script>
+
+
+<script>
+    var today = new Date().toISOString().slice(0, 10);
+    document.getElementsByName("endDate")[0].setAttribute('max', today);
+
+    function hide_regions() {
+        document.getElementById("region").classList.toggle("d-none");
+    }
+
+
+    function viewSite(id) {
+
+    }
+
+    var datepicker = $('#calendar').daterangepicker({
+        locale: {
+            format: 'DD/MM/YYYY'
+        },
+        singleDatePicker: false,
+        opens: 'right',
+        drops: 'down'
+    });
+
+    datepicker.on('apply.daterangepicker', function (ev, picker) {
+
+        console.log("in apply func");
+        console.log(picker);
+        document.getElementById("date_from").value = picker.startDate.format('YYYY-MM-DD');
+        document.getElementById("date_to").value = picker.endDate.format('YYYY-MM-DD');
+        datebutton = document.getElementById("date-button");
+        datebutton.innerHTML = picker.startDate.format('DD/MM/YYYY') + " - " + picker.endDate.format('DD/MM/YYYY');
+        calendar = document.getElementById("calendar");
+        console.log(calendar.classList)
+        calendar.classList.remove("activeDropDown");
+        
+        userChangedDate = true;
+    });
+
+    function notifySelectedClasses() {
+        var selected = getSelectedPopupIndexes("classes-popup");
+        var allClasses = document.getElementById("classes-popup").getElementsByTagName("a");
+    }
+
+    var eles = document.getElementById("classes-popup").getElementsByClassName("menu-item")
+    for (var i = 0; i < eles.length; i++) {
+
+        eles[i].addEventListener("click", function (ele) {
+            return function () {
+                notifySelectedClasses();
+            }
+        }(eles[i]));
+
+    }
+
+
+    notifySelectedClasses();
+
+
+    document.getElementById("sidebar").classList.add("multi");
+
+    const downloadBtn = document.querySelector('#download-btn');
+
+    function startDownload() {
+        if (fileToDownload) {
+            alert("You are already in the process of downloading a file");
+            return;
+        }
+        console.log("value of start date is", document.getElementById("date_from").value);
+        if (document.getElementById("date_from").value >= document.getElementById("date_to").value) {
+            alert("The end date cannot be before or equal to the start date");
+            return;
+        }
+        var formData = new FormData(document.getElementById("d-form"));
+        var ids = getIds();
+        var selected = document.getElementById("sidebar").getElementsByClassName("selected");
+        if (selected.length == 0 && !document.getElementById("radio6").checked) {
+            alert("Please select one or more locations")
+            return;
+        }
+        formData.append("ids", JSON.stringify(ids));
+        formData.append("classes", JSON.stringify(getSelectedPopupValues("classes-popup")));
+        formData.append("customRange", "true");
+        getSelectedPopupValues
+        //formData.append("form",JSON.stringify($("#download-form").serializeArray()));
+        fetcher(formData, "startDownload", function (response) {
+            console.log("response", response);
+            if (response.status == "download") {
+                fileToDownload = response.filename;
+                checkFileReady();
+            }
+            alert(response.message);
+        }).catch(function (err) {
+            alert(err.message);
+        })
+    }
+
+    downloadBtn.addEventListener("click", startDownload)
+
+    function modalAlert() {
+        alert("No Data Is Available Yet!");
+    }
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        //change selectboxes to selectize mode to be searchable
+        $('#site-selection-dropdown').select2({
+            escapeMarkup: function (m) {
+                return m;
+            },
+            closeOnSelect: false, // Keeps the dropdown open after selecting an option
+            placeholder: "Select Sensor Data",
+        }).on('select2:opening', function (e) {
+            $(this).data('select2').$dropdown.find(':input.select2-search__field').attr('placeholder', "Search Sensor Data");
+            addHoverListenersToOptions();
+        }).on('select2:open', function (e) {
+            document.querySelector(".select2-selection--single").style.setProperty("background-color", "#434971", "important");
+        }).on('select2:close', function (e) {
+            document.querySelector(".select2-selection--single").style.setProperty("background-color", "#727694");
+        });
+      
+        $('b[role="presentation"]').hide();
+        $('.select2-selection__arrow').append('<i class="chevron-icon" ></i>');
+
+        $('#site-selection-dropdown').val(null).trigger('change');
+
+
+
+
+
+        var currentSelect = document.getElementById("site-selection-dropdown");
+
+        let cookie_list = document.cookie.split(";")
+        let id_to_select = ''
+        for (let i = 0; i < cookie_list.length; i++) {
+            let cookie_pieces = cookie_list[i].split("=");
+
+            // if (cookie_pieces[0].replace(/\s/g, '') === 'Sensorlocation'){
+            //     id_to_select = cookie_pieces[1];
+            //     break;
+            // }
+        }
+
+        // if (id_to_select === '') {
+        //     // viewSelect()
+        //     // viewSite(currentSelect.options[currentSelect.selectedIndex].value, this)
+        // }
+        // else {
+        //     // viewSelect(id_to_select+"_radio");
+        //     // viewSite(id_to_select, this);
+        //     $("#site-selection-dropdown").val(id_to_select).trigger('change');
+
+        // }
+    });
+
+    document.getElementById("site-selection-dropdown").onchange = function () {
+        var currentSelect = document.getElementById("site-selection-dropdown");
+        var selectedOption = currentSelect.options[currentSelect.selectedIndex];
+
+        // Retrieve the relevant attributes from the selected option
+        var locationName = selectedOption.value;
+        var locationId = selectedOption.getAttribute("data-id");
+
+        // Call the toggleSite function with the retrieved attributes
+        toggleSite(locationName, locationId);
+    };
+
+
+    $(".selection-header").click(function () {
+        $(this).toggleClass("activeDropDown");
+    });
+
+</script>
+
+</html>
+
+
+

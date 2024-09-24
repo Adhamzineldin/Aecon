@@ -1,0 +1,1730 @@
+ {% extends "aecon/historic-data.html" %} {% block content %} {% load staticversion %} {% load my_filters %} {% load client_tags %}
+<div class="row main">
+    <div class="col-md-12 mb-3">
+        <div class="row">
+            <div class="selection-header phase-popup-trigger me-3 col-md-2 shadow" id="phase-header"><label class="popup-label">Survey</label><span>Survey </span><i class="chevron-icon"></i></div>
+            <div class="selection-header directions-popup-trigger me-3 col-md-2 shadow" id="directions-header"><label class="popup-label">Direction</label><span>Combined</span><i class="chevron-icon"></i></div>
+            <div class="selection-header day-popup-trigger col-md-2 shadow" id="day-header"><label class="popup-label">Day</label><span>Day </span><i class="chevron-icon"></i></div>
+        </div>
+    </div>
+</div>
+<div class="px-5 py-2 bg-white mt-4" style="box-shadow: 0px 0px 10px #0000001A; border-radius: 5px;">
+    <div class="row px-1 mt-4">
+        <div class="col-md-8 pl-1">
+            <div class="row px-4">
+                <div class="table-responsive table-wrapper h-23 div1 sen-traff col-md-4 px-0 my-3">
+                    <table class="table text-center show-data" rules="cols" id="avg_table">
+                        <thead>
+                            <tr>
+                                <th>Time Period</th>
+                                <th >Avg</th>
+                                <th >85th</th>
+                                <th>95th</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>00:00-01:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>01:00:-02:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+
+                            </tr>
+                            <tr>
+                                <th>02:00:-03:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+
+                            </tr>
+                            <tr>
+                                <th>03:00:-04:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>04:00:-05:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>05:00:-06:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>06:00:-07:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>07:00:-08:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>08:00:-09:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>09:00:-10:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>10:00:-11:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>11:00:-12:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>12:00:-13:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>13:00:-14:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>14:00:-15:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>15:00:-16:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>16:00:-17:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>17:00:-18:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>18:00:-19:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>19:00:-20:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>20:00:-21:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>21:00:-22:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>22:00:-23:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>23:00:-24:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>24:00:-00:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>07:00:-19:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>06:00:-22:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>06:00:-24:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <th>00:00:-24:00</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-responsive table-wrapper div1 sen-traff h-23 col-md-8 my-3 pr-0">
+                    <table rules="cols" class="table text-center show-data" id="psl_table">
+                        <thead>
+                            <tr>
+                                <th>Time Period</th>
+                                <th >PSL</th>
+                                <th >% PSL</th>
+                                <th >ACPO</th>
+                                <th >ACPO %</th>
+                                <th >DFT</th>
+                                <th>DFT %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>00:00-01:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>01:00:-02:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>02:00:-03:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>03:00:-04:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>04:00:-05:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>05:00:-06:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>06:00:-07:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>07:00:-08:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>08:00:-09:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>09:00:-10:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>10:00:-11:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>11:00:-12:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>12:00:-13:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>13:00:-14:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>14:00:-15:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>15:00:-16:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>16:00:-17:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>17:00:-18:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>18:00:-19:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>19:00:-20:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>20:00:-21:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>21:00:-22:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>22:00:-23:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>23:00:-24:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>24:00:-00:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>07:00:-19:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>06:00:-22:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>06:00:-24:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                            <tr>
+                                <th>00:00:-24:00</th>
+                                <td>30</td>
+                                <td>40.0%</td>
+                                <td>30</td>
+                                <td>35.2%</td>
+                                <td>310</td>
+                                <td>40.5%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-responsive table-wrapper h-23 div1 sen-traff col-md-12 my-4 px-0">
+                    <table rules="cols" class="table text-center show-data" id="count_table">
+                        <thead>
+                            <tr>
+                                <th>Time Period</th>
+                                <th >Total Vehicles</th>
+                                <th >0-10</th>
+                                <th >10-15</th>
+                                <th >15-20</th>
+                                <th >20-25</th>
+                                <th >25-30</th>
+                                <th >30-35</th>
+                                <th >35-40</th>
+                                <th >40-45</th>
+                                <th >45-50</th>
+                                <th >50-55</th>
+                                <th >55-65</th>
+                                <th >65-70</th>
+                                <th >70-75</th>
+                                <th >75-80</th>
+                                <th >80-85</th>
+                                <th >85-90</th>
+                                <th >90-95</th>
+                                <th >95-100</th>
+                                <th>100</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>00:00-01:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>01:00:-02:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>02:00:-03:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>03:00:-04:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>04:00:-05:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>05:00:-06:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>06:00:-07:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>07:00:-08:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>08:00:-09:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>09:00:-10:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>10:00:-11:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>11:00:-12:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>12:00:-13:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>13:00:-14:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>14:00:-15:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>15:00:-16:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>16:00:-17:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>17:00:-18:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>18:00:-19:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>19:00:-20:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>20:00:-21:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>21:00:-22:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>22:00:-23:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>23:00:-24:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>24:00:-00:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>07:00:-19:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>06:00:-22:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>06:00:-24:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                            <tr>
+                                <th>00:00:-24:00</th>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>24</td>
+                                <td>56</td>
+                                <td>56</td>
+                                <td>23</td>
+                                <td>23</td>
+                                <td>56</td>
+                                <td>234</td>
+                                <td>56</td>
+                                <td>234</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 px-4 pt-3">
+            <div>
+                <h5 class="font-weight-bold mb-2">
+                    Percentage of vehicles travelling in excess of:
+                </h5>
+                <div class="d-flex text-center justify-content-center">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4">
+                        <h4 class="chart-title3">PSL</h4>
+                        <h4 class="chart-percent" id="PSL">-</h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="chart-title3">ACPO</h4>
+                        <h4 class="chart-percent" id="ACPO">-</h4>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+                <h6 class="chart-text text-center">(00:00 - 24:00)</h6>
+            </div>
+            <div class="my-4">
+                <h5 class="font-weight-bold mb-3">Speed (mph)</h5>
+                <div class="d-flex text-center justify-content-center">
+                    <div class="w-50">
+                        <h4 class="mb-3 chart-title3">Average</h4>
+                        <h4 class="chart-percent" id="avg">-</h4>
+                    </div>
+                    <div class="w-50">
+                        <h4 class="mb-3 chart-title3">85 %ile</h4>
+                        <h4 class="chart-percent" id="per_85">-</h4>
+                    </div>
+                    <div class="w-50">
+                        <h4 class="mb-3 chart-title3">95 %ile</h4>
+                        <h4 class="chart-percent" id="per_95">-</h4>
+                    </div>
+                </div>
+            </div>
+            <h6 class="chart-text text-center mb-4">(00:00 - 24:00)</h6>
+            <div class="table-responsive table-wrapper cond-tb">
+                <table class="table public-section" rules="cols">
+                    <thead class="full-border">
+                        <tr>
+                            <th colspan="4" class="text-center"><h5>Abbreviations</h5></th>
+                        </tr>
+                    </thead>
+                    <tbody class="full-border">
+                    <tr>
+                            <th>PSL</th>
+                            <td>Posted Speed Limit</td>
+                        </tr>
+                        <tr>
+                            <th>ACPO</th>
+                            <td>Association of Chief Police Officers (Used to display the speed limit the police will generally enforce, 110% of PSL +2mph)</td>
+                        </tr>
+                        <tr>
+                            <th>DFT</th>
+                            <td>Department for Transport (Used to display a speed statistic used by the government looking at vehicles travelling over 15mph above the PSL)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %}
+<script>
+    $(".table-wrapper").on("scroll", function() {
+        $(".table-wrapper:not(this)").scrollTop($(this).scrollTop());
+    });
+</script>
+<script>
+    function viewSite(id) {
+        document.getElementById("location_id").value = id;
+
+        var greyed = document.getElementsByClassName("greyed-out");
+        for (var i = 0; i < greyed.length; i++) {
+            showGreyedOut(greyed[i]);
+        }
+
+        loadLocation(id, false).then(function() {
+            var project = location_details.project
+            var projectDt = moment(project[0].start_date).format("MMM, YYYY")
+            document.getElementById("phase-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = setProject_popup(project);
+
+            setPopupListeners(document.getElementById("phase-popup"));
+            document.getElementById("directions-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = location_details.directions;
+            setPopupListeners(document.getElementById("directions-popup"));
+            //document.cookie = "ATCProject=" + project[0].id + ";path=/aecon";
+            var items = document.getElementById("directions-popup").getElementsByClassName("menu-item");
+            for (var i = 0; i < items.length; i++) {
+                items[i].addEventListener("click", function() {
+                    setCount_Table();
+                    set_psl_table();
+                    set_avg_table();
+
+                    $(".selection-header").removeClass("activeDropDown");
+                });
+            }
+
+            var items = document.getElementById("day-popup").getElementsByClassName("menu-item");
+            for (var i = 0; i < items.length; i++) {
+                items[i].addEventListener("click", function() {
+                    setCount_Table();
+                    set_psl_table();
+                    set_avg_table();
+
+                    $(".selection-header").removeClass("activeDropDown");
+                });
+            }
+             document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = project[0].name+", "+projectDt;
+             var cookieProject = getCookie('HISTORICProject');
+             var projectid = location_details.project
+             //console.log(projectid)
+             if (cookieProject){
+                 projectresult = project.filter(project => project.id == cookieProject)[0]
+                 var projectDT = projectresult.start_date;
+                 var projectdate = moment(projectDT).format("MMM, YYYY")
+                 document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = projectresult.name+", "+projectdate;
+             }
+            document.getElementById("day-header").getElementsByTagName("span")[0].innerText = document.getElementById("day-popup").getElementsByClassName("selected")[0].getElementsByTagName("span")[0].innerText;
+            var items = document.getElementById("phase-popup").getElementsByClassName("menu-item");
+            for (var i = 0; i < items.length; i++) {
+                items[i].addEventListener("click", function() {
+                    loadCount(id, true).then(function() {
+                        setCount_Table();
+                    });
+
+                    load_PSL_data(id, false).then(function(resp) {
+                        set_psl_table();
+                    });
+                    dataset_loc(true, false).then(function() {
+                        set_avg_table();
+                    });
+                });
+            }
+            dataset_loc(true, false).then(function() {
+                set_avg_table();
+            });
+
+            load_PSL_data(id, false).then(function(resp) {
+                set_psl_table();
+            });
+
+            loadCount(id, true).then(function() {
+                setCount_Table();
+            });
+        })
+
+
+    }
+
+    function set_avg_table() {
+        if (load_retrievedData == "") {
+            return;
+        }
+        //console.log(load_retrievedData)
+        var tabledata = load_retrievedData[getCurrentDay()-1]['direction'][getCurrentDirection()]['data'];
+        //console.log("tabledata_avg - ", tabledata)
+        if (tabledata.length == 0) {
+            return;
+        }
+        var table = document.getElementById("avg_table");
+        var tbody = table.querySelector("tbody");
+        tbody.innerText = '';
+        var avg_lst = ["07:00:-19:00", "06:00:-22:00", "06:00:-24:00", "00:00:-24:00"];
+
+
+        for (let i = 0; i < 24; i++) {
+            let tr = document.createElement('tr');
+            let td = document.createElement('td');
+            let prefix = i < 10 ? "0" + String(i) + ":00" : String(i) + ":00"
+            let suffix = i + 1 < 10 ? "0" + String(i + 1) + ":00" : String(i + 1) + ":00"
+            td.innerText = prefix + "-" + suffix;
+            tr.appendChild(td);
+
+            let td1 = document.createElement('td');
+            td1.innerText = tabledata[i]['avg'] ? tabledata[i]['avg'] : "-";
+            tr.appendChild(td1);
+
+            let td2 = document.createElement('td');
+            td2.innerText = tabledata[i]['perc_85th'] ? tabledata[i]['perc_85th'] : "-";
+            tr.appendChild(td2);
+
+            let td3 = document.createElement('td');
+            td3.innerText = tabledata[i]['perc_95th'] ? tabledata[i]['perc_95th'] : "-";
+            tr.appendChild(td3);
+
+            tbody.appendChild(tr);
+        }
+        for (let i = 0; i < avg_lst.length; i++) {
+            var row = document.createElement('tr');
+            var cell1 = document.createElement('td');
+            cell1.innerHTML = avg_lst[i];
+            row.appendChild(cell1);
+            let cell2 = document.createElement('td');
+            cell2.innerText = tabledata[i + 24]['avg'] ? tabledata[i + 24]['avg'] : "-";
+            row.appendChild(cell2);
+
+            let cell3 = document.createElement('td');
+            cell3.innerText = tabledata[i + 24]['perc_85th'] ? tabledata[i + 24]['perc_85th'] : "-";
+            row.appendChild(cell3);
+
+            let cell4 = document.createElement('td');
+            cell4.innerText = tabledata[i + 24]['perc_95th'] ? tabledata[i + 24]['perc_95th'] : "-";
+            row.appendChild(cell4);
+
+            tbody.appendChild(row);
+        }
+        document.getElementById('avg').innerText = tabledata[27]['avg'] ? tabledata[27]['avg'] + "%" : "-";
+        document.getElementById('per_85').innerText = tabledata[27]['perc_85th'] ? tabledata[27]['perc_85th'] + "%" : "-";
+        document.getElementById('per_95').innerText = tabledata[27]['perc_95th'] ? tabledata[27]['perc_95th'] + "%" : "-";
+
+    }
+
+    function set_psl_table() {
+        if (loadPSL_data == "") {
+            return;
+        }
+        var psl = "-";
+        var acpo = "-";
+        var tabledata = loadPSL_data[getCurrentDay() - 1]['direction'][getCurrentDirection()]['data'];
+        //console.log("tabledata_psl - ", tabledata)
+        var table = document.getElementById('psl_table');
+        var tbody = table.querySelector('tbody');
+        tbody.innerText = '';
+        var avg_lst = ["07:00:-19:00", "06:00:-22:00", "06:00:-24:00", "00:00:-24:00"];
+        var psl_list = ["psl", "psl_per", "acpo", "acpo_per", "dft", "dft_per"];
+        for (let i = 0; i < 24; i++) {
+            let tr = document.createElement('tr');
+            let td = document.createElement('td');
+            let prefix = i < 10 ? "0" + String(i) + ":00" : String(i) + ":00"
+            let suffix = i + 1 < 10 ? "0" + String(i + 1) + ":00" : String(i + 1) + ":00"
+            td.innerText = prefix + "-" + suffix;
+            tr.appendChild(td);
+
+            for (let j = 0; j < psl_list.length; j++) {
+                let td2 = document.createElement('td');
+                td2.innerText = String(tabledata[psl_list[j]][i]) + (j % 2 == 0 ? "" : (tabledata[psl_list[j]][i] == "-" ? "" : "%"));
+                tr.appendChild(td2);
+            }
+
+            tbody.appendChild(tr);
+        }
+        for (let i = 0; i < avg_lst.length; i++) {
+            var row = document.createElement('tr');
+            var cell1 = document.createElement('td');
+            cell1.innerHTML = avg_lst[i];
+            row.appendChild(cell1);
+            for (let j = 0; j < psl_list.length; j++) {
+                let cell2 = document.createElement('td');
+                if (i == 0) {
+                    if (j % 2 == 0) {
+                        var data = tabledata[psl_list[j]].slice(7, 19).reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                    } else {
+                        var data = (tabledata[psl_list[j - 1]].slice(7, 19).reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0) / tabledata['count'].slice(7, 19).reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0)) * 100;
+                        data = data != "-" ? String(Math.round(data)) + "%" : "-";
+                    }
+                    cell2.innerHTML = data;
+                } else if (i == 1) {
+                    if (j % 2 == 0) {
+                        var data = tabledata[psl_list[j]].slice(6, 22).reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                    } else {
+                        var data = (tabledata[psl_list[j - 1]].slice(6, 22).reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0) / tabledata['count'].slice(6, 22).reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0)) * 100;
+
+                        data = data != "-" ? String(Math.round(data)) + "%" : "-";
+                    }
+                    cell2.innerHTML = data
+                } else if (i == 2) {
+                    if (j % 2 == 0) {
+                        var data = tabledata[psl_list[j]].slice(6, 24).reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                    } else {
+                        var data = (tabledata[psl_list[j - 1]].slice(6, 24).reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0) / tabledata['count'].slice(6, 24).reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0)) * 100;
+                        data = data != "-" ? String(Math.round(data)) + "%" : "-";
+                    }
+                    cell2.innerHTML = data
+                } else if (i == 3) {
+                    if (j % 2 == 0) {
+                        var data = tabledata[psl_list[j]].slice(0, 24).reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                    } else {
+                        var data = (tabledata[psl_list[j - 1]].slice(0, 24).reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0) / tabledata['count'].slice(0, 24).reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0)) * 100;
+                        data = data != "-" ? String(Math.round(data)) + "%" : "-";
+                        if (psl_list[j - 1] == "psl") {
+                            psl = data
+                        } else if (psl_list[j - 1] == "acpo") {
+                            acpo = data
+                        }
+
+                    }
+                    cell2.innerHTML = data
+                }
+
+                row.appendChild(cell2);
+            }
+            tbody.appendChild(row);
+        }
+        document.getElementById('PSL').innerText = psl;
+        document.getElementById('ACPO').innerText = acpo;
+    }
+
+    function setCount_Table() {
+        if (loadcount_data == "") {
+            return;
+        }
+        var id = document.getElementById("location_id").value;
+        var graphLabels = loadcount_data.graphLabels;
+        console.log("current day ",getCurrentDay());
+        console.log("current dir ",getCurrentDirection())
+        var tabledata = loadcount_data.data[getCurrentDay() - 1]['direction'][getCurrentDirection()]['data'];
+        console.log("tabledata_count -",tabledata);
+        var table = document.getElementById("count_table");
+        var th_len = table.querySelector('thead').querySelectorAll('th').length - 1;
+        var tbody = table.querySelector('tbody');
+        tbody.innerText = '';
+        var avg_lst = ["07:00:-19:00", "06:00:-22:00", "06:00:-24:00", "00:00:-24:00"];
+
+        for (let i = 0; i < (graphLabels.length); i++) {
+            var tr = document.createElement('tr');
+            var td = document.createElement('td');
+            if (i < (graphLabels.length) - 1) {
+                td.innerHTML = graphLabels[i] + '-' + graphLabels[i + 1];
+            } else {
+                td.innerHTML = graphLabels[i] + '-' + "24:00";
+            }
+            tr.appendChild(td);
+            var flg = 0;
+            for (let j = 0; j < th_len; j++) {
+                var td = document.createElement('td');
+                if (j == 0) {
+
+                    if (tabledata[i]['count'] == 0) {
+                        td.innerText = tabledata[i]['count'] ? tabledata[i]['count'] : "-";
+                    } else {
+                        td.innerText = tabledata[i]['count'] ? tabledata[i]['count'] : "-";
+                    }
+                    tr.appendChild(td);
+                    var td2 = document.createElement('td');
+                    let speed = tabledata[i]['speed'][j] + tabledata[i]['speed'][j + 1]
+                    td2.innerText = speed ? speed : "-";
+
+                    tr.appendChild(td2);
+                } else if (j != 1) {
+                    td.innerText = tabledata[i]['speed'][j] ? tabledata[i]['speed'][j] : "-";
+                    tr.appendChild(td);
+                }
+            }
+            tbody.appendChild(tr);
+        }
+
+        for (let i = 0; i < avg_lst.length; i++) {
+            var row = document.createElement('tr');
+            var cell1 = document.createElement('td');
+            cell1.innerHTML = avg_lst[i];
+            row.appendChild(cell1);
+
+            for (let j = 0; j < th_len; j++) {
+                var cell = document.createElement('td');
+                if (j == 0) {
+                    if (i == 0) {
+                        var cell = document.createElement('td');
+                        var data = []
+                        Object.keys(tabledata).forEach((key) => {
+                            if (key >= 7 && key < 19) {
+                                data.push(tabledata[key].count)
+                            }
+                        })
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 1) {
+                        var cell = document.createElement('td');
+                        var data = []
+                        Object.keys(tabledata).forEach((key) => {
+                            if (key >= 6 && key < 22) {
+                                data.push(tabledata[key].count)
+                            }
+                        })
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 2) {
+                        var cell = document.createElement('td');
+                        //var data  = tabledata.slice(graphLabels.indexOf('06:00'),graphLabels.indexOf('24:00'));
+                        var data = []
+                        Object.keys(tabledata).forEach((key) => {
+                            if (key >= 6 && key <= 23) {
+                                data.push(tabledata[key].count)
+                            }
+                        })
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 3) {
+                        var cell = document.createElement('td');
+                        //var data  = tabledata.slice(graphLabels.indexOf('00:00'),graphLabels.indexOf('24:00'));
+                        var data = []
+                        Object.keys(tabledata).forEach((key) => {
+                            if (key >= 0 && key <= 23) {
+                                data.push(tabledata[key].count)
+                            }
+                        })
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    }
+                    // for speed 0
+
+                    if (i == 0) {
+                        var cell = document.createElement('td');
+                        var data = []
+                        Object.keys(tabledata).forEach((key) => {
+                            if (key >= 7 && key < 19) {
+                                data.push(tabledata[key].speed[j] + tabledata[key].speed[j + 1])
+                            }
+                        })
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 1) {
+                        var cell = document.createElement('td');
+                        var data = []
+                        Object.keys(tabledata).forEach((key) => {
+                            if (key >= 6 && key < 22) {
+                                data.push(tabledata[key].speed[j] + tabledata[key].speed[j + 1])
+                            }
+                        })
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 2) {
+                        var cell = document.createElement('td');
+                        //var data  = tabledata.slice(graphLabels.indexOf('06:00'),graphLabels.indexOf('24:00'));
+                        var data = []
+                        Object.keys(tabledata).forEach((key) => {
+                            if (key >= 6 && key <= 23) {
+                                data.push(tabledata[key].speed[j] + tabledata[key].speed[j + 1])
+                            }
+                        })
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 3) {
+                        var cell = document.createElement('td');
+                        //var data  = tabledata.slice(graphLabels.indexOf('00:00'),graphLabels.indexOf('24:00'));
+                        var data = []
+                        Object.keys(tabledata).forEach((key) => {
+                            if (key >= 0 && key <= 23) {
+                                data.push(tabledata[key].speed[j] + tabledata[key].speed[j + 1])
+                            }
+                        })
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    }
+
+                } else if (j > 1) {
+                    if (i == 0) {
+                        var cell = document.createElement('td');
+                        var data = []
+                        Object.keys(tabledata).forEach((key) => {
+                            if (key >= 7 && key < 19) {
+                                data.push(tabledata[key].speed[j])
+                            }
+                        })
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 1) {
+                        var cell = document.createElement('td');
+                        var data = []
+                        Object.keys(tabledata).forEach((key) => {
+                            if (key >= 6 && key < 22) {
+                                data.push(tabledata[key].speed[j])
+                            }
+                        })
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 2) {
+                        var cell = document.createElement('td');
+                        //var data  = tabledata.slice(graphLabels.indexOf('06:00'),graphLabels.indexOf('24:00'));
+                        var data = []
+                        Object.keys(tabledata).forEach((key) => {
+                            if (key >= 6 && key <= 23) {
+                                data.push(tabledata[key].speed[j])
+                            }
+                        })
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 3) {
+                        var cell = document.createElement('td');
+                        //var data  = tabledata.slice(graphLabels.indexOf('00:00'),graphLabels.indexOf('24:00'));
+                        var data = []
+                        Object.keys(tabledata).forEach((key) => {
+                            if (key >= 0 && key <= 23) {
+                                data.push(tabledata[key].speed[j])
+                            }
+                        })
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    }
+                }
+            }
+            tbody.appendChild(row);
+        }
+
+
+
+
+    }
+</script>
+{% endblock %}

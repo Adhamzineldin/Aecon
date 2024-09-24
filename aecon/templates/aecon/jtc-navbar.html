@@ -1,0 +1,64 @@
+<nav class="navbar navbar-expand-lg py-4">
+    <div class="container-fluid flex-fill">
+        <a class="navbar-brand px-3" href="#"><img height="50" width="150" class="h-75"
+                src="/static/aecon/conduit_logo_color.png" alt="Brand-logo" onclick="openNav()"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon fa-solid fa-bars"></span>
+        </button>
+        <div class="collapse navbar-collapse align-content-center text-center" id="navbarSupportedContent">
+            <ul class="navbar-nav m-auto">
+                {% if request.user.is_authenticated %}
+                <li class="nav-item ">
+                    <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/map-full-view';">
+                        <i class="pin-icon"></i>
+                        Map View </a>
+                        <li class="nav-item ">
+                          <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/sensor-data';"> <i class="atc-icon"></i>
+                            Sensor Data </a>
+                        </li>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/atc-data';"> <i
+                            class="ATC_Data_Icon"></i>
+                        ATC Data </a>
+                </li>
+                <li class="nav-item">
+              <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/radar-data';"> <i class="vas-icon"></i>
+                Radar Data</a>
+              </li>
+                <li class="nav-item ">
+                    <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/link-data';"> <i
+                            class="link-icon"></i>
+                            Link Data </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link active" aria-current="page"> <i class="jtc-icon-green"></i>
+                        JTC Data </a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/map-full-view';">
+                        <i class="pin-icon"></i>
+                        Map View </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"> <i class="atc-icon-green"></i>
+                        ATC Data </a>
+                </li>
+                {% endif %}
+            </ul>
+            
+            {% if request.user.is_authenticated %}
+            <a class="btn " aria-current="page" href="/aecon/logoff"
+                style="border-radius: 5px !important; padding: 10px 15px;">
+                Logout <i class="fas fa-chevron-down ps-1"></i></a>
+            {% else %}
+            <a class="btn " aria-current="page" href="/aecon"
+                style="border-radius: 5px !important; padding: 10px 15px;"
+                style="border-radius: 5px !important; padding: 10px 15px;">
+                Login <i class="fas fa-chevron-up ps-1"></i></a>
+            {% endif %}
+        </div>
+    </div>
+</nav>

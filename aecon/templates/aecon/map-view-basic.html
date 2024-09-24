@@ -1,0 +1,184 @@
+
+{% extends "aecon/dashboard-base.html" %}
+{% load staticversion %}
+
+{% block content %}
+<div class="row align-items-center d-none"  style="height:50px">
+    <div class="col-12 my-auto d-flex align-items-center" >
+        <div>
+
+            <h5 class="bg-transparent" style="margin:0">
+                Birmingham Gas St
+            </h5>
+        </div>
+            <ul class="nav">
+
+        </ul>
+
+
+    </div>
+</div>
+
+
+<div class=" row" id="map-view" style="height:100%">
+
+
+
+    <div class="col-12 " id="map-wrapper" style="width:100%;height:100%;padding:0">
+        <div class = "map-panel" id = "map-view-map">
+
+        </div>
+        <div class="row" style="width:100%;height:100px;position:absolute;bottom:0;margin:0;z-index:3000;font-size:20px">
+            <div class="col-8 mx-auto  mb-3" style="width:100%">
+                <div class="card header-shadow " style="height:100%;border-radius:10px;border:1px solid goldenrod;background-color:rgba(0,0,0,0.7)">
+                    <div class="card-body">
+                        <div class="row justify-content-center" style="height:100%">
+                            <div class="col-12 col-lg-4 text-center my-auto" >
+                                <div class=""  style="width:100%;color:white">
+                                  Mon 20th Aug <i class="fas fa-chevron-up"></i>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-8 text-center my-auto" >
+                                <div class="" id="slidecontainer" style="width:100%">
+                                  <input type="range" min="1" max="100" value="50" class="slider" id="myRange" hidden>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-4 d-none justify-content-between my-auto" style="height:30px;line-height:30px">
+                                <i class="fas fa-play" style="color:rgba(34, 247, 140,1);font-size:30px;cursor:pointer"></i>
+                                <i class="fa fa-pause" style="color:grey;font-size:30px;cursor:pointer"></i>
+                                <i class="fa fa-stop" style="color:red;font-size:30px;cursor:pointer"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row justify-content-between" style="width:100%;position:absolute;top:0;margin:0;z-index:3000;font-size:14px;pointer-events:none">
+
+            <div class="col-6 col-lg-3 mt-3">
+                <div class="card header-shadow " style="border-radius:10px;border:1px solid grey;background-color:rgba(0,0,0,0.6);color:white">
+                    <div class="card-body">
+                        <h6 class="card-subtitle text-center"> Mon 20th Aug 2019 07:05 AM</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3 mt-3" data-group="map-graph-floating">
+                <div class="card header-shadow " style="height:100%;border-radius:10px;border:1px solid grey;background-color:rgba(0,0,0,0.6);color:white">
+                    <div class="card-body">
+                        <div class="canvaswrapper" style="height:150px">
+                            <canvas id="floating-map-chart"></canvas>
+
+                            <div class="button-overlay toggle-between" data-target="map-graph-floating" style="pointer-events:auto"><i class="fa fa-window-close" style="width:30px;height:30px;color:white"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+
+
+    <div class="col-2 mb-3 d-none">
+        <div class="card header-shadow " style="height:100%">
+            <div class="card-body">
+                <div class="row d-flex">
+                    <div class="col-12" style="width:100%;padding-top:10px">
+                        <div class="class-selector-container" style="height:100%">
+                            <label data-bg="#3e95cd" data-col="white" class="class-selector no-select">Pedestrian</label>
+                            <label data-bg="#8e5ea2" data-col="white" class="class-selector no-select">Cyclist</label>
+                            <label data-bg="#3cba9f" data-col="white" class="class-selector no-select">Car</label>
+                            <label data-bg="#e8c3b9" data-col="black" class="class-selector no-select">Van</label>
+                            <label data-bg="#c45850" data-col="white" class="class-selector no-select">Motorbike</label>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+    noUiSlider.create(document.getElementById("slidecontainer"), {
+        start: [10, 30],
+        connect: true,
+        range: {
+            'min': -20,
+            'max': 40
+        }
+    });
+
+
+
+    var id = document.getElementById("mb-id").value
+    initMap([53.476404, -2.250621],"map-view-map",id);
+
+    function dealWithLocationFeatureCollection(feature,layer){
+        console.log("dealing with location")
+        if (feature.geometry.type == "LineString"){
+            return;
+            console.log(feature);
+            layer.setStyle(locationStyleOptions);
+            lineLayer.addLayer(layer);
+            setupLocationLineWithArrowhead(layer);
+            layer.options.direction = feature.properties.direction_id;
+            layer.options.order = feature.properties.order;
+
+        }
+        if (feature.geometry.type == "Point"){
+            var marker = addLocationPointMarker(feature,{});
+            marker.on("dragend",function(event){
+                document.getElementById("lat").value = event.target.getLatLng().lat;
+                document.getElementById("lon").value = event.target.getLatLng().lng;
+            });
+        }
+    }
+
+
+
+    function viewProject(ele){
+
+        var formData = new FormData();
+        formData.append("project",ele.id);
+        fetcher(formData,"getClientLocations",function(result){
+            console.log("received results",result);
+            map.eachLayer(function (layer) {
+                console.log("removing",layer,typeof layer,layer instanceof L.Marker);
+                if (layer instanceof L.Marker){
+
+                    map.removeLayer(layer);
+                }
+            });
+            processLocationGeojson(result.locations);
+
+        });
+
+
+
+
+
+    }
+
+
+
+
+
+
+</script>
+
+{% endblock %}

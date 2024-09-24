@@ -1,0 +1,160 @@
+<style>
+    .table-responsive .table-wrapper .cond-tb{
+        background-color: #f0f0f0;
+    }
+
+    .peak-tbody {
+        display: block;
+        height: 12rem;
+    }
+
+    .peak-tbody tr {
+        width: 100%;
+        display: block;
+        border: 1px solid #dee2e6;
+        padding-left: 1rem;
+    }
+
+    .peak-tbody tr th,
+    td {
+        border: none;
+        border-top: none;
+    }
+
+    .peak-tbody tr td {
+        border-top: none;
+    }
+    
+
+
+    /* The switch - the box around the slider */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 22px;
+    }
+
+    /* Hide default HTML checkbox */
+    .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    }
+
+    /* The slider */
+    .sliderss {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #b2eb67;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    .sliderss:before {
+        position: absolute;
+    content: "";
+    height: 14px;
+    width: 15px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    input:checked + .sliderss {
+    background-color: #2196F3;
+    }
+
+
+    input:focus + .sliderss {
+    box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .sliderss:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .sliderss.round {
+    border-radius: 20px;
+    }
+
+    .sliderss.round:before {
+    border-radius: 50%;
+    }
+
+    .expand{
+        height:260px;
+    }
+</style>
+<div class="col-md-3 lg-view">
+    <div class="floating-card mt-4">
+        <div class="sidee carddd card ">
+            <div class="px-5 mt-5" id="location-info">
+                <div class="customScroll atcList mb-5" id="peak">
+                    <div class="dd-wrapper" id="peak-select-wrapper">
+                        <div class="dd-select-btn-peak" id="peak-select-btn">
+                            <span>Network Peak</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                        <div class="dd-all-content-peak">
+                            <div class="dd-content-peak">
+                                <div class="dd-search">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <input onkeyup="filterList(this,'peak')" onclick="event.stopPropagation()"
+                                        spellcheck="false" type="text" placeholder="Search" id="peak-select-input">
+                                </div>
+                                <div class="dd-options">
+                                    <ul class="dd-options-list" id="peak-select-option-list"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-textbox mb-3">
+                    <h4 class="mb-3 chart-title3">Arms</h4>
+                    <div id="arms-wrapper" class="table-responsive table-wrapper cond-tb py-2 px-3">
+                        <table class="table public-section" rules="cols">
+                            <tbody class="full-border peak-tbody">
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class='pt-5' style="position:relative; display:none" id="jtc_img" >
+                        <div>
+                            <img class="sensor-graph" id="myImg"  alt="Sensor Image" >
+                            <div class="image-toggle-icon" style="position: absolute;
+                            bottom: 21px;
+                            left: 18px;" onclick="toggleImageSize();">
+                                <i class="fa fa-expand" id="img-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="side-location">
+                <div class="side-location-loc">
+                    <div class="side-location-loc-key">Location</div>
+                    <div class="side-location-loc-value" id="sidebar-site-name"></div>
+                </div>
+                <div class="side-location-lat mt-3">
+                    <div class="side-location-lat-key">Lattitude:</div>
+                    <div class="side-location-lat-value" id="sidebar-site-lat"></div>
+                </div>
+                <div class="side-location-lon mt-3">
+                    <div class="side-location-lon-key">Longitude:</div>
+                    <div class="side-location-lon-value" id="sidebar-site-lon"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

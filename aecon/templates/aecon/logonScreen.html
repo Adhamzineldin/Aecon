@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en" style="min-height: 100%">
+  <head>
+    <style>
+      {% comment %} #confirm {
+        display: none;
+        background-color: #005293;
+        border: 1px solid #aaa;
+        position: absolute;
+        width: 250px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 15px;
+        box-sizing: border-box;
+        text-align: center;
+     }
+     #confirm button {
+        background-color: white;
+        display: inline-block;
+        border-radius: 5px;
+        border: 1px solid #aaa;
+        padding: 5px;
+        text-align: center;
+        width: 80px;
+        cursor: pointer;
+     }
+     #confirm .message {
+        text-align: left;
+        color: white;
+     } {% endcomment %}
+    </style>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-159283885-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-159283885-1");
+    </script>
+
+    <!-- Required meta tags -->
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    {% load staticversion %}
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{% staticversion 'aecon/generic-styles.css' %}"
+      type="text/css"
+    />
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.min.css'>
+    <link rel="stylesheet" href="https://use.typekit.net/qhi7zfc.css">
+    <title>Tracsis AECON </title>
+  </head>
+  <body style="min-height: 100%">
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+      integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+      integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+      crossorigin="anonymous"
+    ></script>
+
+    <div
+      class="container-fluid"
+      id="full-image-container"
+      style="background-image: url({% staticversion client.logonBackground %}); height: 100%">
+
+      <div  style="height: 100%; width: 100%; overflow: hidden">
+        <div id="logon-box">
+          <div class="m-auto text-center">
+            <img
+              alt="centered image"
+              src="{% staticversion 'aecon/aecom.png' %}"
+              id="logo-img-logon"
+            />
+          </div>
+
+          <div
+            class="row align-items-center justify-content-center my-1"
+            style="height: calc(100% - 160px)"
+          >
+            <div class="col-12" >
+              <form
+                method="post"
+                action="/aecon/logon/{{client.nameForUrl}}{% if 'next' in request.GET %}?next={{request.GET.next}}{% endif %}"
+                id="logon-form"
+                style="color: #c9c9d2;"
+                >
+                {%csrf_token %}
+                <div class="px-3" id="login-form">
+                  <div id="errors" style="display: none;">
+                    <div class="col-sm-12 px-0 text-center">
+                        <div class="alert alert-danger" id="alert-input">
+                        </div>
+                    </div>
+                  </div>
+                  <div class="form-group" >
+                    <label class="input-labels">Email</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="exampleInputEmail1"
+                      aria-describedby="emailHelp"
+                      placeholder="Enter Your Email"
+                      name="username"
+                    />
+                  </div>
+                  <div class="form-group" >
+                    <label class="input-labels">Password</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="exampleInputPassword1"
+                      placeholder="Enter Your Password"
+                      name="password"
+                    />
+                  </div>
+                  <div class="form-group" style="width: 97%; margin-top: 30px">
+                    <button class="mb-3" id="login-button" style="width: 47%; float: left; margin-right: 15px" type="button" form="logon-form" onclick="checkLogin()">
+                      Login
+                    </button>
+                      <button class="mb-3 btn-outline-success" id="map-button" style="width: 47%; float: right" title='Interactive map' onclick="location.href = '/aecon/map-full-view'; return false;">
+                       Cancel
+                    </button>
+                      <div style="text-align: center;">
+                          <a style="cursor: pointer; font-weight: bold; color: #5B9BD6 !important; font-size: 16px;" onclick="loginHide()">Forgotten Password?</a>
+                      </div>
+                  </div>
+                </div>
+              </form>
+
+
+
+              <div class="text-center px-3" id="forgot-form" style="display: none !important">
+                <h5 class="text-white text-center font-weight-bold mb-4">Forget your password?</h5>
+                {% comment %} <p class="text-center text-white mb-3">Don't worry resetting your password is easy, just type
+                  in the email you registered.</p> {% endcomment %}
+                  <form id='sendmail' name="sendmail-form">
+                    {%csrf_token %}
+                    <div id="error-forgot" style="display: none;">
+                      <div class="col-sm-12 px-0 text-center">
+                          <div class="alert alert-danger">
+                              Login details could not be matched
+                          </div>
+                      </div>
+                    </div>
+                    <div class="form-group" >
+                      <input
+                        id = "email"
+                        type="email"
+                        class="form-control"
+                        aria-describedby="emailHelp"
+                        placeholder="Email"
+                        name ="Email"
+                      />
+                    </div>
+                    <div class="form-group" >
+                      <button
+                        class="mb-2"
+                        id="forgot-button"
+                        style="width: 47%; float: left"
+                        type="button"
+                        form="logon-form"
+                        onclick="sendmail()"
+                      >
+                        Send
+                      </button>
+                          <button
+                        class="mb-2"
+                        id="forgot-button2"
+                        style="width: 47%; float: right"
+                        type="button"
+                        form="logon-form"
+                        onclick="backToLogin()"
+                      >
+                        Back
+                      </button>
+                    </div>
+                  </form>
+                  {% comment %} <p class="text-white">Did you remembered your password?<a class="text-primary" onclick="backToLogin('try loging')"> Try logging in?</p> {% endcomment %}
+              </div>
+              <div class="text-center px-3" id="otp-form" style="display: none !important">
+                <h5 class="text-white text-center font-weight-bold mb-4">Verfiy OTP</h5>
+                  <form id='otp_form' name="otp_form">
+                    {%csrf_token %}
+                    <div id="error-otp" style="display: none;">
+                      <div class="col-sm-12 px-0 text-center">
+                          <div class="alert alert-danger">
+                          </div>
+                      </div>
+                    </div>
+                    <div class="form-group" >
+                      <input
+                        id = "otp"
+                        type="text"
+                        class="form-control"
+                        aria-describedby="otp_help"
+                        placeholder="OTP"
+                        name ="OTP"
+                      />
+
+                      <input
+                        id = "user_id"
+                        type="hidden"
+                        class="form-control"
+                        name ="user_id"
+                      />
+                    </div>
+                    <div class="form-group" >
+                      <button
+                        class="btn btn-primary mb-2"
+                        id="verify-button"
+                        style="width: 100%"
+                        type="button"
+                        onclick="sendotp()"
+                      >
+                        Verify Otp
+                      </button>
+                    </div>
+                  </form>
+              </div>
+                <div class="m-auto text-center">
+                    <h5  id="login-instructions">
+                        This section is only available to those with Permission.
+                        Please enter your credentials or return to the public site.
+                    </h5> 
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.all.min.js"></script>
+
+    <script>
+     function loginHide(){
+       
+        $("#login-form").hide();
+        $("#map-button").hide();
+        $("#login-instructions").hide();
+        $("#forgot-form").show();
+     }
+
+    function backToLogin(flg){
+     $("#otp-form").hide();
+     $("#forgot-form").hide();
+     $("#login-form").show();
+     $("#login-instructions").show();
+     $("#map-button").show();
+    }
+
+     function showOtp(){
+      $("#otp-form").show();
+      $("#forgot-form").hide();
+     }
+    function checkLogin(){
+      $("#errors").hide();
+    
+      $.ajax({
+        url:'/aecon/logon/{{client.nameForUrl}}{% if 'next' in request.GET %}?next={{request.GET.next}}{% endif %}',
+        data: $('#logon-form').serialize(),
+        type:'POST',
+      })
+      .done(function(data,status)
+      {
+        if (data['status']=="error")
+        {
+          $("#errors").show();
+          $("#alert-input").text("Login details could not be matched");
+         
+          //Swal.fire("Incorrect Username or Password");
+        }
+        else if (data['status']=="success") {
+          $("#errors").hide();
+          window.location.href = data['redirect_string']
+        }
+      })
+      .fail(function(error){
+        alert("Network Error");
+      });
+    }
+    function sendmail(){
+      //$("#error-forgot").show();
+      var email = $("#email").val();
+      if (email == ""){
+        //alert("Please Enter Email");
+        $("#error-forgot").show();
+        $("#error-forgot .alert").text("Please Enter Email");
+      }
+      else if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
+      {
+        $.ajax({
+          url:'aecon/reset_password',
+          data: $('#sendmail').serialize(),
+          type:'POST',
+        })
+        .done(function(data,status)
+        {
+          if (data['status']=="error")
+          {
+            $("#error-forgot").show();
+            $("#error-forgot .alert").text("Please Enter Valid Email");
+            alert(data['message']);
+          }
+          else if (data['status']=="success") {
+            $("#error-forgot").hide();
+            $("#login-form").show();
+            $("#map-button").show();
+            $("#login-instructions").show();
+            $("#forgot-form").hide();
+            alert(data['message']);
+            //$('#user_id').val(data['user_id']);
+            //showOtp();
+          }
+        })
+        .fail(function(error){
+          //alert("Network Error");
+          $("#error-forgot").show();
+            $("#error-forgot .alert").text("Network Error");
+        });
+      }
+      else{
+        //alert("Please Enter Valid Email");
+        $("#error-forgot").show();
+        $("#error-forgot .alert").text("Please Enter Correct Email");
+      }
+     // backToLogin();
+    }
+
+    function sendotp()
+    {
+      $("#error-otp").hide();
+      var otp = $("#otp").val();
+      if (otp == ""){
+        //alert("Please Enter OTP");
+        $("#error-otp").show();
+        $("#error-otp .alert").text("Please Enter OTP");
+      }
+      else{
+        $.ajax({
+          url:'reset_password',
+          data: $('#otp_form').serialize(),
+          type:'POST',
+          dataType: 'json',
+        })
+        .done(function(data,status)
+        {
+          if (data['status']=="error")
+          {
+            //alert(data['message']);
+            $("#error-otp").show();
+            $("#error-otp .alert").text("Please Enter Valid OTP");
+          }
+          else if (data['status']=="success") {
+            alert(data['message']);
+            window.location.href = "/aecon/reset_password?id="+data['id'];
+          }
+        })
+        .fail(function(error){
+          alert("Network Error");
+        });
+      }
+    }
+    </script>
+    
+  </body>
+</html>

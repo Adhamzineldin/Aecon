@@ -1,0 +1,1555 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Bootstrap CSS -->
+
+    {% load staticversion %} {% load my_filters %} {% load client_tags %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" href="https://use.typekit.net/qhi7zfc.css">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/aecon/daterangepicker.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css" />
+    <link rel="stylesheet" href="{% staticversion 'aecon/leaflet.awesome-markers.css' %}" type="text/css" /> {% if DEBUG %}
+    <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css" /> {% else %}
+    <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css" /> {% endif %}
+    <link rel="stylesheet" href="{% staticversion 'aecon/nouislider.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% staticversion 'aecon/cv2-base.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% staticversion 'aecon/bootstrap.min.css' %}"/>
+    {% comment %} <script src="{% staticversion 'aecon/cv2-graphs.js' %}"></script> {% endcomment %}
+    {% comment %} <script src="{% staticversion 'aecon/cv2-map.js' %}"></script> {% endcomment %}
+    <link rel="stylesheet" href="{% staticversion 'aecon/checkbox-style.css' %}" type="text/css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+    <script src="https://mapbox.github.io/geojson-vt/geojson-vt-dev.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
+    <script type="text/javascript" src="/static/aecon/moment.min.js"></script>
+    {% comment %} <script type="text/javascript" src="/static/aecon/daterangepicker.js"></script> {% endcomment %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <script src="https://mapbox.github.io/geojson-vt/geojson-vt-dev.js"></script>
+
+
+    <script src="{% staticversion 'aecon/leaflet.polylineDecorator.js' %}"></script>
+    <script src="{% staticversion 'aecon/L.Line3.js' %}"></script>
+    <script src="{% staticversion 'aecon/nouislider.js' %}"></script>
+    <script src="{% staticversion 'aecon/leaflet.lineextremities.js' %}"></script>
+
+    <script src="{% staticversion 'aecon/bootstrap.bundle.min.js' %}"></script>
+    
+    <script src="{% staticversion 'aecon/cv2-data-func.js' %}"></script>
+    {% comment %} <script src="{% staticversion 'aecon/cv2-base.js' %}"></script> {% endcomment %}
+    <script src="{% staticversion 'aecon/cv2-local-storage.js' %}"></script>
+    <script src="{% staticversion 'aecon/cv2-graphs.js' %}"></script>
+    <script src="{% staticversion 'aecon/cv2-map.js' %}"></script>
+    <script src="{% staticversion 'aecon/atc.js' %}"></script>
+    <script src="{% staticversion 'aecon/cv2-main.js' %}"></script>
+
+    <title>Tracsis AECON</title>
+</head>
+
+<body>
+  <style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+    body{
+        background: #EFEFEF;
+    }
+      .modal,
+      .modal-backdrop {
+          position: absolute !important;
+      }
+      
+      .modal-dialog {
+          max-width: 90% !important;
+      }
+      
+      .modal-dialog,
+      .modal-content {
+          /* 80% of window height */
+          height: 90%;
+      }
+      
+      .modal-body {
+          /* 100% = dialog height, 120px = header + footer */
+          overflow: hidden;
+      }
+      .footer-bottom div{
+        background: #141b4d;
+      
+    }
+    .footer-bottom p{
+        float: left;
+        font-size: 14px;
+        word-spacing: 2px;
+        text-transform: capitalize;
+     }
+     .footer-bottom p img{
+       justify-content:center;
+     }
+     .footer-bottom span{
+         text-transform: uppercase;
+         opacity: .4;
+         font-weight: 200;
+     }
+     .footer-menu
+     {
+      float: right;
+    }
+    
+    .footer-menu ul{
+      display: flex;
+    }
+    
+    .footer-menu ul li{
+    padding-right: 10px;
+    display: block;
+    }
+    
+    .footer-menu ul li a{
+      color: #fff;
+      text-decoration: none;
+      background-color: #ffffff;
+    }
+    
+    .footer-menu ul li a:hover{
+      color: #fff;
+    }
+    .socials{
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0px;
+    }
+  
+      {% comment %} .socials li{
+          margin: 0 10px;
+      } {% endcomment %}
+      
+      .socials a{
+          text-decoration: none;
+          color: #fff;
+          border: 1.1px solid white;
+          padding: 5px;
+          border-radius: 50%;
+      }
+      
+      .socials a i{
+          font-size: 1.1rem;
+          width: 18px;
+          transition: color .4s ease;
+          text-align: center;
+          color: #1d2fa9;
+      }
+      
+      .socials a:hover i{
+          color: #141b4d;
+      }
+      .footer {
+        height: 60px;
+        margin-top: 20px;
+    }
+    
+    .footer {
+        background-color: #141b4d;
+        height: auto;
+        width: 100%;
+        {% comment %} position: fixed; {% endcomment %}
+        bottom: 0;
+    }
+    .ht-40{
+      height: 45rem !important;
+    }
+    .canvass .mt-5{
+      margin-top: 4rem!important;
+    }
+    .ht-35{
+      height: 35rem !important;
+    }
+    .classify th:nth-child(1) {
+      width:20% !important;
+  }
+  .cond-tb tr{
+    background-color:#141b4d !important;
+    color: white !important;
+  }
+    @media (max-width:500px) {
+      .footer-menu ul{
+        display: flex;
+        margin-top: 10px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+  {% csrf_token %}
+  <div class="greyed-out justify-content-center align-items-center "> <img src ="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+  <input hidden value="{{location.id}}" id="location_id">
+  <input hidden type="text" value="{{client.mapCode}}" id="mb-id">
+    {% comment %} <div id="projects-popup" style="width:auto;" class="conduit-popup" >
+      <div class="conduit-selectable-menu min-1" data-header="projects-popup">
+          <ul>
+            <li>
+              12345
+            </li>
+          </ul>
+      </div>
+    </div> {% endcomment %}
+    <div id="phase-popup" style="width:auto;" class="conduit-popup ">
+      <div class="conduit-selectable-menu min-1" data-header="phase-header" id="suvery1">
+          
+      </div>
+    </div>
+    <div id="phases-popup" style="width:auto;" class="conduit-popup ">
+      <div class="conduit-selectable-menu min-1" data-header="phases-header" id="survey2">
+          
+      </div>
+    </div>
+    {% comment %} <div id="direction-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu" id="direction-selectable-menu-selection">
+            <ul>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                  <span>Combined</span>
+              </a>
+                </li>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Primary</span>
+              </a>
+                </li>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Secondary</span>
+              </a>
+                </li>
+            </ul>
+        </div>
+    </div> {% endcomment %}
+    <div id="directions-popup" style="width:auto;" class="conduit-popup" >
+      <div class="conduit-selectable-menu min-1" data-header="directions-header">
+          {{ directions | safe}}
+      </div>
+    </div>
+    <div id="classes-popup" style="width:auto;" class="conduit-popup">
+      <div class="conduit-selectable-menu multi" id="conduit-selectable-menu-selection">
+          {{ classes | safe}}
+      </div>
+    </div>
+    <div id="measure-popup" class="conduit-popup">
+      <div class="conduit-selectable-menu  min-1" data-header="measure-header">
+        <ul >
+             <li onclick="avg();" id="table_1" value="1" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item selected ">
+                    <i ></i>
+                    <span >Average Speed</span>
+                </a>
+            </li>
+            <li onclick="eighth();" id="table_2" value="2" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>85th %ile Speed</span>
+                </a>
+            </li>
+            <li onclick="nineth();" id="table_3" value="3" class="menu-item popup-item">
+              <a href="#" class="selectable-menu-item">
+                  <i ></i>
+                  <span>95th %ile Speed</span>
+              </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div id="time-popup" style="width:auto;" class="conduit-popup">
+        <div class="conduit-selectable-menu min-1" id="time-header">
+            <ul>
+                <li id="1" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>00:00 - 01:00</span></a></li>
+                <li id="2" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>01:00 - 02:00</span></a></li>
+                <li id="3" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>02:00 - 03:00</span></a></li>
+                <li id="4" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>03:00 - 04:00</span></a></li>
+                <li id="5" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>04:00 - 05:00</span></a></li>
+                <li id="6" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>05:00 - 06:00</span></a></li>
+                <li id="7" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>06:00 - 07:00</span></a></li>
+                <li id="8" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>07:00 - 08:00</span></a></li>
+                <li id="9" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>08:00 - 09:00</span></a></li>
+                <li id="10" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>09:00 - 10:00</span></a></li>
+                <li id="11" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>10:00 - 11:00</span></a></li>
+                <li id="12" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>11:00 - 12:00</span></a></li>
+                <li id="13" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>12:00 - 13:00</span></a></li>
+                <li id="14" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>13:00 - 14:00</span></a></li>
+                <li id="15" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>14:00 - 15:00</span></a></li>
+                <li id="16" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>15:00 - 16:00</span></a></li>
+                <li id="17" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>16:00 - 17:00</span></a></li>
+                <li id="18" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>17:00 - 18:00</span></a></li>
+                <li id="19" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>18:00 - 19:00</span></a></li>
+                <li id="20" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>19:00 - 20:00</span></a></li>
+                <li id="21" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>20:00 - 21:00</span></a></li>
+                <li id="22" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>21:00 - 22:00</span></a></li>
+                <li id="23" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>22:00 - 23:00</span></a></li>
+                <li id="24" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>23:00 - 24:00</span></a></li>
+                <li id="25" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>07:00 - 19:00</span></a></li>
+                <li id="26" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>06:00 - 22:00</span></a></li>
+                <li id="27" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>06:00 - 24:00</span></a></li>
+                <li id="28" class="menu-item popup-item"><a class="selectable-menu-item selected"><i></i><span>00:00 - 24:00</span></a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="day-popup" style="width:auto;" class="conduit-popup">
+        <div class="conduit-selectable-menu min-1" data-header="day-header">
+            <ul>
+              <li id="8" class="menu-item popup-item">
+                <a class="selectable-menu-item selected"><i></i>
+                  <span>5 Day Avg</span>
+                </a>
+              </li>
+              <li id="9" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>7 Day Avg</span>
+                  </a>
+              </li>
+              <li id="1" class="menu-item popup-item">
+                  <a class="selectable-menu-item "><i></i>
+                    <span>Monday</span>
+                  </a>
+              </li>
+
+              <li id="2" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>Tuesday</span>
+                  </a>
+              </li>
+
+              <li id="3" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>Wednesday</span>
+                  </a>
+              </li>
+
+              <li id="4" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>Thursday</span>
+                  </a>
+              </li>
+
+              <li id="5" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>Friday</span>
+                  </a>
+              </li>
+
+              <li id="6" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>Saturday</span>
+                  </a>
+              </li>
+
+              <li id="7" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>Sunday</span>
+                  </a>
+              </li>
+                
+            </ul>
+
+        </div>
+    </div> 
+    <div id="atc-popup" style="width:auto;" class="conduit-popup vivacity-1">
+      <div class="conduit-selectable-menu" id="day-selectable-menu-selection">
+        <ul>
+            <li id="view_0" class="menu-item popup-item active">
+                <a class="selectable-menu-item"><i></i>
+                  <span>ATC Data</span>
+                </a>
+            </li>
+            <li id="view_0" class="menu-item popup-item">
+                <a class="selectable-menu-item" onclick="location.href = '/aecon/sensor-data';"><i></i>
+                  <span>Sensor Data</span>
+                </a>
+            </li>
+            <li id="view_0" class="menu-item popup-item">
+                <a class="selectable-menu-item" onclick="modalAlert()"><i></i>
+                  <span>Air Quality</span>
+                </a>
+            </li>
+        </ul>
+      </div>
+    </div>
+    <div id="header-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu" id="day-selectable-menu-selection">
+            <ul>
+              {% if request.user.is_authenticated %}
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"  onclick="tabContent('headline');"><i></i>
+                      <span>Headline Data</span>
+                    </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('volume');"><i></i>
+                      <span>Hourly Volumes</span>
+                    </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('speed');"><i></i>
+                      <span>Hourly Speed</span>
+                    </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('classify');"><i></i>
+                      <span>Classification Data</span>
+                    </a>
+                </li>
+              {% endif %}
+                
+
+            </ul>
+
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="/static/aecon/select2.min.css" rel="stylesheet" />
+    <script src="/static/aecon/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/aecon/moment.min.js"></script>
+    <script type="text/javascript" src="/static/aecon/daterangepicker.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <div id="view-selector-popup" style="width: 250px" class="conduit-popup">
+        <div class="conduit-selectable-menu min-1" data-header="view-selector">
+            {% views_as_popup_list %}
+        </div>
+    </div>
+  <div class="header">
+    <nav class="navbar navbar-expand-lg py-4">
+      <div class="container-fluid flex-fill">
+        <a class="navbar-brand px-3" href="#"><img height="50" width="150" class="h-75" src="/static/aecon/conduit_logo_color.png"
+            alt="Brand-logo" onclick="openNav()"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon fa-solid fa-bars"></span>
+        </button>
+        <div class="collapse navbar-collapse align-content-center text-center" id="navbarSupportedContent">
+          <ul class="navbar-nav m-auto">
+          {% if request.user.is_authenticated %}
+            <li class="nav-item ">
+              <a href="#" class="nav-link" aria-current="page" onclick="location.href = '/aecon/map-full-view';"> <i class="pin-icon"></i>
+                Map View </a>
+            </li>
+            <li class="nav-item ">
+              <a href="#" class="nav-link" aria-current="page" onclick="location.href = '/aecon/atc-data';"> <i class="atc-icon"></i>
+                20mph Study </a>
+            </li>
+            <li class="nav-item ">
+              <a href="#" class="nav-link  " aria-current="page" onclick="location.href = '/aecon/mph-data';"> <i class="vas-icon"></i>
+                VAS Sign Study </a>
+            </li>
+            <li class="nav-item ">
+              <a href="#" class="nav-link  active" aria-current="page"> <i class="historic-icon-green"></i>
+                Historic Data </a>
+            </li>
+          {% else %}
+            <li class="nav-item ">
+              <a href="#" class="nav-link " aria-current="page" onclick="location.href = '/aecon/map-full-view';"> <i class="pin-icon"></i>
+                Map View </a>
+            </li>
+            <li class="nav-item ">
+              <a href="#" class="nav-link  active" aria-current="page"> <i class="atc-icon-green"></i>
+                20mph Study </a>
+            </li>
+          {% endif %}
+          </ul>
+          
+          {% if request.user.is_authenticated %}
+              <a class="btn " aria-current="page" href="/aecon/logoff">
+                Logout <i class="fas fa-chevron-down ps-1"></i></a>
+          {% else %}
+            <a class="btn " aria-current="page" href="/aecon">
+                Login <i class="fas fa-chevron-up ps-1"></i></a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    <div class="subnavbar py-2">
+      <div class="container-fluid row flex-wrap align-items-center justify-content-between">
+        {% if request.user.is_authenticated %}
+            <ul class="nav col-10">
+              <li class="nav-item">
+                <a href="#" id="headline" onclick="tabContent('headline');" class="nav-link" aria-current="page">
+                  Headline Data
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" id="volume" onclick="tabContent('volume');" class="nav-link" aria-current="page">
+                  Hourly Volumes
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" id="speed" onclick="tabContent('speed');" class="nav-link " aria-current="page">
+                  Hourly Speed
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" id="classify" onclick="tabContent('classify');" class="nav-link " aria-current="page">
+                  Classification Data
+                </a>
+              </li>
+              {% if request.user.is_superuser %}
+                <li class="nav-item">
+                    <a href="#" onclick="location.href = '/aecon/historic-upload';" class="nav-link " aria-current="page">
+                      Upload
+                    </a>
+                </li>
+              {% endif %}
+              <li class="nav-item">
+                    <a href="#" id="download" onclick="alert('The Functionality is Under Development');" class="nav-link " aria-current="page">
+                      Download
+                    </a>
+              </li>
+            </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+    <div id="view-selector-popup" style="width:250px;" class="conduit-popup">
+        <div class="conduit-selectable-menu  min-1" data-header="view-selector">
+            <ul>
+                <li id="table_1" value="1" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item selected ">
+                        <i></i>
+                        <span>Average Speed</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>85th %ile Speed</span>
+                    </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+    <div id="view-popup" style="width:250px;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu  min-1" data-header="view-selectable-menu-selection">
+            <ul>
+                <li id="table_1" value="1" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item selected" onClick="siteview('list');">
+                        <i></i>
+                        <span>List View</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item" onClick="siteview('dropdown');">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Dropdown View</span>
+                    </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+    <div id="sites-popup" style="width:250px;" class="conduit-popup">
+        <div class="conduit-selectable-menu  min-1" id="sites-selectable-menu-selection">
+            <ul>
+                <li id="table_1" value="1" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item selected">
+                        <i></i>
+                        <span>Aberlady, West Main Street(Site 4)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Carberry, A6124, Musselburgh to Crossgatehall (Site 39)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Cockenie,B1348 Links Road (Site 15)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Cockenie,East Lorimer Road (Site 16)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Danskine,B6335 (Site 45)</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="mySidenav" class="sidenav box-shadow" style="left: 0;">
+      <a class="closebtn" onclick="closeNav()"><i class="fas fa-times"></i></a>
+        {% comment %} {% include "aecon/atc-navbar.html" %}  {% endcomment %}
+        <div class="col-12 px-4">
+          <h5 class="text-muted">
+            Historic Data
+          </h5>
+          {% comment %} <a class="site-view pe-auto view-popup-trigger"></a> {% endcomment %}
+          <div class="selection-header sites-popup-trigger shadow mx-0 dropdownView"  id="sites" style="display: none"><span>Aberlady, West Main Street(Site 4)</span><i class="chevron-icon"></i></div>
+          <div class="customScroll atcList" id="atcList1">
+           
+              {% for location in locations %}
+            <input
+            type="radio"
+            name="direction"
+            id="{{location.id}}_list"
+            class="css-checkbox"
+            value={{location.name}}
+            data-temp= {{location.temp}}
+                onclick="viewSelect('{{location.id}}_list',this),viewSite('{{location.id}}',this)"
+            />
+            <label for="{{location.id}}_list" class="css-label radGroup2"
+            >{{location.name}}</label
+            >
+            {% endfor %}
+          </div>
+        </div>
+        <div class="horizontal my-2"></div>
+        <div class="col-12 my-4">
+          <h5 class="text-center my-1 locationresp" id=""></h5>
+          <div class="d-flex align-items-center justify-content-center mb-3">
+            <div class="w-50">
+              <div class="text-muted text-center my-1">Primary Direction</div>
+              <h4 class="text-center my-1 text-danger primary_dir">Eastbound</h4>
+              <div class="text-muted text-center my-1">
+                Secondary Direction
+              </div>
+              <h4 class="text-center my-1 text-danger secondary_dir">Westbound</h4>
+            </div>
+            <div class="w-50 singleNumber">
+              <div class="d-flex align-items-center justify-content-center">
+                <div class="position-relative">
+                  <img
+                    src="/static/aecon/speed-limit.png"
+                    width="60"
+                    height="60"
+                  />
+                  <div class="donut-text" id="project_sl">
+                    <span
+                      class="donut-number text-bold speedLimit"
+                      style="
+                        color: black !important;
+                        font-weight: bold;
+                        font-size: 20px;
+                      "
+                      ></span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="" class="row align-items-center justify-content-center singleNumber" >
+            <div class="w-50">
+              <h6 class="text-center my-1">Survey Start Date:</h6>
+              <h6 class="text-center my-1">Survey End Date:</h6>
+            </div>
+             <div class="w-50">
+              <div class="w-50">
+                <h6 class="text-center my-1 col-md-12 font-weight-bold start_date" id="installDate"></h6>
+                <h6 class="text-center my-1 col-md-12 font-weight-bold end_date" id="lastDate"></h6>
+              </div>
+             </div>
+           </div>
+         </div>
+        <div class="horizontal my-2"></div>
+        <div  class="col-12 p-3 h-40" id="map-container2" style="padding:0 10px">
+          <div class="col-12 " id="map-wrapper" style="width:100%;height:100%;padding:0">
+              <div class = "map-panel" id = "london-map" style="height:100%">
+
+              </div>
+              <div class="topbar__item" onclick="toggleExpandMap('london','vivacity','map-container2','map-container');" style="width:30px;height:30px;line-height:25px;background-color:white;position:absolute;bottom:10px;left:10px;z-index:400;border-radius:2px;border:2px solid grey;text-align:center;font-size:16px;cursor:pointer">
+                  <span class="icon-toggle"><i class="fa fa-expand" data-alt="fa fa-compress"></i></span>
+              </div>
+          </div>
+        </div>
+    </div>
+    <div id="rightNav" class="sidenav box-shadow" style="right: 0;">
+      <a class="closebtn" onclick="closerNav()"><i class="fas fa-times"></i></a>
+      <div class="col-12 px-4">
+        <ul>
+          <li><h4 class="font-weight-bold w-25 my-1 px-2">
+            AECON Traffic Speed and Volume Dashboard
+          </h4></li>
+          <li>ATC Data
+              <ul>
+                <li>Headline Data</li>
+                <li>Hourly Volumes</li>
+                <li> Hourly Speed</li>
+                <li>Classification Data</li>
+                <li>Comparison</li>
+              </ul>
+          </li>
+          <li>Sensor Data</li>
+          <li>Logout</li>
+        </ul>
+      </div>
+    </div>
+    <div class="section mt-5">
+      <div class="container-fluid" id="main-container">
+        <div class="row my-2">
+          <div class="sites-tab selection-header atc-popup-trigger shadow col-md-6 flex-fill" id="header"><span>ATC Data
+          </span><i class="chevron-icon"></i>
+          </div>
+          <div class="sites-tab selection-header header-popup-trigger shadow col-md-6 flex-fill" id="header"><span>Headline Data 
+          </span><i class="chevron-icon"></i></div>
+        </div> 
+          <div class="row mt-3 px-1">
+              {% comment %} <span style="font-size:30px;cursor:pointer" onclick="openNav()" class="show-navbar"><i class="icon-menu"></i></span> {% endcomment %}
+              
+              <div class="col-md-3 lg-view">
+                  {% comment %} {% include "aecon/atc-navbar.html" %}  {% endcomment %}
+              <div class="customScroll atcList" id="atcList2">
+                <label class="popup-label mt-1 ml-3">Historic Data</label>
+                              <select class="operator" id="site-selection-dropdown">
+                                {% for location in locations %}
+                                    <option
+                                    name="{{location.name}}"
+                                    id="{{location.id}}_radio"
+                                    class="css-checkbox"
+                                    value="{{location.id}}"
+                                    data-temp= {{location.temp}}
+                                    >{{location.name}}</option>
+                                {% endfor %}
+                              </select>
+              </div>
+                <div class="floating-card mt-4">
+                    <div class="sidee carddd card">
+                      <div class="card-body px-5 my-4" id="location-info">
+                        <h5 class="card-title text-left my-1 locationresp mt-3" id=""></h5>
+                        <div class="btn-textbox d-flex justify-content-between mb-3">
+                          <div class="left-side w-50 mt-4">
+                              <div class="box mb-3">
+                                <h6 class="">Primary Direction</h6>
+                                <h5 class="primary_dir">Eastbound</h5>
+                              </div>
+                              <div class="box mb-3">
+                                <h6 class="">Secondary Direction</h6>
+                                <h5 class="secondary_dir">Westbound</h5>
+                              </div>
+                              <div id="" class="row align-items-center singleNumber" >
+                              <div class="box">
+                                <h6 class="">Survey Start Date:
+                                    <span class="start_date" id="installDate"></span>
+                                </h6>
+                                <h6 class="">Survey End Date:
+                                    <span class="end_date" id="lastDate"></span>
+                                </h6>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="right-side w-25 singleNumber me-3 mt-5">
+                            <div class="dotNumberCircle">
+                              <div class="icon-holder position-relative">
+                                  <span
+                                    class="icon-circle fs-2 speedLimit">
+                                      30
+                                  </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="map-card-body mb-4">
+                          <div class="card-body my-4" id="map-container">
+                              <div class="col-12 " id="map-wrapper" style="width:100%;height:100%;padding:0">
+                                <div class = "map-panel" id = "countline-map" style="height:100%"></div>
+                                <div class="topbar__item" onclick="toggleExpandMap();" style="width:30px;height:30px;line-height:25px;background-color:white;position:absolute;bottom:10px;left:10px;z-index:400;border-radius:2px;border:2px solid grey;text-align:center;font-size:16px;cursor:pointer">
+                                    <span class="icon-toggle"><i class="fa fa-expand" data-alt="fa fa-compress"></i></span>
+                                </div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                </div>
+              </div>
+                <div class="contentTab col-sm-12 col-md-9 mt-2">
+                  <div class="content">
+                    {% block content %} {% endblock  %}
+                  </div>
+                </div>
+          </div>
+      </div>
+    </div>
+
+  {% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script> {% endcomment %}
+  </body>
+<script>
+
+
+    $(document).ready(function () {
+        //change selectboxes to selectize mode to be searchable
+        $('#site-selection-dropdown').select2().on('select2:opening', function(e) {
+            $(this).data('select2').$dropdown.find(':input.select2-search__field').attr('placeholder', "Search mph Studay Data")
+        }).on('select2:open', function (e){
+            document.querySelector(".select2-selection--single").style.setProperty("background-color", "#434971", "important");
+        }).on('select2:close', function (e){
+            document.querySelector(".select2-selection--single").style.setProperty("background-color", "#727694");
+        });
+
+        $('b[role="presentation"]').hide();
+        $('.select2-selection__arrow').append('<i class="fa fa-angle-down"></i>');
+
+        var currentSelect = document.getElementById( "site-selection-dropdown");
+
+        let cookie_list = document.cookie.split(";")
+        let id_to_select = ''
+        for (let i = 0; i<cookie_list.length; i++){
+            let cookie_pieces = cookie_list[i].split("=");
+
+            if (cookie_pieces[0].replace(/\s/g, '') === 'HISTORIClocation'){
+                id_to_select = cookie_pieces[1];
+                break;
+            }
+        }
+
+        if (id_to_select === '') {
+            viewSelect(currentSelect.options[currentSelect.selectedIndex].id)
+            viewSite(currentSelect.options[currentSelect.selectedIndex].value, this)
+        }
+        else {
+            viewSelect(id_to_select+"_radio");
+            viewSite(id_to_select, this);
+            $("#site-selection-dropdown").val(id_to_select).trigger('change');
+
+        }
+    });
+
+    document.getElementById("site-selection-dropdown").onchange = function() {
+        var currentSelect = document.getElementById( "site-selection-dropdown");
+        viewSelect(currentSelect.options[currentSelect.selectedIndex].id)
+        viewSite(currentSelect.options[currentSelect.selectedIndex].value, this)
+    }
+
+
+    $(".selection-header").click(function () {
+             $(this).toggleClass("activeDropDown");
+         });
+</script>
+  <script>
+    function modalAlert() {
+      alert("No Service is Available!");
+    }
+  </script>
+  <script type="text/javascript">
+    $(window).scroll(function() {
+      sessionStorage.scrollTop = $(".customScroll").scrollTop();
+    });
+    
+    $(document).ready(function() {
+      if (sessionStorage.scrollTop != "undefined") {
+        $(window).scrollTop(sessionStorage.scrollTop);
+      }
+    });
+    </script>
+  <script>
+    var classedData = "";
+    var loadcount_data = "";
+    var loadPSL_data = "";
+    var location_details = "";
+    var load_retrievedData =""
+    $(document).ready(function(){
+    var cookie = getCookie('HISTORIClocation');
+    if (cookie){
+      var radioId = document.querySelectorAll('[id$=_radio]');
+      var listId = document.querySelectorAll('[id$=_list]');
+      for (let i=0; i<radioId.length; i++){
+        if (radioId[i].id.split("_")[0] == cookie){
+          radioId = radioId[i];
+          listId = listId[i];
+          break;
+        }
+      }
+    }
+    else {
+     var radioId = document.querySelector('[id$=_radio]');
+      var listId = document.querySelector('[id$=_list]');
+    }
+      radioId.click();
+      radioId.classList.add("selected");
+      listId.classList.add("selected");
+      window.onload= enableCloseAllPopupsOnWindowClick();
+    }); 
+    function enableCloseAllPopupsOnWindowClick(){
+      document.body.addEventListener("click",function(event) {
+        $target = $(event.target);
+        ////console.log("clicked on",$target,$target.closest('.conduit-popup'), !$target.hasClass('.selection-header'))
+        ////console.log("is selection header",$target.closest('.selection-header').length);
+        ////console.log("is in popup?",$target.closest('.conduit-popup').length);
+        if ($target.closest('.selection-header').length){
+              ////console.log("not hiding");
+              return true;
+        }
+        if(!$target.closest('.conduit-popup').length && !$target.closest('.popup-immune').length
+        ) {
+          hideAllPopups();
+          ////console.log("would hide popups");
+        }
+    });
+  
+  }
+ </script>
+ <script>
+  function searchStrings(obj) {
+    var value = obj.value.toLowerCase();
+    var len = value.length;
+    var sites = document.getElementsByClassName("css-label");
+    //console.log("sites", sites)
+    for (i = 0; i < sites.length; i++) {
+     el = sites[i]
+     text = (el.innerText || el.textContent).trim().toLowerCase();
+     //console.log("test -",text)
+    if (text.includes(value))
+    {
+      sites[i].classList.remove("d-none")
+    }
+    else
+    {
+      sites[i].classList.add("d-none")
+    }
+     
+    }
+  }
+</script>
+<script>
+    var id = document.getElementById("mb-id").value;
+    initMap([53.476404, -2.250621],"countline-map",id);
+    map.setZoom(17);
+    vivacity_map = map._containerId;
+    initMap2([53.476404, -2.250621],"london-map",id);
+    map2.setZoom(17);
+    london_map = map._containerId;
+    function errorMsg(){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Currently Services are unavailable!',
+      })
+    }
+  </script>
+  <script>
+    function viewSelect(id,ele){
+      var greyed = document.getElementsByClassName("greyed-out");
+      for (var i=0;i<greyed.length;i++){
+        showGreyedOut(greyed[i]);
+      }
+      var parentClass = document.getElementsByClassName("atcList");
+      for(let k=0; k< parentClass.length; k++){
+        if(!parentClass[k].classList.contains("multi"))
+        {
+         
+          var clsadd = parentClass[k].getElementsByClassName("css-checkbox");
+          for (var e=0; e < clsadd.length; e++){
+            if(clsadd[e].classList.contains("selected") && clsadd[e].getAttribute('id') != id)
+            {
+              clsadd[e].classList.remove("selected");
+            }
+          }
+        }
+      }
+      var element = document.querySelector('.atcList');
+      var elementChildren = element.querySelectorAll('.css-checkbox');
+        {% comment %} if (!document.getElementById(id).classList.contains("selected"))
+        {
+          //console.log("add selected")
+        document.getElementById(id).classList.add("selected");
+        }
+        else
+        {
+          document.getElementById(id).classList.remove("selected")
+        } {% endcomment %}
+        if(document.getElementsByClassName("atcList")[0].classList.contains("multi"))
+        {
+          if (!document.getElementById(id).classList.contains("selected"))
+          {
+            document.getElementById(id).classList.add("selected")
+          }
+          else
+          {
+            document.getElementById(id).classList.remove("selected")
+          }
+        }
+        else {
+          if (!document.getElementById(id).classList.contains("selected"))
+          {
+            //console.log("add")
+            document.getElementById(id).classList.add("selected")
+          }
+        }
+      }
+  </script>
+  <script>
+    function toggleSidebarFunctionality(){
+      if(userGuideActive){toggleUserGuide();}
+      if (downloadActive){
+          if(!sidebarMulti){
+              document.getElementById("sidebar").classList.remove("multi");
+          }
+          downloadActive = false;
+          $('#exampleModalCenter').modal('hide');
+          //document.getElementById("main-container-greyed-out").classList.add("d-none");
+          unpinSideBar();
+          var leaves = document.getElementById("sidebar").getElementsByClassName("leaf");
+          for (var i=0;i<leaves.length;i++){
+              leaves[i].getElementsByTagName("a")[0].classList.remove("selected");
+          }
+          for (var i=0;i<selectedSites.length;i++){
+              selectedSites[i].classList.add("selected");
+          }
+          document.getElementById("sidebar").getElementsByClassName("sidebar-brand-button")[0].onclick = toggleSideBar;
+          return;}
+      else{
+          //document.getElementById("main-container-greyed-out").classList.remove("d-none");
+          $('#exampleModalCenter').modal('show');
+          pinSideBar();
+          sidebarMulti = document.getElementById("sidebar").classList.contains("multi");
+          document.getElementById("sidebar").classList.add("multi");
+          selectedSites = [];
+          var sites = document.getElementById("sidebar").getElementsByClassName("selected");
+          for (var i=0;i< sites.length;i++){
+              selectedSites.push(sites[i]);
+          }
+          var leaves = document.getElementById("sidebar").getElementsByClassName("leaf");
+          downloadActive = true;
+          document.getElementById("sidebar").getElementsByClassName("sidebar-brand-button")[0].onclick = function(){};
+      }  
+    }
+  
+    function openNav() {
+        var e = document.getElementById("mySidenav");
+        if (e.style.width == '330px')
+        {
+            e.style.width = '0px';
+        }
+        else 
+        {
+            e.style.width = '330px';
+        }
+    }
+    function toogleTab(){
+      var elClass = document.getElementById("rightNav");
+      if (elClass.style.width == '330px')
+        {
+          elClass.style.width = '0px';
+        }
+        else 
+        {
+          elClass.style.width = '330px';
+        }
+    }
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+    function closerNav() {
+      document.getElementById("rightNav").style.width = "0";
+        }
+          function change_title(ele)
+      {
+        el = ele.getElementsByTagName('span')
+        $('#measurement').text($(el).text())
+          
+      }
+    </script>
+ 
+  <script>
+    function getCurrentDirection(){
+      var direction = 0
+      var dirs = document.getElementById("directions-popup").getElementsByClassName("selectable-menu-item");
+      //console.log(dirs)
+      for (var i=0;i<dirs.length;i++){
+          if (dirs[i].classList.contains("selected")){
+              direction = i;
+          }
+      } 
+      return direction;
+    }
+    function getCurrentDay(){
+      var day = 0
+      var days = document.getElementById("day-popup").getElementsByClassName("selectable-menu-item");
+      for (var i=0;i<days.length;i++){
+          if (days[i].classList.contains("selected")){
+            day = days[i].parentNode.id;
+          }
+      } 
+      return day;
+    } 
+   function getCurrentTime(){
+      var time = 0
+      var times = document.getElementById("time-popup").getElementsByClassName("selectable-menu-item");
+      for (var i=0;i<times.length;i++){
+          if (times[i].classList.contains("selected")){
+            time = times[i].parentNode.id;
+          }
+      } 
+      return time;
+    } 
+    function setCotline(elem)
+    {
+       a_element.click()
+        $(a_element).addClass('selectable-menu-item')
+        $(a_element).addClass('selected')
+    }
+    function setUpChart(){
+      var selectors = document.querySelectorAll("[data-graph-group='daily']");
+      var direction = getCurrentDirection();
+      if (chart){chart.destroy();}
+      var days = document.getElementById("countline-daily-table").getElementsByClassName("class-selector");
+
+      var chartData = []
+      for(day of days){
+          chartData.push({"label":day.innerText,"data":[1,2,3],"borderColor":day.getAttribute("data-bg"),"backgroundColor":day.getAttribute("data-bg"),"fill":false,"pointRadius":0,"borderWidth":1});
+      }
+
+      ////console.log("weeeee chart data is",chartData);
+      if (chartView == "classed"){
+          chart = createStackedBarChart(document.getElementById("countline-classed-volumes"),{"labels":graphLabels,"datasets":chartData});
+          document.querySelectorAll("[data-graph-group='daily']")[0].click();
+      }
+      else{
+          chart = createLineChart(document.getElementById("countline-classed-volumes"),{"labels":graphLabels,"datasets":chartData});
+          document.getElementById("directions-popup").getElementsByClassName("menu-item")[direction].click();
+          chart.options.scales.xAxes[0].ticks.maxTicksLimit = 12;
+
+      }
+
+    } 
+    function toggleExpandMap(){
+      if (!document.getElementById("location-info").classList.contains("d-none")) {
+        document.getElementById("map-container").style.height = "450px";
+        document.getElementById("location-info").classList.add("d-none");
+      } else {
+          document.getElementById("map-container").style.height = "300px"
+          document.getElementById("location-info").classList.remove("d-none");
+      }
+    }
+    function getCookie(cookie) {
+      var cookieArr = document.cookie.split(";");
+      for(var i = 0; i < cookieArr.length; i++) {
+          var cookiePair = cookieArr[i].split("=");
+          if(cookie == cookiePair[0].trim()) {
+              return decodeURIComponent(cookiePair[1]);
+          }
+      }
+      return null;
+    }
+
+    function setbyClass(cls="",value="") 
+    {
+      if (cls == "" || value==""){
+        return;
+      }
+      var item = document.getElementsByClassName(cls);
+      for (var i=0;i<item.length;i++){
+        item[i].innerHTML = value;
+      }
+    }
+
+    function setbyProject(id)
+    
+    {
+      
+      $(".selection-header").removeClass("activeDropDown");
+      if (location_details == "")
+      {return;}
+      project  = location_details.project.filter(i => i.id==id)[0]
+      setbyClass("speedLimit",project.speed_limit);
+      setbyClass("start_date",moment(project.start_date).format("DD/MM/YYYY"));
+      setbyClass("end_date",moment(project.end_date).format("DD/MM/YYYY"));
+      var projectId = project.id;
+      document.cookie = "HISTORICProject=" + projectId + ";path=/aecon";
+    }
+
+    function loadLocation(id,show_greyed = true)
+      {
+        if(show_greyed)
+        {
+        var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+          showGreyedOut(greyed[i]);
+        }
+        }
+        var formData = new FormData();
+        formData.append("location_id",JSON.stringify(id));
+
+        return fetcher(formData,"getLocations",function(response){
+          document.cookie = "HISTORIClocation="+id+";path=/aecon";
+          location_details = response;
+          lineLayer.eachLayer(function (layer) {
+            lineLayer.removeLayer(layer);
+          });
+          if(show_greyed)
+          {
+            for (var i=0;i<greyed.length;i++){
+              hideGreyedOut(greyed[i]);
+            }
+          }
+          //$(".singleNumber # ").text(moment(response.start_date).format("DD/MM/YYYY"));
+          //$(".singleNumber #lastDate").text(moment(response.end_date).format("DD/MM/YYYY HH:mm"));
+          //document.getElementById("project_sl").getElementsByTagName("span")[0].innerHTML = project.speed_limit;
+          processLocationGeojson(response.locations);
+          let dir_lst = [];
+          response.directions.split("<span>").forEach(function(item){
+            item.includes("</span>")?dir_lst.push(item.split("</span>")[0]):"";
+          });
+          var locationGet = location_details;
+          var project = location_details.project
+          setbyClass("locationresp",locationGet.name);
+          setbyClass("primary_dir",dir_lst[0]);
+          setbyClass("secondary_dir",dir_lst[1]);
+          setbyClass("speedLimit",response.project[0].speed_limit);
+          setbyClass("start_date",moment(response.project[0].start_date).format("DD/MM/YYYY"));
+          setbyClass("end_date",moment(response.project[0].end_date).format("DD/MM/YYYY"));
+          
+        });
+        var options = document.getElementById('directions-popup').options;
+          for (let i = 0; i < options.length; i++) { 
+          }
+      }
+      function loadCount(id,show_greyed = true)
+      {
+        if (show_greyed)
+        {
+        var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+          showGreyedOut(greyed[i]);
+        }
+        }
+        loadcount_data = {}
+        let project  = getSelectedProject('suvery1');
+        var formData = new FormData();
+        formData.append("ids",JSON.stringify([id]));
+        formData.append("period",60);
+        formData.append("project",project);
+        return fetcher(formData,"getATCcounts",function(response){
+          loadcount_data["data"] =  response.data;
+          loadcount_data["graphLabels"] = response.graphLabels
+          if(show_greyed)
+          {
+          for (var i=0;i<greyed.length;i++){
+            hideGreyedOut(greyed[i]);
+          }
+          }
+        });
+      }
+
+      function load_PSL_data(id,show_greyed = true)
+      {
+        if (show_greyed){
+        
+        var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+          showGreyedOut(greyed[i]);
+        }
+        }
+        let project  = getSelectedProject('suvery1');
+        var formData = new FormData();
+        formData.append("id",id);
+        formData.append("period",60);
+        formData.append("project",project);
+        return fetcher(formData,"getATCPSL",function(response){
+          loadPSL_data =  response.data;
+          if (show_greyed){
+          for (var i=0;i<greyed.length;i++){
+            hideGreyedOut(greyed[i]);
+          }
+          }
+        });
+      }
+
+      function getSelectedProject(id)
+      {
+        
+        if (id == ""){
+          return;
+        }
+        project = document.getElementById(id).getElementsByTagName('ul')[0];
+        if (project){
+          return project.querySelector('.selected').getElementsByTagName('span')[0].getAttribute("data-project-id");
+        }
+        else{
+          return null;
+        }
+       
+      }
+      function loadData(id){
+        if (id == ""){return;}
+        //if(chart){chart.destroy();}
+        let project  = getSelectedProject('suvery1');
+        var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+          showGreyedOut(greyed[i]);
+        }
+        var formData = new FormData();
+        formData.append("ids",JSON.stringify([id]));
+        formData.append("resultType","counts");
+        formData.append("project",project);
+        formData.append("period",60);
+        //formData.append("startDate",'2022-03-14 00:00');
+        //formData.append("endDate",'2022-03-21 00:00');
+        return fetcher(formData,"getATCClassedVolumes",function(result){
+          classedData = result.data;
+          //////console.log("classed data is",classedData);
+        }).then(function(response){
+          for (var i=0;i<greyed.length;i++){
+            hideGreyedOut(greyed[i]);
+          }
+        });
+      
+      }
+      function dataset_loc(flg = false,show_greyed = true,public_view=false){
+          var loc_id =  document.getElementById("location_id").value;
+          if(loc_id == ''){
+            return;
+          }
+        var phase1_id = getSelectedProject("suvery1");
+        var phase2_id = getSelectedProject("survey2");
+        var direction = getCurrentDirection();
+        if (show_greyed){
+        var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+          showGreyedOut(greyed[i]);
+        }
+        }
+        ////console.log("phase2_id",phase2_id)
+         var formData = new FormData();
+         formData.append("location_id",loc_id);
+         formData.append("phase-header",phase1_id);
+         formData.append("phases-header",phase2_id);
+         formData.append("speed_flg",flg);
+         formData.append("public_view",public_view);
+         ////console.log(phase1_id,phase2_id)
+         return fetcher(formData,"getAggregatedData",function(response){
+          load_retrievedData = response;
+          if (show_greyed){
+          for (var i=0;i<greyed.length;i++){
+            hideGreyedOut(greyed[i]);
+          }
+          }
+        });
+      }
+      function updateDatasets(flg = "All"){
+        //
+        // remove any limit lines
+        //
+        if (flg == "All"){
+          chart.options.scales.yAxes[0].ticks.suggestedMax = undefined;
+          var selectedClasses = getSelectedPopupIndexes("classes-popup");
+          var direction = getCurrentDirection();
+        }
+        else if (flg == "classes")
+        {
+          selectedClasses = getSelectedPopupIndexes("classes-popup");
+          var direction = getCurrentDirection();
+        }
+        else{
+          selectedClasses = [0,1,2,3,4];
+          var direction = getCurrentDirection();
+        }
+        var data = classedData.data[document.getElementById("location_id").value].directions[direction];
+    
+        var datasets = [];
+        var tableData = [];
+        data.baseData.forEach(function(dataset,index){
+            var selectedClassVolumes = [];
+            selectedClasses.forEach(function(classIndex,i){
+                selectedClassVolumes.push(dataset[classIndex].data);
+            });
+            if (selectedClasses.length != 0){
+                tableData.push(selectedClassVolumes.reduce(sumOfDatasets));
+            }
+            else{
+                tableData.push([]);
+            }
+        });
+      
+        if(flg == "All")
+        {
+          if (chartView == "daily"){
+              chart.options.scales.yAxes[0].stacked = false;
+              chart.data.datasets.forEach(function(dataset,index){
+                  if(!dataset.limit){
+                      dataset.data = tableData[index];
+                  }
+              });
+          }
+          else{
+              var day = getSelectedDatasets("daily")[0];
+              chart.data.datasets = [...data.baseData[day]] ;
+              chart.options.scales.yAxes[0].stacked = true;
+          }
+    
+          chart.update();
+          chart.yAxesticks = yAxesticks;
+          changeGraph();
+          fillAveragesTable("countline-daily-table",tableData, classedData.graphLabels);
+        }
+        else{
+          return tableData;
+        }
+      }
+      function getData(start,end){
+        dataRetrievalActive = true;
+        var ids = [];
+        var selected = document.getElementById("sidebar").getElementsByClassName("selected");
+        for (var i=0;i< selected.length;i++){
+            ids.push(selected[i].id);
+        }
+        if(selected.length == 0){
+            dataRetrievalActive = false;
+            return;
+        }
+        //setTimeout(function(){dataRetrievalActive = false;hideAllGreyedOut();},1000);
+        var greyed = document.getElementsByClassName("greyed-out");
+            for (var i=0;i<greyed.length;i++){
+                showGreyedOut(greyed[i]);
+            }
+        var formData = new FormData();
+        formData.append("ids",JSON.stringify(ids));
+        if (dateType == "average day"){
+            formData.append("weekday",document.getElementById("subview-selector-popup").getElementsByClassName("selected")[0].parentNode.id.replace("weekday_",""));
+            formData.append("table",true);
+            if (userChangedDate){
+                formData.append("customRange","true");
+            }
+        }
+        formData.append("period",document.getElementById("period-selector-popup").getElementsByClassName("selected")[0].parentNode.id);
+        fetcher(formData,"getCRTStyleData",function(response){
+            buildCountlineTable(response);
+            retrievedData = response.data;
+            graphLabels = response.data.graphLabels;
+            setUpChart();
+            displayCountlineTable();
+            updateDatasets();
+            updateMap();
+            hideAllGreyedOut();
+            dataRetrievalActive = false;
+            ////console.log("reached here",userChangedDate);
+            if (!userChangedDate){
+                ////console.log("setting date range to",response.dateRange);
+                document.getElementsByClassName("date")[0].innerText = response.dateRange;
+            }
+            }
+
+        );
+
+      }
+  </script>
+  <script>
+    {% comment %} function toogleTopbar(){
+      if ($(".hiddenTab").hasClass('d-flex')) {
+        $(".hiddenTab").removeClass('d-flex');
+      } else {
+        $(".hiddenTab").addClass('d-none');
+      }
+    } {% endcomment %}
+   
+    function dropdownList(){
+      $("#atcList").hide();
+    }
+    function tabContent(type,flg=""){     
+      var tab_content ={ 
+        "headline"  : "historic-headline",
+        "volume"    : "historic-volume",
+        "speed"     : "historic-speed",
+        "classify"  : "historic-classify",
+        "download"  : "historic-download"
+      }
+      var keys = Object.keys(tab_content);
+      for (let i=0;i<keys.length;i++)
+      {
+        if (type == keys[i] && type !="" ){
+         // $("#"+keys[i]).show();
+          //window.location.href ="/aecon/atc-data/"+tab_content[keys[i]]
+          window.location.href ="/aecon/historic-data/"+tab_content[keys[i]]
+          
+        }
+        else if (flg !="", flg == tab_content[keys[i]])
+        {
+          document.getElementById(keys[i]).classList.add("active");
+        }
+      }
+    }
+
+    function percentage(partialValue, totalValue) {
+      return parseFloat((100 * partialValue) / totalValue).toFixed(2);
+    } 
+
+    function setProject_popup(project,selectedid=0)
+    {
+    
+      var cookieProject = getCookie('HISTORICProject');
+            /*
+            var projectid = location_details.project
+            console.log(projectid)
+            projectresult = project.filter(project => project.id == cookieProject)[0]
+            console.log(projectresult.name)
+            */
+            //document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = projectresult.name;
+          project.filter(project => project.id == cookieProject).length == 0 ?cookieProject = null: cookieProject = cookieProject;
+       
+          
+      
+      var html = '<ul>'
+        for (let i=0 ; i<project.length; i++)
+        {
+          var projectDate = moment(project[i].start_date).format("MMM, YYYY");
+          html = html +' <li id="view_0" class="menu-item popup-item">';
+          if (selectedid == i && !cookieProject )
+          {
+            html = html +' <a class="selectable-menu-item selected" onclick="setbyProject('+String(project[i].id)+')"><i></i>';
+          }
+          else if (cookieProject!=null && cookieProject == project[i].id)
+          {
+            html = html +' <a class="selectable-menu-item selected" onclick="setbyProject('+String(project[i].id)+')"><i></i>';
+          }
+          else{
+            html = html +' <a class="selectable-menu-item" onclick="setbyProject('+String(project[i].id)+')"><i></i>';
+          }
+          html = html +' <span data-project-id='+String(project[i].id)+' >'+ project[i].name + ' ,' + projectDate + '</span>';
+          html = html +' </a></li>';
+        }
+        html = html +'</ul>';
+        return html;
+    }
+    tabContent("",'{{flg}}')
+  </script>
+  <script
+    type="text/javascript"
+    src="/static/aecon/moment.min.js"
+  ></script>
+  <script src="{% staticversion 'aecon/cv2-base.js' %}"></script>
+  
+</html>
+{% block js %}
+  <script>
+    function viewSite(id){
+      document.getElementById("location_id").value = id;
+      loadLocation(id).then(function(){})
+    }
+  </script>
+{% endblock %}

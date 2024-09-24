@@ -1,0 +1,288 @@
+{% extends "aecon/dashboard-base.html" %} {% load staticversion %} {%
+block content %}
+<div class="content active" id="Headline">
+  <div class="row px-1 mt-4">
+    <h4 class="text-blue ml-3">Combined</h4>
+  </div>
+  <div class="row">
+    <div class="col-md-2 px-1 d-flex justify-content-center">
+      <div class="text-muted text-center my-1 position-absolute">
+        7-Day Average Speed(mph)
+      </div>
+      <canvas class="mt-4" id="myChart" width="140" height="140"></canvas>
+    </div>
+    <div class="col-md-2 px-1 d-flex justify-content-center">
+      <div class="text-muted text-center my-1 position-absolute">
+        7-Day 85th Percentile Average Speed (mph)
+      </div>
+      <canvas class="mt-4" id="myChart2" width="140" height="140"></canvas>
+    </div>
+    <div class="col-md-2 px-1">
+      <div class="text-muted text-center my-1">7-Day Average Volume</div>
+      <h1 class="text-center mt-5">6,181</h1>
+    </div>
+    <div class="vertical"></div>
+    <div class="col-md-2 px-1 d-flex justify-content-center">
+      <div class="text-muted text-center my-1 position-absolute">
+        5-Day Average Speed(mph)
+      </div>
+      <canvas class="mt-4" id="myChart3" width="140" height="140"></canvas>
+    </div>
+    <div class="col-md-2 px-1 d-flex justify-content-center">
+      <div class="text-muted text-center my-1 position-absolute">
+        5-Day 85th Percentile Average Speed (mph)
+      </div>
+      <canvas class="mt-4" id="myChart4" width="140" height="140"></canvas>
+    </div>
+    <div class="col-md-2 px-1">
+      <div class="text-muted text-center my-1">5-Day Average Volume</div>
+      <h1 class="text-center mt-5">5,811</h1>
+    </div>
+  </div>
+  <div class="horizontal"></div>
+  <div class="row px-1 mt-4">
+    <h4 class="text-blue ml-3">Eastbound</h4>
+  </div>
+  <div class="row">
+    <div class="col-md-2 px-1 d-flex justify-content-center">
+      <div class="text-muted text-center my-1 position-absolute">
+        7-Day Average Speed(mph)
+      </div>
+      <canvas class="mt-4" id="myChart5" width="140" height="140"></canvas>
+    </div>
+    <div class="col-md-2 px-1 d-flex justify-content-center">
+      <div class="text-muted text-center my-1 position-absolute">
+        7-Day 85th Percentile Average Speed (mph)
+      </div>
+      <canvas class="mt-4" id="myChart6" width="140" height="140"></canvas>
+    </div>
+    <div class="col-md-2 px-1">
+      <div class="text-muted text-center my-1">7-Day Average Volume</div>
+      <h1 class="text-center mt-5">3,139</h1>
+    </div>
+    <div class="vertical"></div>
+    <div class="col-md-2 px-1 d-flex justify-content-center">
+      <div class="text-muted text-center my-1 position-absolute">
+        5-Day Average Speed(mph)
+      </div>
+      <canvas class="mt-4" id="myChart7" width="140" height="140"></canvas>
+    </div>
+    <div class="col-md-2 px-1 d-flex justify-content-center">
+      <div class="text-muted text-center my-1 position-absolute">
+        5-Day 85th Percentile Average Speed (mph)
+      </div>
+      <canvas class="mt-4" id="myChart8" width="140" height="140"></canvas>
+    </div>
+    <div class="col-md-2 px-1">
+      <div class="text-muted text-center my-1">5-Day Average Volume</div>
+      <h1 class="text-center mt-5">2,965</h1>
+    </div>
+  </div>
+  <div class="horizontal"></div>
+  <div class="row px-1 mt-4">
+    <h4 class="text-blue ml-3">Westbound</h4>
+  </div>
+  <div class="row">
+    <div class="col-md-2 px-1 d-flex justify-content-center">
+      <div class="text-muted text-center my-1 position-absolute">
+        7-Day Average Speed(mph)
+      </div>
+      <canvas class="mt-4" id="myChart9" width="140" height="140"></canvas>
+    </div>
+    <div class="col-md-2 px-1 d-flex justify-content-center">
+      <div class="text-muted text-center my-1 position-absolute">
+        7-Day 85th Percentile Average Speed (mph)
+      </div>
+      <canvas class="mt-4" id="myChart10" width="140" height="140"></canvas>
+    </div>
+    <div class="col-md-2 px-1">
+      <div class="text-muted text-center my-1">7-Day Average Volume</div>
+      <h1 class="text-center mt-5">3,042</h1>
+    </div>
+    <div class="vertical"></div>
+    <div class="col-md-2 px-1 d-flex justify-content-center">
+      <div class="text-muted text-center my-1 position-absolute">
+        5-Day Average Speed(mph)
+      </div>
+      <canvas class="mt-4" id="myChart11" width="140" height="140"></canvas>
+    </div>
+    <div class="col-md-2 px-1 d-flex justify-content-center">
+      <div class="text-muted text-center my-1 position-absolute">
+        5-Day 85th Percentile Average Speed (mph)
+      </div>
+      <canvas class="mt-4" id="myChart12" width="140" height="140"></canvas>
+    </div>
+    <div class="col-md-2 px-1">
+      <div class="text-muted text-center my-1">5-Day Average Volume</div>
+      <h1 class="text-center mt-5">2,846</h1>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
+<script>
+  var data = {
+    labels: [],
+
+    datasets: [
+      {
+        data: [300, 10, 160],
+        backgroundColor: ["#414fb1", "#000"],
+      },
+    ],
+  };
+
+  var ctx = document.getElementById("myChart");
+
+  // And for a doughnut chart
+  var myDoughnutChart = new Chart(ctx, {
+    type: "doughnut",
+    data: data,
+    innerSize: "45%",
+    options: {
+      rotation: 1 * Math.PI,
+      circumference: 1 * Math.PI,
+      cutoutPercentage: 65,
+    },
+  });
+  var ctx = document.getElementById("myChart2");
+
+  // And for a doughnut chart
+  var myDoughnutChart = new Chart(ctx, {
+    type: "doughnut",
+    data: data,
+    options: {
+      rotation: 1 * Math.PI,
+      circumference: 1 * Math.PI,
+      cutoutPercentage: 65,
+    },
+  });
+  var ctx = document.getElementById("myChart3");
+
+  // And for a doughnut chart
+  var myDoughnutChart = new Chart(ctx, {
+    type: "doughnut",
+    data: data,
+    options: {
+      rotation: 1 * Math.PI,
+      circumference: 1 * Math.PI,
+      cutoutPercentage: 65,
+    },
+  });
+  var ctx = document.getElementById("myChart4");
+
+  // And for a doughnut chart
+  var myDoughnutChart = new Chart(ctx, {
+    type: "doughnut",
+    data: data,
+    options: {
+      rotation: 1 * Math.PI,
+      circumference: 1 * Math.PI,
+      cutoutPercentage: 65,
+    },
+  });
+  var ctx = document.getElementById("myChart5");
+
+  // And for a doughnut chart
+  var myDoughnutChart = new Chart(ctx, {
+    type: "doughnut",
+    data: data,
+    options: {
+      rotation: 1 * Math.PI,
+      circumference: 1 * Math.PI,
+      cutoutPercentage: 65,
+    },
+  });
+  var ctx = document.getElementById("myChart6");
+
+  // And for a doughnut chart
+  var myDoughnutChart = new Chart(ctx, {
+    type: "doughnut",
+    data: data,
+    options: {
+      rotation: 1 * Math.PI,
+      circumference: 1 * Math.PI,
+      cutoutPercentage: 65,
+    },
+  });
+  var ctx = document.getElementById("myChart7");
+
+  // And for a doughnut chart
+  var myDoughnutChart = new Chart(ctx, {
+    type: "doughnut",
+    data: data,
+    options: {
+      rotation: 1 * Math.PI,
+      circumference: 1 * Math.PI,
+      cutoutPercentage: 65,
+    },
+  });
+  var ctx = document.getElementById("myChart8");
+
+  // And for a doughnut chart
+  var myDoughnutChart = new Chart(ctx, {
+    type: "doughnut",
+    data: data,
+    options: {
+      rotation: 1 * Math.PI,
+      circumference: 1 * Math.PI,
+      cutoutPercentage: 65,
+    },
+  });
+  var ctx = document.getElementById("myChart9");
+
+  // And for a doughnut chart
+  var myDoughnutChart = new Chart(ctx, {
+    type: "doughnut",
+    data: data,
+    options: {
+      rotation: 1 * Math.PI,
+      circumference: 1 * Math.PI,
+      cutoutPercentage: 65,
+    },
+  });
+  var ctx = document.getElementById("myChart10");
+
+  // And for a doughnut chart
+  var myDoughnutChart = new Chart(ctx, {
+    type: "doughnut",
+    data: data,
+    options: {
+      rotation: 1 * Math.PI,
+      circumference: 1 * Math.PI,
+      cutoutPercentage: 65,
+    },
+  });
+  var ctx = document.getElementById("myChart11");
+
+  // And for a doughnut chart
+  var myDoughnutChart = new Chart(ctx, {
+    type: "doughnut",
+    data: data,
+    options: {
+      rotation: 1 * Math.PI,
+      circumference: 1 * Math.PI,
+      cutoutPercentage: 65,
+    },
+  });
+  var ctx = document.getElementById("myChart12");
+
+  // And for a doughnut chart
+  var myDoughnutChart = new Chart(ctx, {
+    type: "doughnut",
+    data: data,
+    options: {
+      rotation: 1 * Math.PI,
+      circumference: 1 * Math.PI,
+      cutoutPercentage: 65,
+    },
+  });
+</script>
+<script
+  type="text/javascript"
+  src="/static/aecon/moment.min.js"
+></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+<script src="{% staticversion 'aecon/cv2-base.js' %}"></script>
+<script></script>
+{% endblock %}

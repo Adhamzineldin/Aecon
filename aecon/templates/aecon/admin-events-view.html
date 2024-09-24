@@ -1,0 +1,114 @@
+{% extends "aecon/admin-base.html" %}
+{% load staticversion %}
+{% load client_tags %}
+{% load my_filters %}
+
+{% block content %}
+
+<style>
+
+    th { font-size: 12px; padding-right:20px !important}
+    td { font-size: 12px;white-space: nowrap;overflow: hidden }
+
+    select.form-control:not([size]):not([multiple]) {
+        height: calc(2.25rem + 2px);
+    }
+
+</style>
+
+
+<div class="row" style="width:100%;height:100%">
+    <div class="col-12 pb-3" style="height:100%;padding-top:50px">
+        <div class="card header-shadow" style="max-height:100%">
+            <div class="card-header  bg-transparent d-none">
+                <h5>Location Details</h5>
+                <div class="topbar__item-holder">
+                    <div class="topbar__item text-muted toggle-between" data-target="location-group" ><span><i class="flaticon-calendar"></i></span></div>
+                    {% comment %} <div class="topbar__item text-muted events-popup-trigger" ><span><i class="flaticon-internet"></i></span></div> {% endcomment %}
+
+                    <div class=" d-none dropdown-header classes-popup-trigger" style="margin-left:auto" id="class-selector">
+                        <span>Classes</span><i class="chevron-icon"></i>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <div class="card-body" style="overflow:auto;max-height:100%">
+                <table class="table table-striped" id="events-table">
+                    <thead>
+                    <tr>
+                        <th style="max-width:50px;width:50px">Location</th>
+                        <th>Date</th>
+                        <th style="max-width:50px;width:50px">Added By</th>
+                        <th >Description</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events %}
+                            <tr>
+                                <td>{{event.location.name}}</td>
+                                <td>{{event.date|date:"d/m/Y"}}</td>
+
+
+                                <td>{{event.addedBy.username}}</td>
+                                <td >{{event.desc}}</td>
+
+                                <td style="max-width:50px;width:50px;cursor:pointer" class="text-center" onclick="window.location.href='admin?id={{event.location.id}}'"><i class="far fa-eye text-muted" style="font-size:20px"></i></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+    var table;
+    $.fn.dataTable.moment( 'DD/MM/YYYY' );
+    table = $('#events-table').DataTable( {
+            drawCallback: function () {
+                console.log("aqoeriaeh ");
+                $('[data-toggle="popover"]').popover({
+                    trigger: 'hover',
+                    container:"body",
+                    placement: 'right',
+
+                })
+            },
+            "paging":   true,
+            "searching": true,
+            "info":     false,
+            'autoWidth': false,
+            "aaSorting": [],
+            aoColumns:[
+            {"bSortable": true},
+            {"bSortable": true, "sWidth":"120px" },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": false },
+
+
+
+
+
+
+
+            ],
+
+        } );
+
+
+        function viewSite(id){
+            //document.getElementsByClassName("greyed-out")[1].classList.add("show");
+            window.location.href = "/aecon/admin/location?id=" + id;
+        }
+
+</script>
+{% endblock %}

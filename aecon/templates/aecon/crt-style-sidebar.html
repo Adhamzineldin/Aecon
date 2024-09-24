@@ -1,0 +1,141 @@
+{% load my_filters %}
+
+<div class="col-12 sidebar-list-inner" style="width:100%;height:calc(100% - 80px);padding:0">
+
+    <ul class="nav flex-column flex-nowrap" style="background-color:#ccddff;list-style:none">
+
+    </ul>
+
+    <ul class="nav flex-column flex-nowrap" id="collapsible-site-list">
+        <!-- <li class="nav-item top-menu-item menu-level-0"><a class="nav-link text-muted"><i class="icon-search-1 mx-auto" ></i><span><input type="text" onkeyup="searchString(this);" id="filtertext"></span></a></li> -->
+        
+        <li class="nav-item top-menu-item menu-level-0">
+           <a  class="nav-link collapsed text-muted" href="#aeconsubmenu" data-toggle="collapse" data-target="#aeconsubmenu"  aria-expanded="false">
+                {% comment %} <i class="icon-video-camera mx-auto" ></i> {% endcomment %}
+                <i class="fas fa-chart-line mx-auto"></i>
+
+                <span>School Streets</span>
+            </a>
+            <script>
+                console.log("{{proj}}");                
+            </script>
+            <div class="collapse " id="aeconsubmenu" aria-expanded="true">
+                    {% for observationType,data in proj.items %}
+                        {% if observationType.id == 5 %}
+                            <div class="leaf-menu">
+                                <ul class="flex-column nav">
+                                    {% for area,sensorList in observationType.areas.items %}
+                                        <li class="nav-item leaf w-100 pl-5">
+                                            <a  onmouseover="onhover(this)" class="nav-link  text-muted temp" id="" onclick="putLocationList('{{area.nameNoSpaces}}submenu1sub1')"><span style="font-style: italic;" >{{area.name}}</span> </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+            </div>
+        </li>
+
+        {% comment %} ************************************************************* {% endcomment %}
+        {% for observationType,data in proj.items %}
+        <li class="nav-item top-menu-item menu-level-0">
+            
+            <a  class="nav-link collapsed text-muted" href="#{{observationType.nameNoSpaces}}submenu" data-toggle="collapse" data-target="#{{observationType.nameNoSpaces}}submenu"  aria-expanded="false">
+                <i class="{{observationType.iconURL}} mx-auto" ></i>
+                <span>{{observationType.name}}</span>
+            </a>
+            <div class="collapse " id="{{observationType.nameNoSpaces}}submenu" aria-expanded="true">
+                <ul class="flex-column nav">
+                    {% for area,sensorList in observationType.areas.items %}
+                    <li class="nav-item submenu-item">
+                        <a   onmouseover="onhover(this)" class="nav-link collapsed  text-muted" href="#{{observationType.nameNoSpaces}}{{area.nameNoSpaces}}submenu1sub1" data-toggle="collapse" data-target="#{{observationType.nameNoSpaces}}{{area.nameNoSpaces}}submenu1sub1" aria-expanded="false" ><span >{{area.name}}</span> </a>
+                        <div class="collapse leaf-menu" id="{{observationType.nameNoSpaces}}{{area.nameNoSpaces}}submenu1sub1" aria-expanded="true">
+                            <ul class="flex-column nav">
+                                {% for sensor in sensorList %}
+                                <li class="nav-item leaf w-100 " data-toggle='popover' data-content="{{sensor.name}}" data-obstype="{{observationType.id}}">
+                                    <a  onmouseover="onhover(this)" class="nav-link {% if sensor.associated %}associated{% endif %} {% if sensor.temp != 0 %}temp {% else %} normal perm{% endif %}" href="#"  id="{{sensor.id}}" onclick="viewSite('{{sensor.id}}',this);">
+                                        <span {% if sensor.virtual != 0 %} style="font-style: italic;" {% endif %}>{{sensor.name}}</span>
+
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% if  request.user|has_group:'weather'%}
+    <div id = "weather-banner" class="d-flex align-items-center justify-content-between" style="height:30px;width:100%;background-color: grey;color:white"><span>Weather Data provided by </span><a href="https://openweathermap.org/" target="_blank"><img src="/static/aecon/logo_white_cropped.png" style="height:30px;width:71px;margin-left:auto;padding-right:10px;cursor:pointer"></a></div>
+{% endif %}
+<div id="icon-footer" style="width:100%;height:80px;">
+    <table style="width: 100%">
+        <tr>
+            <td rowspan="3" class="text-left">
+                <a href="https://www.kingston.gov.uk/" target="_blank">
+                    <img src="/static/aecon/RBK_LOGO.jpeg" width="35px" height="50px" alt="">
+                </a>
+            </td>
+            <td>
+                <table style="width: 100%;">
+                    <tr class="py-2">
+                        <td>
+                            <a href="https://tracsistraffic.com/" target="_blank">
+                                <img src="/static/aecon/conduit_logo_color.png" width="80px" height="20px" alt="">
+                            </a>
+                        </td>
+                        <td class="text-center">
+                            <a href="https://www.innovateproject.org/" target="_blank">
+                                <img src="/static/aecon/InnOvaTe_logo.png" width="40px" height="35px" alt="">
+                            </a>
+                        </td>
+                        <td>
+                            <a href="https://www.sutton.gov.uk/" target="_blank">
+                                <img src="/static/aecon/LBS_logo_stacked.png" width="40px" height="25px" alt="">
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="py-2">
+                        <td class="text-center">
+                            <a href="https://www.richmond.gov.uk/" target="_blank">
+                                <img src="/static/aecon/Richmond_logo.png" width="70px" height="17px" alt="">
+                            </a>
+                        </td>
+                        <td rowspan="2">
+                            <a href="http://southlondonpartnership.co.uk/" target="_blank">
+                                <img src="/static/aecon/SLP_logo.png" width="70px" height="17px" alt="">
+                            </a>
+                        </td>
+                        <td rowspan="2">
+                            <a href="https://www.merton.gov.uk/" target="_blank">
+                                <img src="/static/aecon/Merton_logo.png" width="40px" height="17px" alt="">
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="py-2" style="width: 100%;">
+                        <td class="text-center" style="width: 60%;">
+                            <a href="https://www.croydon.gov.uk/" target="_blank">
+                                <img src="/static/aecon/Croydon_logo.png" width="55px" height="8px" alt="">
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    {% comment %} var enter = function(element){
+        if($($(element).attr('data-target')).css('display') == 'none'){
+            $(element).click()
+        }
+    } {% endcomment %}
+    function onhover(ele)
+    {
+        $(ele).attr('title',$(ele).text() );
+    }
+</script> 

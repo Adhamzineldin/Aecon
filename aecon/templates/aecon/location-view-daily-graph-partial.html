@@ -1,0 +1,51 @@
+
+{% load staticversion %}
+<div class="row h-100">
+    <div class="col-12 pb-3 d-flex align-items-center justify-content-between" style="height:50px">
+        <div class="selection-header period-selector-popup-trigger d-none" id="period-selector"><span>60 Minutes</span><i class="chevron-icon"></i></div>
+        <div class="d-flex align-items-center justify-content-center date-display">
+            <div class="topbar__item" onclick="decrementDate();"> <i class="fa fa-caret-left pull-right mx-auto"></i></div>
+            <div class="date" id="date-indicator">Mon 26/10/2020</div>
+            <div class="topbar__item" onclick="incrementDate();"> <i class="fa fa-caret-right pull-right mx-auto"></i></div>
+        </div>
+        {% comment %} <div class="topbar__item-holder">
+            <div class="topbar__item events-popup-trigger opens-left" id="events" style="margin-left:auto"><span><i class="flaticon-internet"></i></span></div>
+            <div class="topbar__item events-popup-trigger opens-left" id="events" style="margin-left:auto"><span><i class="flaticon-calendar"></i></span></div>
+        </div> {% endcomment %}
+
+    </div>
+
+    <div class="col-12 pb-3" style="height:calc(100% - 50px)">
+        <div class = "card" style="width:100%;height:100%"  >
+
+            <div class="greyed-out justify-content-center align-items-center show"> <img src ="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+
+            <div class="canvaswrapper">
+                <canvas id="daily-volumes">
+
+                </canvas>
+
+                <div class="button-overlay d-flex" data-target="atc-volumes-daily" style="right:35px" id="graph-overlay">
+
+                    <div class="topbar__item" onclick="saveGraphImage();" style="background-color:#f2f3f7;margin-right:5px">
+                        <span class="icon-toggle"><i class="icon-picture"></i></span>
+                    </div>
+
+                    <div class="topbar__item" onclick="expandGraph();" style="background-color:#f2f3f7;margin-right:5px">
+                        <span class="icon-toggle"><i class="icon-zoom-in" data-alt="icon-zoom-out"></i></span>
+                    </div>
+
+                    <div class="topbar__item" onclick="toggleCombine();" style="background-color:#f2f3f7;margin-right:5px">
+                        <span class="icon-toggle"><i class="icon-link" data-alt="icon-unlink"></i></span>
+                    </div>
+                    <div class="topbar__item graph-limit-popup-trigger opens-left" style="background-color:#f2f3f7;margin-right:5px">
+                        <span class="icon-toggle"><i class="icon-controls-1" ></i></span>
+                    </div>
+                    <div class="topbar__item" onclick="toggleGraphDisplay();" style="background-color:#f2f3f7">
+                        <span class="icon-toggle"><i class="icon-car" data-alt="icon-calendar-1"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

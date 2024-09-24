@@ -1,0 +1,548 @@
+{% extends "aecon/historic-data.html" %} {% block content %} {% load staticversion %} {% load my_filters %} {% load client_tags %}
+<div class="row main">
+    <div class="col-md-12 mb-3">
+        <div class="row">
+            <div class="selection-header phase-popup-trigger me-3 col-md-2 shadow" id="phase-header"><label class="popup-label">Survey</label><span>Survey </span><i class="chevron-icon"></i></div>
+            <div class="selection-header directions-popup-trigger me-3 col-md-2 shadow" id="directions-header"><label class="popup-label">Direction</label><span>Combined</span><i class="chevron-icon"></i></div>
+            <div class="selection-header day-popup-trigger col-md-2 shadow" id="day-header"><label class="popup-label">Day</label><span>Day </span><i class="chevron-icon"></i></div>
+        </div>
+    </div>
+</div>
+<div class="px-3 py-1 bg-white mt-4" style="box-shadow: 0px 0px 10px #0000001A; border-radius: 5px;">
+    <div class="row px-1 mt-4">
+        <div class="col-md-12">
+            <div class="table-responsive table-wrapper ht-35 px-0  div1 sen-traff classify">
+                <table class="table show-data classify text-center" rules="cols" id="countline_table" style="table-layout: fixed">
+                    <thead>
+                        <tr>
+                            <th>Time Period</th>
+                            <th>Very Short-Bicycle <br>or Motorcycle</th>
+                            <th>Short-Car 4WD <br>or LightVan</th>
+                            <th>Short Towing-Trailer <br> Caravan etc</th>
+                            <th>2-Axle Truck <br>or Bus</th>
+                            <th>3-Axle Truck <br>or Bus</th>
+                            <th>4-Axle Truck </th>
+                            <th>3-Axle Articulated </th>
+                            <th>4-Axle Articulated </th>
+                            <th>5-Axle Articulated </th>
+                            <th>6+ Axle Articulated </th>
+                            <th>B-Double or Heavy <br>Truck & Trailer </th>
+                            <th>Double or Triple Heavy Truck <br>& 2(or more) Trailers </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>00:00-01:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>01:00:-02:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>02:00:-03:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>03:00:-04:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>04:00:-05:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>05:00:-06:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>06:00:-07:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>07:00:-08:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>08:00:-09:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>09:00:-10:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>10:00:-11:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>11:00:-12:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>12:00:-13:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>13:00:-14:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>14:00:-15:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>15:00:-16:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>16:00:-17:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>17:00:-18:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>18:00:-19:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>19:00:-20:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>20:00:-21:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>21:00:-22:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>22:00:-23:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>23:00:-24:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>24:00:-00:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>07:00:-19:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>06:00:-22:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>06:00:-24:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>00:00:-24:00</td>
+                            <td>234</td>
+                            <td>56</td>
+                            <td>234</td>
+                            <td>24</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-12">
+
+
+                        <div class="row text-center px-4" style="margin-top: 10px; margin-left: 50px">
+                <div class="col-md-2 mb-4">
+                    <div class="position-relative mb-1">
+                        <img src="{% staticversion 'aecon/Motorcycle.svg' %}" width="140" height="60" />
+                    </div>
+                    <h6 class="font-weight-bold chart-text">
+                        Motorcycle
+                    </h6>
+                    <h1 id="Very Short-Bicycle or Motorcycle">0</h1>
+                    <h4 class="chart-percent" id="Very Short-Bicycle or Motorcycle%">0.0%</h4>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <div class="position-relative mb-1">
+                        <img src="{% staticversion 'aecon/Car & Light Van.svg' %}" width="180" height="60" />
+                    </div>
+                    <h6 class="font-weight-bold chart-text">Car & Light Van</h6>
+                    <h1 id="Short-Car 4WD or LightVan">5596</h1>
+                    <h4 class="chart-percent" id="Short-Car 4WD or LightVan%">90.5%</h4>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <div class="position-relative mb-1">
+                        <img src="{% staticversion 'aecon/Short Towing Caravan.svg' %}" width="140" height="60" />
+                    </div>
+                    <h6 class="font-weight-bold chart-text">Short Towing Caravan</h6>
+                        <h1 id="Short Towing-Trailer Caravan etc">552</h1>
+                        <h4 class="chart-percent" id="Short Towing-Trailer Caravan etc%">8.9%</h4>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <div class="position-relative mb-1">
+                        <img src="{% staticversion 'aecon/2-Axle Truck.svg' %}" width="140" height="60" />
+                    </div>
+                    <h6 class="font-weight-bold chart-text">2-Axle Truck</h6>
+                    <h1 id="2-Axle Truck or Bus">33</h1>
+                    <h4 class="chart-percent" id="2-Axle Truck or Bus%">0.5%</h4>
+                </div>
+            </div>
+            <div class="row text-center px-4" style="margin-left: 50px">
+                <div class="col-md-2 mb-4">
+                    <div class="position-relative mb-1">
+                        <img src="{% staticversion 'aecon/3-Axle Truck.svg' %}" width="140" height="60" />
+                    </div>
+                    <h6 class="font-weight-bold chart-text">
+                        3-Axle Truck
+                    </h6>
+                    <h1 id="3-Axle Truck or Bus">0</h1>
+                    <h4 class="chart-percent" id="3-Axle Truck or Bus%">0.0%</h4>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <div class="position-relative mb-1">
+                        <img src="{% staticversion 'aecon/4-Axle Truck.svg' %}" width="140" height="60" />
+                    </div>
+                    <h6 class="font-weight-bold chart-text">4-Axle Truck</h6>
+                    <h1 id="4-Axle Truck">5596</h1>
+                    <h4 class="chart-percent" id="4-Axle Truck%">90.5%</h4>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <div class="position-relative mb-1">
+                        <img src="{% staticversion 'aecon/3-Axle Articulated.svg' %}" width="140" height="60" />
+                    </div>
+                    <h6 class="font-weight-bold chart-text">3-Axle Articulated</h6>
+                        <h1 id="3-Axle Articulated">552</h1>
+                        <h4 class="chart-percent" id="3-Axle Articulated%">8.9%</h4>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <div class="position-relative mb-1">
+                        <img src="{% staticversion 'aecon/4-Axle Articulated.svg' %}" width="140" height="60" />
+                    </div>
+                    <h6 class="font-weight-bold chart-text">4-Axle Articulated</h6>
+                    <h1 id="4-Axle Articulated">33</h1>
+                    <h4 class="chart-percent" id="4-Axle Articulated%">0.5%</h4>
+                </div>
+                <div class="col-md-3 ml-5">
+                    <h1 class="font-weight-bold text-center chart-title2" id="total_vech">6181</h1>
+                    <h3 class="font-weight-bold">Total Vehicles</h3>
+                    <h5 class="chart-title text-center font-weight-bold">(00:00 - 24:00)</h5>
+                </div>
+            </div>
+            <div class="row text-center px-4" style="margin-left: 50px">
+                <div class="col-md-2 mb-4">
+                    <div class="position-relative mb-1">
+                        <img src="{% staticversion 'aecon/5-Axle Articulated.svg' %}" width="140" height="60" />
+                    </div>
+                    <h6 class="font-weight-bold chart-text">
+                        5-Axle Articulated
+                    </h6>
+                    <h1 id="5-Axle Articulated">0</h1>
+                    <h4 class="chart-percent" id="5-Axle Articulated%">0.0%</h4>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <div class="position-relative mb-1">
+                        <img src="{% staticversion 'aecon/6+ Axle Articulated.svg' %}" width="140" height="60" />
+                    </div>
+                    <h6 class="font-weight-bold chart-text">6+ Axle Articulated</h6>
+                    <h1 id="6+ Axle Articulated">5596</h1>
+                    <h4 class="chart-percent" id="6+ Axle Articulated%">90.5%</h4>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <div class="position-relative mb-1">
+                        <img src="{% staticversion 'aecon/B-Double.svg' %}" width="140" height="60" />
+                    </div>
+                    <h6 class="font-weight-bold chart-text">B-Double </h6>
+                        <h1 id="B-Double or Heavy Truck & Trailer">552</h1>
+                        <h4 class="chart-percent" id="B-Double or Heavy Truck & Trailer%">8.9%</h4>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <div class="position-relative mb-1">
+                        <img src="{% staticversion 'aecon/Double or Triple Heavy.svg' %}" width="140" height="60" />
+                    </div>
+                    <h6 class="font-weight-bold chart-text">Double or Triple Heavy</h6>
+                    <h1 id="Double or Triple Heavy Truck & 2(or more) Trailers">33</h1>
+                    <h4 class="chart-percent" id="Double or Triple Heavy Truck & 2(or more) Trailers%">0.5%</h4>
+                </div>
+            </div>
+
+            <div class="row text-center justify-content-center">
+
+                
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %}
+<script>
+    $(".table-wrapper").on("scroll", function() {
+        $(".table-wrapper:not(this)").scrollTop($(this).scrollTop());
+    });
+</script>
+<script>
+    function viewSite(id) {
+        document.getElementById("location_id").value = id;
+        loadLocation(id).then(function() {
+            var project = location_details.project
+            var projectDt = moment(project[0].start_date).format("MMM, YYYY")
+            var html = setProject_popup(project);
+            document.getElementById("phase-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = html;
+            setPopupListeners(document.getElementById("phase-popup"));
+            var items = document.getElementById("phase-popup").getElementsByClassName("menu-item");
+            for (var i = 0; i < items.length; i++) {
+                items[i].addEventListener("click", function() {
+                    loadData(id).then(function() {
+                        setdata(id)
+                    });
+                });
+            }
+            //document.cookie = "ATCProject=" + project[0].id + ";path=/aecon";
+            document.getElementById("directions-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = location_details.directions;
+            setPopupListeners(document.getElementById("directions-popup"));
+            var items = document.getElementById("directions-popup").getElementsByClassName("menu-item");
+            for (var i = 0; i < items.length; i++) {
+                items[i].addEventListener("click", function() {
+                    setdata(id)
+
+                    $(".selection-header").removeClass("activeDropDown");
+                });
+            }
+
+            var items = document.getElementById("day-popup").getElementsByClassName("menu-item");
+            for (var i = 0; i < items.length; i++) {
+                items[i].addEventListener("click", function() {
+                    setdata(id)
+                    $(".selection-header").removeClass("activeDropDown");
+                });
+            }
+            document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = project[0].name+", "+projectDt;
+            var cookieProject = getCookie('HISTORICProject');
+            var projectid = location_details.project
+            if (cookieProject){
+                projectresult = project.filter(project => project.id == cookieProject)[0]
+                var projectDT = projectresult.start_date;
+                var projectdate = moment(projectDT).format("MMM, YYYY")
+                document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = projectresult.name+", "+projectdate;
+            }
+           
+            document.getElementById("day-header").getElementsByTagName("span")[0].innerText = document.getElementById("day-popup").getElementsByClassName("selected")[0].getElementsByTagName("span")[0].innerText;
+            loadData(id).then(function() {
+                setdata(id)
+            });
+
+        })
+    }
+
+    function setdata(id) {
+
+        var classes_lst = [];
+        location_details.classes.split("<span>").forEach(function(item) {
+            item.includes("</span>") ? classes_lst.push(item.split("</span>")[0]) : "";
+        });
+        classes_lst = classes_lst.filter(item => item !== 'All');
+        var avg_lst = ["07:00:-19:00", "06:00:-22:00", "06:00:-24:00", "00:00:-24:00"];
+        if (classes_lst.length == 0) {
+            return;
+        }
+        var avg_cal_id = ["Very Short-Bicycle or Motorcycle", "Short-Car 4WD or LightVan", "Short Towing-Trailer Caravan etc", "2-Axle Truck or Bus",
+            "3-Axle Truck or Bus", "4-Axle Truck", "3-Axle Articulated",
+            "4-Axle Articulated", "5-Axle Articulated", "6+ Axle Articulated",
+            "B-Double or Heavy Truck & Trailer", "Double or Triple Heavy Truck & 2(or more) Trailers"];
+        var table_data = classedData.data[id].directions[getCurrentDirection()].baseData[getCurrentDay() - 1];
+        var graphLabels = classedData.graphLabels;
+        var table = document.getElementById('countline_table');
+        var thead = table.querySelector('thead');
+        var tbody = table.querySelector('tbody');
+        thead.innerHTML = '';
+        tbody.innerHTML = '';
+        var tr = document.createElement('tr');
+        var th = document.createElement('th');
+        th.innerHTML = 'Time Period';
+        th.innerHTML = 'Very Short-Bicycle or Motorcycle';
+        for (let i = 0; i < classes_lst.length; i++) {
+            if (i == 0) {
+                var th = document.createElement('th');
+                th.innerHTML = 'Time Period';
+                tr.appendChild(th);
+            }
+            var th = document.createElement('th');
+            th.innerHTML = classes_lst[i];
+            tr.appendChild(th);
+            {#th.setAttribute('title',classes_lst[i]);#}
+        }
+        thead.appendChild(tr);
+
+        for (let i = 0; i < (graphLabels.length) - 1; i++) {
+            var tr = document.createElement('tr');
+            var td = document.createElement('td');
+            if (i < (graphLabels.length) - 2) {
+                td.innerHTML = graphLabels[i] + '-' + graphLabels[i + 1];
+            } else {
+                td.innerHTML = graphLabels[i] + '-' + "24:00";
+            }
+            tr.appendChild(td);
+
+
+            for (let j = 0; j < table_data.length; j++) {
+                var td = document.createElement('td');
+                if (table_data[j].data[i]) {
+                    td.innerHTML = table_data[j].data[i];
+                } else {
+                    td.innerHTML = "-";
+                }
+
+                tr.appendChild(td);
+            }
+            tbody.appendChild(tr);
+        }
+        for (let i = 0; i < avg_lst.length; i++) {
+            var row = document.createElement('tr');
+            var cell1 = document.createElement('td');
+            cell1.innerHTML = avg_lst[i];
+            row.appendChild(cell1);
+            for (let j = 0; j < classes_lst.length; j++) {
+                if (i == 0) {
+                    var cell = document.createElement('td');
+                    var data = table_data[j].data.slice(graphLabels.indexOf('07:00'), graphLabels.indexOf('19:00'));
+                    cell.innerHTML = data.reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0);
+                    row.appendChild(cell);
+                } else if (i == 1) {
+                    var cell = document.createElement('td');
+                    var data = table_data[j].data.slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('22:00'));
+                    cell.innerHTML = data.reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0);
+                    row.appendChild(cell);
+                } else if (i == 2) {
+                    var cell = document.createElement('td');
+                    var data = table_data[j].data.slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00') + 1);
+                    cell.innerHTML = data.reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0);
+                    row.appendChild(cell);
+                } else if (i == 3) {
+                    var cell = document.createElement('td');
+                    var data = table_data[j].data.slice(graphLabels.indexOf('00:00'), graphLabels.indexOf('23:00') + 1);
+
+                    classes_lst[j] = data.reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0);
+                    cell.innerHTML = data.reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0);
+                    row.appendChild(cell);
+
+
+                }
+            }
+            tbody.appendChild(row);
+
+        }
+        classes_lst = classes_lst.map(Number);
+        var total = classes_lst.reduce(function(a, b) {
+            return a + b
+        }, 0);
+        for (let i = 0; i < classes_lst.length; i++) {
+            document.getElementById(avg_cal_id[i]).innerHTML = classes_lst[i];
+
+            var per = percentage(classes_lst[i], total)
+            per = per != 'NaN' ? per : 0.0
+            document.getElementById(avg_cal_id[i] + '%').innerHTML = String(per) + '%'
+        }
+        document.getElementById('total_vech').innerHTML = total;
+    }
+</script>
+{% endblock %}

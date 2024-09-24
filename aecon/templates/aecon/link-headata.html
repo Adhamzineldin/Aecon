@@ -1,0 +1,547 @@
+{% extends "aecon/link-data.html" %} {% block content %} {% load staticversion %} {% load my_filters %} {% load client_tags %}
+<div class="row main">
+    <div class="col-md-12 mb-3">
+        <div class="row">
+            <div class="selection-header phase-popup-trigger me-4 col-md-2 shadow" id="phase-header" style="width: 19%"><label class="popup-label">Survey</label><span class="px-3">Survey </span><i class="chevron-icon"></i></div>
+            <div class="selection-header time-popup-trigger col-md-2 shadow" id="time-header_popup"><label class="popup-label">Time Frequency</label><span>00:00 - 24:00 </span><i class="chevron-icon"></i></div>
+            <div class="selection-header col-md-2 shadow" onclick="observationPopup(this)">
+                <label class="popup-label">Observation</label>
+                <span>Observation</span>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div class="px-5 py-3 bg-white mt-4" style="box-shadow: 0px 0px 10px #0000001A; border-radius: 5px;">
+  <div class="row px-1 mt-4">
+    <h4 class="chart-title ml-3">Combined</h4>
+  </div>
+
+  <div class="row canvass" style="height: 280px">
+    <div class="col-md-3 px-1 d-flex justify-content-center">
+      <canvas id="dashboardChart_2" width="230" height="143" style="position: relative;
+    left: 120px;top: 60px"></canvas>
+    </div>
+    <div class="col-md-4 px-1 d-flex justify-content-end">
+      <div class="text-center my-1 position-absolute" style="top: 50px">
+        <ul class="colgraph-nums">
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_0_2">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_1_2">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_2_2">
+                     <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_3_2">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_4_2">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <!-- <li>
+                <h5 class="mb-4 chart-text text-left" id="count_5_2">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_6_2">
+                     <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_7_2">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_8_2">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_9_2">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_10_2">
+                     <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_11_2">
+                    <strong> - </strong>
+                </h5>
+            </li> -->
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-4 px-1 d-flex" style="top: 45px">
+      <div
+        id="dashboardChartlabel_2"
+        class="text-center my-1 position-absolute"
+      >
+        <ul class="colgraph-text"></ul>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center mb-2">
+    <h5 class="totalVol-text">Total Volume</h5>
+    <h5 class="totalVol-data text-center ml-4" id="total_2">
+      <strong>-</strong>
+    </h5>
+  </div>
+
+  <div class="horizontal"></div>
+  <div class="row px-1 mt-4">
+    <h4 class="chart-title ml-3">InBound</h4>
+  </div>
+
+  <div class="row canvass" style="height: 280px">
+    <div class="col-md-3 px-1 d-flex justify-content-center">
+      <canvas style="position: relative; left: 120px;top: 60px" id="dashboardChart_0" width="230" height="143"></canvas>
+    </div>
+    <div class="col-md-4 px-1 d-flex justify-content-end">
+      <div class="text-center my-1 position-absolute" style="top: 50px">
+        <ul class="colgraph-nums">
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_0_0">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_1_0">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_2_0">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_3_0">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_4_0">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <!-- <li>
+                <h5 class="mb-4 chart-text text-left" id="count_5_0">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_6_0">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_7_0">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_8_0">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_9_0">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_10_0">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_11_0">
+                    <strong> - </strong>
+                </h5>
+            </li> -->
+
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-4 px-1 d-flex" style="top: 45px">
+      <div
+        id="dashboardChartlabel_0"
+        class="text-center my-1 position-absolute"
+      >
+        <ul class="colgraph-text"></ul>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center mb-2">
+    <h5 class="totalVol-text">Total Volume</h5>
+    <h5 class="totalVol-data text-center ml-4" id="total_0">
+      <strong>-</strong>
+    </h5>
+  </div>
+
+  <div class="horizontal"></div>
+  <div class="row px-1 mt-4">
+    <h4 class="chart-title ml-3">OutBound</h4>
+  </div>
+  <div class="row canvass" style="height: 280px">
+    <div class="col-md-3 px-1 d-flex justify-content-center">
+      <canvas style="position: relative;left: 120px; top: 60px" id="dashboardChart_1" width="230" height="143"></canvas>
+    </div>
+    <div class="col-md-4 px-1 d-flex justify-content-end">
+      <div class="text-center my-1 position-absolute" style="top: 50px">
+        <ul class="colgraph-nums">
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_0_1">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_1_1">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_2_1">
+                     <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_3_1">
+                     <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_4_1">
+                    <strong> - </strong>
+                </h5>
+            <!-- </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_5_1">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_6_1">
+                     <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_7_1">
+                     <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_8_1">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_9_1">
+                    <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_10_1">
+                     <strong> - </strong>
+                </h5>
+            </li>
+            <li>
+                <h5 class="mb-4 chart-text text-left" id="count_11_1">
+                     <strong> - </strong>
+                </h5>
+            </li> -->
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-4 px-1 d-flex" style="top: 45px">
+      <div
+        id="dashboardChartlabel_1"
+        class="text-center my-1 position-absolute"
+      >
+        <ul class="colgraph-text"></ul>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center mb-2">
+    <h5 class="totalVol-text">Total Volume</h5>
+    <h5 class="totalVol-data text-center ml-4" id="total_1">
+      <strong>-</strong>
+    </h5>
+  </div>
+</div>
+{% endblock %} {% block js %}
+<script>
+  var dashboardChart = [];
+  function percentage(partialValue, totalValue) {
+    if (partialValue == "-" || totalValue == "-") {
+      return 0;
+    }
+    return Math.round(((100 * partialValue) / totalValue) * 100) / 100;
+  }
+
+  // datepicker.on("apply.daterangepicker", function (ev, picker) {
+  //   var id = document.getElementById("location_id").value;
+  //   if (id) {
+  //     set_data(id);
+  //   }
+  // });
+
+  // datepicker2.on("apply.daterangepicker", function (ev, picker) {
+  //   var id = document.getElementById("location_id").value;
+  //   if (id) {
+  //     set_data(id);
+  //   }
+  // });
+
+  function set_data(id, isProjectId=false) {
+    if (isProjectId) {
+      var project = location_details.project
+      projectresult = project.filter(project => project.id == id)[0];
+    }
+    
+    // var start = moment(
+    //   // document.getElementsByClassName("date")[0].innerText.trim(),
+    //   projectresult.start_date,
+    //   "DD/MM/YYYY"
+    // );
+    // var end = moment(
+    //   // document.getElementsByClassName("date")[1].innerText.trim(),
+    //   projectresult.end_date,
+    //   "DD/MM/YYYY"
+    // );
+
+    dashboardChart.forEach(function (item, index) {
+      item.destroy();
+    });
+
+
+    loadData(id).then(function () {
+      // coming from DB
+      var classes_arry = ['Very Short-Bicycle or Motorcycle', 'Short-Car 4WD or LightVan', 'Short Towing-Trailer Caravan etc', 
+                        '2-Axle Truck or Bus', '3-Axle Truck or Bus', '4-Axle Truck',
+                        '3-Axle Articulated Vehicle or Rigid Vehicle & Trailer','4-Axle Articulated Vehicle or Rigid Vehicle & Trailer','5-Axle Articulated Vehicle or Rigid Vehicle & Trailer',
+                        '6(or more) Axle Articulated Vehicle or Rigid Vehicle & Trailer','B-Double or Heavy Truck & Trailer','Double or Triple Heavy Truck & 2(or more) Trailers',]
+      
+      // mapping each element in array above to array below
+      var new_classes_mapping = ['PC/MC', 'CAR/LGV', 'CAR/LGV', 'OGV1 & PSV 2 Axie', 'OGV1 & PSV 3 Axie', 'OGV2', 'OGV2', 'OGV2', 'OGV2', 'OGV2', 'OGV2', 'OGV2'];
+      
+      var new_classes = ['PC/MC', 'CAR/LGV', 'OGV1 & PSV 2 Axie', 'OGV1 & PSV 3 Axie', 'OGV2'];
+
+      // var labelNameToDisplayName = {};
+      // for (var i = 0; i < classes_arry.length; i++) {
+      //   labelNameToDisplayName[classes_arry[i]] = new_classes_mapping[i];
+      //   // if (!labelNameToDisplayName.hasOwnProperty(new_classes_mapping[i])) {
+      //   //   labelNameToDisplayName[new_classes_mapping[i]] = [];
+      //   // }
+      //   // labelNameToDisplayName[new_classes_mapping[i]] = new_classes_mapping[i];
+      //   // labelNameToDisplayName[new_classes_mapping[i]].push(classes_arry[i])
+      // }
+
+
+      classedData.data[id].directions.forEach(function (direction, dir_order) {
+        var temp_lst = Array.of(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        for (let i = 0; i <= 8; i++) {
+          
+          for (let j in classes_arry) {
+            let data = direction.baseData[i].filter(function (el){return classes_arry[j].includes(el.label)})
+            let data_array = 0
+            for ( d of data)
+            {
+              data_array = [data_array,d.data.reduce(function (a, b) {return myReduce(a, b);}, 0)].reduce(function (a, b) {return myReduce(a, b);}, 0)
+              
+            }
+            temp_lst[j] = [temp_lst[j],data_array].reduce(function (a, b) {return myReduce(a, b);}, 0);
+          }  
+        }
+        var new_temp_lst = Array.of(0, 0, 0, 0, 0);
+        for (let i in temp_lst) {
+          var new_clss = new_classes_mapping[i];
+          new_temp_lst[new_classes.indexOf(new_clss)] += temp_lst[i];
+        }
+        let total = new_temp_lst.reduce(function (a, b) {
+          return myReduce(a, b);
+        }, 0);
+        new_temp_lst.forEach(function (item, cls_order) {
+          new_temp_lst[cls_order] = percentage(item, total);
+          document.getElementById(
+            "count_" + cls_order + "_" + dir_order
+          ).innerText = item;
+        });
+
+        document.getElementById("total_" + dir_order).innerText = total;
+        var ctx = document.getElementById("dashboardChart_" + dir_order);
+
+        var labledata = [];
+        for (var i = 0; i < new_classes.length; i++) {
+          labledata.push(new_classes[i]);
+        }
+
+        var updatedlable = [];
+
+        for (var i = 0; i < labledata.length; i++) {
+          var lablewithper =
+            "<h5><strong>" +
+            labledata[i] +
+            "</strong></h5><h5 class='' style='width:60px;text-align:left'><strong>" +
+            (new_temp_lst[i] ? " " + new_temp_lst[i] + "%" : "0%") +
+            "</strong></h5>";
+          updatedlable.push(lablewithper);
+        }
+        var uldata = "";
+        for (var j = 0; j < updatedlable.length; j++) {
+          uldata1 =
+            "<li class='mb-3'><div class='d-flex justify-content-between'>" +
+            updatedlable[j] +
+            "</div><div class='square'></div></li>";
+          uldata = uldata + uldata1;
+        }
+        var iddata = "dashboardChartlabel_" + dir_order;
+        $("#" + iddata + " .colgraph-text").html(uldata);
+
+        var max = Math.max(...new_temp_lst);
+        new_temp_lst.forEach(function (item, i) {
+          if (new_temp_lst[i] < 1 && new_temp_lst[i] > 0) {
+            var temp = 1 - new_temp_lst[i];
+            new_temp_lst[new_temp_lst.indexOf(max)] = max - temp;
+            new_temp_lst[i] = new_temp_lst[i] + temp;
+          }
+        });
+        dashboardChart[dir_order] = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: labledata,
+            datasets: [
+              {
+                data: new_temp_lst,
+                backgroundColor: ["#222e83", "#12D231", "#FF0000","#e8c3b9","#c45850", ],
+                // "#4286f4","#60db97","#ff3333","#00ccff","#ffff00","#669999","#999900"],
+                borderColor: [
+                "rgb(34,46,131)",   // #222e83
+                "rgb(18,210,49)",   // #12D231
+                "rgb(255,0,0)",     // #FF0000
+                "rgb(232,195,185)", // #e8c3b9
+                "rgb(196,88,80)",   // #c45850
+                // "rgb(66,134,244)",  // #4286f4
+                // "rgb(96,219,151)",  // #60db97
+                // "rgb(255,51,51)",   // #ff3333
+                // "rgb(0,204,255)",   // #00ccff
+                // "rgb(255,255,0)",   // #ffff00
+                // "rgb(102,153,153)", // #669999
+                // "rgb(153,153,0)",   // #999900
+              ],
+                borderWidth: 2,
+              },
+            ],
+          },
+          options: {
+            rotation: 1 * Math.PI,
+            circumference: 1 * Math.PI,
+            legend: {
+              display: false,
+            },
+            tooltips: {
+              enabled: false,
+            },
+            layout: {
+              padding: 20,
+            },
+            cutoutPercentage: 80,
+            plugins: {
+              labels: {
+                render: function (args) {
+                  return args.label.split(" ")[0];
+                },
+                fontColor: ["#848182", "#848182", "#848182", "#848182", "#848182"],
+                fontSize: 14,
+                position: "border",
+                fontStyle: "bold"
+              },
+            },
+          },
+        });
+      });
+    });
+  }
+  Chart.pluginService.register({
+    beforeDraw: function (chart) {
+      var width = chart.chart.width,
+        height = chart.chart.height,
+        ctx = chart.chart.ctx;
+      ctx.restore();
+      ctx.save();
+    },
+  });
+
+  function viewSite(id, ele) {
+    document.getElementById("location_id").value = id;
+
+    loadLocation(id, false).then(function() {
+      var project = location_details.project
+      var projectDt = moment(project[0].start_date).format("MMM, YYYY")
+      var projectId = project[0].id;
+      document.getElementById("phase-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = setProject_popup(project);
+
+      setPopupListeners(document.getElementById("phase-popup"));
+
+      document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = project[0].name+", "+projectDt;
+      var cookieProject = getCookie('LINKProject');
+      var projectid = location_details.project
+      //console.log(projectid)
+      if (cookieProject){
+          projectresult = project.filter(project => project.id == cookieProject)[0];
+          var projectDT = projectresult.start_date;
+          var projectdate = moment(projectDT).format("MMM, YYYY")
+          document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = projectresult.name+", "+projectdate;
+      }
+      var items = document.getElementById("phase-popup").getElementsByClassName("menu-item");
+      for (var i = 0; i < items.length; i++) {
+          items[i].addEventListener("click", function() {
+
+              dataset_loc(true, false).then(function() {
+                // todo: possible error place: should not pass "id" as argument, instead, in set_data definition, get "id" from html with id="location_id"
+                  set_data(id);
+              });
+
+              $(".selection-header").removeClass("activeDropDown");
+          });
+      }
+      dataset_loc(true, false).then(function() {
+          set_data(id);
+      });
+    })
+
+
+    // loadLocation(id).then(function () {
+    //   var dir_names = [];
+    //   set_data(id);
+    //   location_details.directions.split("<span>").forEach(function (item) {
+    //     item.includes("</span>")
+    //       ? dir_names.push(item.split("</span>")[0])
+    //       : "";
+    //   });
+    // });
+
+  }
+</script>
+
+{% endblock %}

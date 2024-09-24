@@ -1,0 +1,1068 @@
+{% extends "aecon/mph-data.html" %}
+{% load staticversion %}
+{% load my_filters %} 
+{% load client_tags %}
+
+
+
+
+    {% block content %} 
+        <div class="row main">
+            <div class="col-md-12 mb-3">
+                <div class="row">
+                    <div class="selection-header measure-popup-trigger me-3 col-md-2 shadow" id="measure-header"><label class="popup-label">Speed</label><span>Average Speed </span><i class="chevron-icon"></i></div>
+                    <div class="selection-header directions-popup-trigger me-3 col-md-2 shadow" id="directions-header"><label class="popup-label">Direction</label><span>Combined</span><i class="chevron-icon"></i></div>
+                    <div class="selection-header day-popup-trigger col-md-2 shadow" id="day-header"><label class="popup-label">Day</label><span>5 Day Avg</span><i class="chevron-icon"></i></div>
+                </div>
+            </div>
+        </div>
+    {% if request.user.is_authenticated %}
+        <div class="px-1 py-2 bg-white mt-4" style="box-shadow: 0px 0px 10px #0000001A; border-radius: 5px;">
+        <div class="row px-3 my-4">
+            <div class="col-md-3 my-4">
+                <div class="col-12 mt-4 p-3 box-shadow" style="border-radius: 5px;">
+                    <h5 class=" px-3">Survey 1</h5>
+                    <div class="selection-header phase-popup-trigger col-md-12 shadow mx-0" id="phase-header" style="width: 100% !important;"><span>Survey </span><i class="chevron-icon"></i></div>
+                </div>
+                <div class="col-12 mt-4 p-4"></div>
+                <div class="col-12 mt-4 p-3 box-shadow" style="border-radius: 5px;">
+
+                    <h5 class=" px-3">
+                        Survey 2 {% comment %} <i class="fas fa-chevron-down float-right px-3 pt-1"></i> {% endcomment %}
+                    </h5>
+                    </a>
+                    <div class="selection-header phases-popup-trigger col-md-12 shadow mx-0" id="phases-header"><span>Survey </span><i class="chevron-icon"></i></div>
+                </div>
+            </div>
+            <div class="col-md-1 mt-4">
+                <div class="col-12 my-5 p-4 ">
+                    <hr class="hr-custom">
+                    <div class="position-sticky d-flex align-items-center justify-content-center">
+                        <img src="/static/aecon/speed-limit.png" width="40" height="40">
+                        <div class="donut-text" id="s1-speedlimit">
+                            <span class="donut-number text-bold" style="
+                    color: black !important;
+                    font-weight: bold;
+                    font-size: 18px;
+                    "></span>
+                        </div>
+                    </div>
+                    <div class="hr-verti">
+                        <hr>
+                    </div>
+                </div>
+                <div class="col-12 my-5 p-4 "></div>
+                <div class="col-12 my-5 p-4 ">
+                    <hr class="hr-custom">
+                    <div class="position-sticky d-flex align-items-center justify-content-center">
+                        <img src="/static/aecon/speed-limit.png" width="40" height="40">
+                        <div class="donut-text" id="s2-speedlimit">
+                            <span class="donut-number text-bold" style="
+                    color: black !important;
+                    font-weight: bold;
+                    font-size: 18px;
+                    "></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7 py-4 my-5">
+                <div class="table-responsive compare-table div1 text-center my-4" id="average-table">
+                    <table rules="cols" div1 class="table table-sm" id="avg-table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Time Period</th>
+                                <th class="text-center">Survey 1</th>
+                                <th class="text-center">Survey 2</th>
+                                <th class="text-center">Difference</th>
+                                <th class="text-center">% Difference</th>
+                                <th class="text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="">
+                            <tr data-timeval="8">
+                                <td class="timef">08:00:-09:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+
+                            </tr>
+                            <tr data-timeval="15">
+                                <td class="timef">15:00:-16:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                            <tr data-timeval="24">
+                                <td class="timef">07:00:-19:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                            <tr data-timeval="25">
+                                <td class="timef">06:00:-22:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                            <tr data-timeval="26">
+                                <td class="timef">06:00:-24:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                            <tr data-timeval="27">
+                                <td class="timef">00:00:-24:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <div class="d-flex flex-column align-items-center mb-5">
+                        <div class="d-flex w-100 my-4">
+                            <div class="w-50 text-center">
+                                <h6 class="text-blue font-weight-bold">(00:00 - 24:00)</h6>
+                                <div class="d-flex align-items-center justify-content-center" style="font-size:40px">
+                                    <div id="avg_1"></div>
+                                    <div class="p-2"><i class="fa"></i></div>
+                                </div>
+                                <h5 class="text-center " id="avg_2"></h5>
+                                <h6 class="text-blaack font-weight-bold py-2 d-none">Survey Start Date : <span class="font-weight-light" id="s1-startdate"></span></h6>
+                                <h6 class="text-blaack font-weight-bold py-2 d-none">Survey End Date :<span class="font-weight-light" id="s1-enddate"></span></h6>
+                            </div>
+
+                            <div class="w-50 text-center">
+                                <h6 class="text-blue font-weight-bold">(07:00 - 19:00)</h6>
+                                <div class="d-flex align-items-center justify-content-center" style="font-size:40px">
+                                    <div id="avg_3"></div>
+                                    <div class="p-2"><i class="fa"></i></div>
+                                </div>
+                                <h5 class="text-center " id="avg_4"></h5>
+                                <h6 class="text-blaack font-weight-bold py-2 d-none">Survey Start Date : <span class="font-weight-light" id="s2-startdate"></span></h6>
+                                <h6 class="text-black font-weight-bold py-2 d-none">Survey End Date : <span class="font-weight-light" id="s2-enddate"></span></h6>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive compare-table div1 text-center my-4" id="eighthspeed-table" style="display: none;">
+                    <table rules="cols" class="table table-sm" id="eigth-table">
+                        <thead>
+                            <tr>
+                                <th class=" text-center">Time Period</th>
+                                <th class=" text-center">Survey 1</th>
+                                <th class=" text-center">Survey 2</th>
+                                <th class=" text-center">Difference</th>
+                                <th class=" text-center">% Difference</th>
+                                <th class=" text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="">
+                            <tr data-timeval="8">
+                                <td>08:00:-09:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+
+                            </tr>
+                            <tr data-timeval="15">
+                                <td>15:00:-16:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                            <tr data-timeval="24">
+                                <td>07:00:-19:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                            <tr data-timeval="25">
+                                <td>06:00:-22:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                            <tr data-timeval="26">
+                                <td>06:00:-24:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                            <tr data-timeval="27">
+                                <td>00:00:-24:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-flex flex-column align-items-center mb-5">
+                        <div class="d-flex w-100 my-4">
+                            <div class="w-50 text-center">
+                                <h6 class="text-blue font-weight-bold">(00:00 - 24:00)</h6>
+                                <div class="d-flex align-items-center justify-content-center" style="font-size:40px">
+                                    <div id="avg_9"></div>
+                                    <div class="p-2"><i class="fa"></i></div>
+                                </div>
+                                <h5 class="text-center " id="avg_10"></h5>
+                            </div>
+                            <div class="w-50 text-center">
+                                <h6 class="text-blue font-weight-bold">(07:00 - 19:00)</h6>
+                                <div class="d-flex align-items-center justify-content-center" style="font-size:40px">
+                                    <div id="avg_11"></div>
+                                    <div class="p-2"><i class="fa"></i></div>
+                                </div>
+                                <h5 class="text-center " id="avg_12"></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive compare-table div1 text-center my-4" id="ninethspeed-table" style="display: none;">
+                    <table rules="cols" class="table table-sm" id="nine-table">
+                        <thead>
+                            <tr>
+                                <th class=" text-center">Time Period</th>
+                                <th class=" text-center">Survey 1</th>
+                                <th class=" text-center">Survey 2</th>
+                                <th class=" text-center">Difference</th>
+                                <th class=" text-center">% Difference</th>
+                                <th class=" text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="">
+                            <tr data-timeval="8">
+                                <td>08:00:-09:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                            <tr data-timeval="15">
+                                <td>15:00:-16:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                            <tr data-timeval="24">
+                                <td>07:00:-19:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                            <tr data-timeval="25">
+                                <td>06:00:-22:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                            <tr data-timeval="26">
+                                <td>06:00:-24:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                            <tr data-timeval="27">
+                                <td>00:00:-24:00</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><i class="fa" style="font-size:12px"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-flex flex-column align-items-center mb-5">
+                        <div class="d-flex w-100 my-4">
+                            <div class="w-50 text-center">
+                                <h6 class="text-blue font-weight-bold">(00:00 - 24:00)</h6>
+                                <div class="d-flex align-items-center justify-content-center" style="font-size:40px">
+                                    <div id="avg_13"></div>
+                                    <div class="p-2"><i class="fa"></i></div>
+                                </div>
+                                <h5 class="text-center " id="avg_14"></h5>
+                            </div>
+                            <div class="w-50 text-center">
+                                <h6 class="text-blue font-weight-bold">(07:00 - 19:00)</h6>
+                                <div class="d-flex align-items-center justify-content-center" style="font-size:40px">
+                                    <div id="avg_15"></div>
+                                    <div class="p-2"><i class="fa"></i></div>
+                                </div>
+                                <h5 class="text-center " id="avg_16"></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    {% endif %}
+    {% endblock %} 
+    {% block js %}
+    {% if request.user.is_authenticated %}
+        <script>
+            function avg() {
+                document.getElementById('average-table').style.display = 'block';
+                document.getElementById('eighthspeed-table').style.display = 'none';
+                document.getElementById('ninethspeed-table').style.display = 'none';
+                $(".selection-header").removeClass("activeDropDown");
+            }
+
+            function eighth() {
+                document.getElementById('average-table').style.display = 'none';
+                document.getElementById('eighthspeed-table').style.display = 'block';
+                document.getElementById('ninethspeed-table').style.display = 'none';
+                $(".selection-header").removeClass("activeDropDown");
+            }
+
+            function nineth() {
+                document.getElementById('average-table').style.display = 'none';
+                document.getElementById('eighthspeed-table').style.display = 'none';
+                document.getElementById('ninethspeed-table').style.display = 'block';
+                $(".selection-header").removeClass("activeDropDown");
+            }
+            function setProject_compare(project,selectedid=0)
+            {
+            var html = '<ul>'
+                for (let i=0 ; i<project.length; i++)
+                {
+                    var projectDate = moment(project[i].start_date).format("MMM, YYYY");
+                html = html +' <li id="view_0" class="menu-item popup-item">';
+                if (selectedid == i)
+                {
+                    html = html +' <a class="selectable-menu-item selected" onclick="setbyProject('+String(project[i].id)+')"><i></i>';
+                }
+                else{
+                    html = html +' <a class="selectable-menu-item" onclick="setbyProject('+String(project[i].id)+')"><i></i>';
+                }
+                html = html +' <span data-project-id='+String(project[i].id)+' >'+ project[i].name + ', ' + projectDate + '</span>';
+                html = html +' </a></li>';
+                }
+                html = html +'</ul>';
+                //console.log(project[i].name)
+                return html;
+            }
+
+            function viewSite(id) {
+                document.getElementById("location_id").value = id;
+                loadLocation(id).then(function() {
+                    var project = location_details.project;
+                    if (project.length > 1) {
+                        //var projectDt = moment(project[0].start_date).format("MMM, YYYY")
+                        document.getElementById("phase-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = setProject_compare(project, 0);
+                        document.getElementById("phases-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = setProject_compare(project, 1);
+                        //document.cookie = "ATCProject=" + project[0].name + ";path=/aecon";
+                        setPopupListeners(document.getElementById("phase-popup"));
+                        var items = document.getElementById("phase-popup").getElementsByClassName("menu-item");
+                        for (var i = 0; i < items.length; i++) {
+                            items[i].addEventListener("click", function () {
+                                dataset_loc().then(function () {
+                                    setdata_loc()
+                                })
+                            });
+                        }
+                        setPopupListeners(document.getElementById("phases-popup"));
+                        var items = document.getElementById("phases-popup").getElementsByClassName("menu-item");
+                        for (var i = 0; i < items.length; i++) {
+                            items[i].addEventListener("click", function () {
+                                dataset_loc().then(function () {
+                                    setdata_loc()
+                                })
+                            });
+                        }
+                        document.getElementById("directions-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = location_details.directions;
+                        setPopupListeners(document.getElementById("directions-popup"));
+                        var items = document.getElementById("directions-popup").getElementsByClassName("menu-item");
+                        for (var i = 0; i < items.length; i++) {
+                            items[i].addEventListener("click", function () {
+                                setdata_loc()
+
+                                $(".selection-header").removeClass("activeDropDown");
+                            });
+                        }
+                        var items = document.getElementById("day-popup").getElementsByClassName("menu-item");
+                        for (var i = 0; i < items.length; i++) {
+                            items[i].addEventListener("click", function () {
+                                setdata_loc()
+                                $(".selection-header").removeClass("activeDropDown");
+                            });
+                        }
+                        //var projectDT = projectresult.start_date;
+                        //var projectdate = moment(projectDT).format("MMM, YYYY")
+                        document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = project[0].name + ", " + moment(project[0].start_date).format("MMM, YYYY");
+                        $("#s1-startdate").text(moment(project[0].start_date).format("DD/MM/YYYY"));
+                        $("#s1-enddate").text(moment(project[0].end_date).format("DD/MM/YYYY"));
+                        document.getElementById("phases-header").getElementsByTagName("span")[0].innerHTML = project[1].name + ", " + moment(project[1].start_date).format("MMM, YYYY");
+                        $("#s2-startdate").text(moment(project[1].start_date).format("DD/MM/YYYY"));
+                        $("#s2-enddate").text(moment(project[1].end_date).format("DD/MM/YYYY"));
+                        var cookieProject = getCookie('MPHProject');
+                        var projectid = location_details.project
+                        console.log("project id", projectid)
+                        {% comment %} if (cookieProject) {
+                            projectresult = project.filter(project => project.id == cookieProject)[0]
+                            var projectDT = projectresult.start_date;
+                            var projectdate = moment(projectDT).format("MMM, YYYY")
+                            document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = projectresult.name + ", " + moment(project[1].start_date).format("MMM, YYYY");
+                        } {% endcomment %}
+                        dataset_loc().then(function () {
+                            setdata_loc()
+                        });
+                    }
+                    else{
+                        document.getElementById("phase-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = setProject_compare(project, 0);
+                        document.getElementById("phases-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = setProject_compare(project, 0);
+                        document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = project[0].name + ", " + moment(project[0].start_date).format("MMM, YYYY");
+                        document.getElementById("phases-header").getElementsByTagName("span")[0].innerHTML = project[0].name + ", " + moment(project[0].start_date).format("MMM, YYYY");
+                        for (var d = 0; d < load_retrievedData.length; d++){
+                            var row = document.getElementById("avg-table").querySelector("[data-timeval='" + load_retrievedData[d]["timeval"] + "']");
+                            row.cells[load_retrievedData[d]["phase"] + 1].innerText = "-"
+
+                        }
+                        var rows = document.getElementById("avg-table").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+                        for (var i = 0; i < rows.length; i++) {
+                            document.getElementById("avg-table").rows[i + 1].cells[3].innerText = "-";
+                            document.getElementById("avg-table").rows[i + 1].cells[4].innerText = "-";
+                            document.getElementById("avg-table").rows[i + 1].cells[5].classList.add("bad");
+                            document.getElementById("avg_1").innerText = document.getElementById("avg-table").rows[6].cells[3].innerText;
+                            document.getElementById("avg_2").innerText = document.getElementById("avg-table").rows[6].cells[4].innerText + "%";
+                            document.getElementById("avg_3").innerText = document.getElementById("avg-table").rows[5].cells[3].innerText;
+                            document.getElementById("avg_4").innerText = document.getElementById("avg-table").rows[5].cells[4].innerText + "%";
+                            document.getElementById("avg_1").nextElementSibling.classList.add("bad");
+                            document.getElementById("avg_3").nextElementSibling.classList.add("bad");
+
+                        }
+                        alert("Sorry, you can't compare this location because it has 1 survey.");
+                    }
+                })
+            }
+
+            function setdata_loc() {
+
+                if (load_retrievedData == "") {
+                    return;
+                }
+                var dir = getCurrentDirection();
+                var day = getCurrentDay();
+                document.getElementById("directions-header").getElementsByTagName("span")[0].innerText = document.getElementById("directions-popup").getElementsByClassName("selected")[0].getElementsByTagName("span")[0].innerText;
+                document.getElementById("day-header").getElementsByTagName("span")[0].innerText = document.getElementById("day-popup").getElementsByClassName("selected")[0].getElementsByTagName("span")[0].innerText;
+                var project = location_details.project;
+                {#console.log("project",project)#}
+                speed1  = project.filter(i => i.id==getSelectedProject("suvery1"))[0];
+                speed2  = project.filter(i => i.id==getSelectedProject("survey2"))[0];
+
+                if (speed1 !== speed2) {
+                    document.getElementById("s1-speedlimit").getElementsByTagName("span")[0].innerHTML = speed1.speed_limit;
+                    document.getElementById("s2-speedlimit").getElementsByTagName("span")[0].innerHTML = speed2.speed_limit;
+
+                    for (var d = 0; d < load_retrievedData.length; d++) {
+                        if (load_retrievedData[d]["day"] == day && load_retrievedData[d]["direction__order"] == dir) {
+                            var row = document.getElementById("avg-table").querySelector("[data-timeval='" + load_retrievedData[d]["timeval"] + "']");
+                            var rowIndex = row.rowIndex
+                            if (load_retrievedData[d]["avg"] != 0) {
+                                row.cells[load_retrievedData[d]["phase"] + 1].innerText = load_retrievedData[d]["avg"].toFixed(1)
+                                //console.log(row.cells[load_retrievedData[d]["phase"] + 1].innerText)
+                            } else {
+                                row.cells[load_retrievedData[d]["phase"] + 1].innerText = "-"
+                                //console.log( row.cells[load_retrievedData[d]["phase"] + 1].innerText = "-")
+                            }
+                            var row = document.getElementById("eigth-table").querySelector("[data-timeval='" + load_retrievedData[d]["timeval"] + "']");
+                            if (load_retrievedData[d]["perc_85th"] != 0) {
+                                row.cells[load_retrievedData[d]["phase"] + 1].innerText = load_retrievedData[d]["perc_85th"].toFixed(1)
+                            } else {
+                                row.cells[load_retrievedData[d]["phase"] + 1].innerText = "-"
+                            }
+                            var row = document.getElementById("nine-table").querySelector("[data-timeval='" + load_retrievedData[d]["timeval"] + "']");
+                            if (load_retrievedData[d]["perc_95th"] != 0) {
+                                row.cells[load_retrievedData[d]["phase"] + 1].innerText = load_retrievedData[d]["perc_95th"].toFixed(1)
+                            } else {
+                                row.cells[load_retrievedData[d]["phase"] + 1].innerText = "-"
+                            }
+                        }
+                    }
+                    var rows = document.getElementById("avg-table").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+
+                    for (var i = 0; i < rows.length; i++) {
+
+
+                        document.getElementById("avg-table").rows[i + 1].cells[3].innerText = (parseFloat(rows[i].cells[2].innerText) - parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+                        var val = (parseFloat(document.getElementById("avg-table").rows[i + 1].cells[3].innerText) * 100 / parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+                        if (val != "-") {
+                            document.getElementById("avg-table").rows[i + 1].cells[4].innerText = val;
+                        } else {
+                            document.getElementById("avg-table").rows[i + 1].cells[4].innerText = "-";
+                        }
+                        if (val <= 0) {
+                            document.getElementById("avg-table").rows[i + 1].cells[5].classList.add("good");
+                            document.getElementById("avg-table").rows[i + 1].cells[5].classList.remove("bad");
+                        } else {
+                            document.getElementById("avg-table").rows[i + 1].cells[5].classList.remove("good");
+                            document.getElementById("avg-table").rows[i + 1].cells[5].classList.add("bad");
+                        }
+                    }
+
+                    document.getElementById("avg_1").innerText = document.getElementById("avg-table").rows[6].cells[3].innerText;
+                    if (document.getElementById("avg-table").rows[6].cells[3].innerText <= 0) {
+                        document.getElementById("avg_1").nextElementSibling.classList.add("good");
+                        document.getElementById("avg_1").nextElementSibling.classList.remove("bad");
+                    } else {
+                        document.getElementById("avg_1").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_1").nextElementSibling.classList.add("bad");
+                    }
+                    document.getElementById("avg_2").innerText = document.getElementById("avg-table").rows[6].cells[4].innerText;
+                    +"%";
+                    document.getElementById("avg_3").innerText = document.getElementById("avg-table").rows[5].cells[3].innerText;
+                    if (document.getElementById("avg-table").rows[5].cells[3].innerText <= 0) {
+                        document.getElementById("avg_3").nextElementSibling.classList.add("good");
+                        document.getElementById("avg_3").nextElementSibling.classList.remove("bad");
+                    } else {
+                        document.getElementById("avg_3").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_3").nextElementSibling.classList.add("bad");
+                    }
+                    document.getElementById("avg_4").innerText = document.getElementById("avg-table").rows[5].cells[4].innerText + "%";
+                    var rows = document.getElementById("eigth-table").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+                    for (var i = 0; i < rows.length; i++) {
+
+
+                        document.getElementById("eigth-table").rows[i + 1].cells[3].innerText = (parseFloat(rows[i].cells[2].innerText) - parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+                        var val = (parseFloat(document.getElementById("eigth-table").rows[i + 1].cells[3].innerText) * 100 / parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+                        if (val != "-") {
+                            document.getElementById("eigth-table").rows[i + 1].cells[4].innerText = val;
+                        } else {
+                            document.getElementById("eigth-table").rows[i + 1].cells[4].innerText = "-";
+                        }
+                        if (val <= 0) {
+                            document.getElementById("eigth-table").rows[i + 1].cells[5].classList.add("good");
+                            document.getElementById("eigth-table").rows[i + 1].cells[5].classList.remove("bad");
+                        } else {
+                            document.getElementById("eigth-table").rows[i + 1].cells[5].classList.remove("good");
+                            document.getElementById("eigth-table").rows[i + 1].cells[5].classList.add("bad");
+                        }
+                    }
+                    document.getElementById("avg_9").innerText = document.getElementById("eigth-table").rows[6].cells[3].innerText;
+                    if (document.getElementById("eigth-table").rows[6].cells[3].innerText <= 0) {
+                        document.getElementById("avg_9").nextElementSibling.classList.add("good");
+                        document.getElementById("avg_9").nextElementSibling.classList.remove("bad");
+                    } else {
+                        document.getElementById("avg_9").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_9").nextElementSibling.classList.add("bad");
+                    }
+                    document.getElementById("avg_10").innerText = document.getElementById("eigth-table").rows[6].cells[4].innerText;
+                    +"%";
+                    document.getElementById("avg_11").innerText = document.getElementById("eigth-table").rows[5].cells[3].innerText;
+                    if (document.getElementById("eigth-table").rows[5].cells[3].innerText <= 0) {
+                        document.getElementById("avg_11").nextElementSibling.classList.add("good");
+                        document.getElementById("avg_11").nextElementSibling.classList.remove("bad");
+                    } else {
+                        document.getElementById("avg_11").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_11").nextElementSibling.classList.add("bad");
+                    }
+                    document.getElementById("avg_12").innerText = document.getElementById("eigth-table").rows[5].cells[4].innerText + "%";
+
+                    var rows = document.getElementById("nine-table").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+                    for (var i = 0; i < rows.length; i++) {
+                        document.getElementById("nine-table").rows[i + 1].cells[3].innerText = (parseFloat(rows[i].cells[2].innerText) - parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+                        var val = (parseFloat(document.getElementById("nine-table").rows[i + 1].cells[3].innerText) * 100 / parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+                        if (val != "-") {
+                            document.getElementById("nine-table").rows[i + 1].cells[4].innerText = val;
+                        } else {
+                            document.getElementById("nine-table").rows[i + 1].cells[4].innerText = "-";
+                        }
+                        if (val <= 0) {
+                            document.getElementById("nine-table").rows[i + 1].cells[5].classList.add("good");
+                            document.getElementById("nine-table").rows[i + 1].cells[5].classList.remove("bad");
+                        } else {
+                            document.getElementById("nine-table").rows[i + 1].cells[5].classList.remove("good");
+                            document.getElementById("nine-table").rows[i + 1].cells[5].classList.add("bad");
+                        }
+                    }
+                    document.getElementById("avg_13").innerText = document.getElementById("nine-table").rows[6].cells[3].innerText;
+                    if (document.getElementById("nine-table").rows[6].cells[3].innerText <= 0) {
+                        document.getElementById("avg_13").nextElementSibling.classList.add("good");
+                        document.getElementById("avg_13").nextElementSibling.classList.remove("bad");
+                    } else {
+                        document.getElementById("avg_13").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_13").nextElementSibling.classList.add("bad");
+                    }
+                    document.getElementById("avg_14").innerText = document.getElementById("nine-table").rows[6].cells[4].innerText + "%";
+                    document.getElementById("avg_15").innerText = document.getElementById("nine-table").rows[3].cells[3].innerText;
+                    if (document.getElementById("nine-table").rows[3].cells[3].innerText <= 0) {
+                        document.getElementById("avg_15").nextElementSibling.classList.add("good");
+                        document.getElementById("avg_15").nextElementSibling.classList.remove("bad");
+                    } else {
+                        document.getElementById("avg_15").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_15").nextElementSibling.classList.add("bad");
+                    }
+                    document.getElementById("avg_16").innerText = document.getElementById("nine-table").rows[5].cells[4].innerText + "%";
+                }
+                else {
+                    for (var d = 0; d < load_retrievedData.length; d++){
+                            var row = document.getElementById("avg-table").querySelector("[data-timeval='" + load_retrievedData[d]["timeval"] + "']");
+                            row.cells[load_retrievedData[d]["phase"] + 1].innerText = "-"
+
+                        }
+                        var rows = document.getElementById("avg-table").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+                        for (var i = 0; i < rows.length; i++) {
+                            document.getElementById("avg-table").rows[i + 1].cells[2].innerText = "-";
+                            document.getElementById("avg-table").rows[i + 1].cells[3].innerText = "-";
+                            document.getElementById("avg-table").rows[i + 1].cells[4].innerText = "-";
+                            document.getElementById("avg-table").rows[i + 1].cells[5].classList.add("bad");
+                            document.getElementById("avg_1").innerText = document.getElementById("avg-table").rows[6].cells[3].innerText;
+                            document.getElementById("avg_2").innerText = document.getElementById("avg-table").rows[6].cells[4].innerText + "%";
+                            document.getElementById("avg_3").innerText = document.getElementById("avg-table").rows[5].cells[3].innerText;
+                            document.getElementById("avg_4").innerText = document.getElementById("avg-table").rows[5].cells[4].innerText + "%";
+                            document.getElementById("avg_1").nextElementSibling.classList.add("bad");
+                            document.getElementById("avg_3").nextElementSibling.classList.add("bad");
+
+                        }
+                        alert("Sorry, you can't compare the same survey.");
+                }
+            }
+        </script>
+    {% else %}
+        <script>
+            console.log("else part")
+            var speed_type = "avg"
+            function viewSite(id) {
+                
+                document.getElementById("location_id").value = id;
+                loadLocation(id).then(function() {
+                    document.getElementById("directions-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = location_details.directions;
+                    setPopupListeners(document.getElementById("directions-popup"));
+                    var items = document.getElementById("directions-popup").getElementsByClassName("menu-item");
+                    for (var i = 0; i < items.length; i++) {
+                        items[i].addEventListener("click", function() {
+                            setdata_loc()
+                            $(".selection-header").removeClass("activeDropDown");
+                        });
+                    }
+                    var items = document.getElementById("day-popup").getElementsByClassName("menu-item");
+                    for (var i = 0; i < items.length; i++) {
+                        items[i].addEventListener("click", function() {
+                            setdata_loc()
+                            $(".selection-header").removeClass("activeDropDown");
+                        });
+                    }
+                    var project = location_details.project;
+                    /*
+                    for (let i=0;i<project.length;i++)
+                    {
+                        if (i>3){break;}
+                        document.getElementById("s"+String(i+1)+"-speedlimit").innerText = project[i].speed_limit
+                    }
+                    */
+                    var surey_title = document.getElementById('survey_title').querySelectorAll('th');
+                    for (let i=0;i<5;i++)
+                    {
+                        
+                        if ((i+1)<=project.length)
+                        {
+                            document.getElementById("s"+String(i+1)+"-speedlimit").innerText = project[i].speed_limit;
+                            surey_title[i+1].innerText = moment(project[i].start_date).format("MMM, YYYY")
+                        }
+                        else{
+                            document.getElementById("s"+String(i+1)+"-speedlimit").innerText = "-";
+                            surey_title[i+1].innerText = "-";
+                        }
+                        //var projectDate = moment(project[i].start_date).format("MMM, YYYY");
+                        
+                        
+                    }
+                    dataset_loc(flg = false,show_greyed = true,public_view=true).then(function() {
+                        setdata_loc()
+                    });
+                });
+            }
+            function setdata_loc() {
+
+                if (load_retrievedData == "" || speed_type == "") {
+                    return;
+                }
+                reset_table()
+                var dir = getCurrentDirection();
+                var day = parseInt(getCurrentDay());
+                document.getElementById("directions-header").getElementsByTagName("span")[0].innerText = document.getElementById("directions-popup").getElementsByClassName("selected")[0].getElementsByTagName("span")[0].innerText;
+                document.getElementById("day-header").getElementsByTagName("span")[0].innerText = document.getElementById("day-popup").getElementsByClassName("selected")[0].getElementsByTagName("span")[0].innerText;
+                for (var d = 0; d < load_retrievedData.length; d++) {
+                    console.log(load_retrievedData[d]);
+                    if (load_retrievedData[d]["day"] == day && load_retrievedData[d]["direction__order"] == dir) {
+                        var row = document.getElementById("avg-table").querySelector("[data-timeval='" + load_retrievedData[d]["timeval"] + "']");
+                        var rowIndex = row.rowIndex
+                   
+                        
+                        if (load_retrievedData[d][speed_type] != 0) {
+                            
+                            row.cells[load_retrievedData[d]["phase"] + 1].innerText = load_retrievedData[d][speed_type].toFixed(1)
+                                //console.log(row.cells[load_retrievedData[d]["phase"] + 1].innerText)
+                        } else {
+                            row.cells[load_retrievedData[d]["phase"] + 1].innerText = "-"
+                                //console.log( row.cells[load_retrievedData[d]["phase"] + 1].innerText = "-")
+                        }
+                    }
+
+                }
+                if (document.getElementById("s5-speedlimit").innerText === "-"){
+                    document.getElementById("s5-td").innerText = '-';
+                    document.getElementById("s5-td1").innerText = '-';
+                    document.getElementById("s5-td2").innerText = '-';
+                    document.getElementById("s5-td3").innerText = '-';
+                    document.getElementById("s5-td4").innerText = '-';
+                    document.getElementById("s5-td5").innerText = '-';
+                 }
+
+                var rows = document.getElementById("avg-table").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+                for (var i=0;i<rows.length;i++){
+                    let diff  = (parseFloat(rows[i].cells[2].innerText) - parseFloat(rows[i].cells[1].innerText)).toFixed(1)
+                    console.log(typeof diff)
+                    console.log("difference value is: " + diff);
+                    if (isNaN(diff))
+                    {document.getElementById("table-2").rows[i + 2].cells[1].innerText = '-';}
+                    else{document.getElementById("table-2").rows[i + 2].cells[1].innerText = diff}
+                    
+                    var val = (parseFloat(document.getElementById("table-2").rows[i + 2].cells[1].innerText) * 100 / parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+
+                    if (val != "-" && isNaN(val) == false){
+                        document.getElementById("table-2").rows[i + 2].cells[2].innerText = val+"%";
+                    }
+                    else{
+                        val = "-";
+                        document.getElementById("table-2").rows[i + 2].cells[2].innerText = "-";
+                    }
+
+                    if (val <=0){
+                        document.getElementById("table-2").rows[i + 2].cells[3].classList.add("good");
+                        document.getElementById("table-2").rows[i + 2].cells[3].classList.remove("bad");
+                    }
+                    else if (val =="-")
+                    {
+                        document.getElementById("table-2").rows[i + 2].cells[3].classList.remove("good");
+                        document.getElementById("table-2").rows[i + 2].cells[3].classList.remove("bad");
+                    }
+                    else{
+                        document.getElementById("table-2").rows[i + 2].cells[3].classList.remove("good");
+                        document.getElementById("table-2").rows[i + 2].cells[3].classList.add("bad");
+                    }
+
+                    if(document.getElementById("table-3")){
+
+
+                        let diff =  (parseFloat(rows[i].cells[3].innerText) - parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+                        if (isNaN(diff))
+                        {document.getElementById("table-3").rows[i + 2].cells[1].innerText ="-";}
+                        else{document.getElementById("table-3").rows[i + 2].cells[1].innerText =diff;}
+                        if (document.getElementById("table-3").rows[i + 2].cells[1].innerText == "NaN"){document.getElementById("table-3").rows[i + 2].cells[1].innerText = "-"}
+                        var val = (parseFloat(document.getElementById("table-3").rows[i + 2].cells[1].innerText) * 100 / parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+            
+                        if (val != "NaN" && isNaN(val)==false){
+                            document.getElementById("table-3").rows[i + 2].cells[2].innerText = val;
+                        }
+                        else{
+                            val = "-"
+                         document.getElementById("table-3").rows[i + 2].cells[2].innerText = "-";
+                        }
+            
+                        if (val <=0){
+                            document.getElementById("table-3").rows[i + 2].cells[3].classList.add("good");
+                            document.getElementById("table-3").rows[i + 2].cells[3].classList.remove("bad");
+                        }
+                        else if ( val == "-")
+                        {
+                            document.getElementById("table-3").rows[i + 2].cells[3].classList.remove("good");
+                            document.getElementById("table-3").rows[i + 2].cells[3].classList.remove("bad");
+                        }
+                        else{
+                            document.getElementById("table-3").rows[i + 2].cells[3].classList.remove("good");
+                            document.getElementById("table-3").rows[i + 2].cells[3].classList.add("bad");
+                        }
+                    }
+                    if(document.getElementById("table-6")){
+
+
+                        let diff = (parseFloat(rows[i].cells[4].innerText) - parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+                        
+                        if (isNaN(diff))
+                        {document.getElementById("table-6").rows[i + 2].cells[1].innerText = "-";}
+                        else{document.getElementById("table-6").rows[i + 2].cells[1].innerText = diff;}
+                        
+                        if (document.getElementById("table-6").rows[i + 2].cells[1].innerText == "NaN"){document.getElementById("table-6").rows[i + 2].cells[1].innerText = "-"}
+                            var val = (parseFloat(document.getElementById("table-6").rows[i + 2].cells[1].innerText) * 100 / parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+                        
+                        if (val != "NaN" && isNaN(val)==false){
+                            document.getElementById("table-6").rows[i + 2].cells[2].innerText = val;
+                        }
+                        else{
+                            val = "-"
+                            document.getElementById("table-6").rows[i + 2].cells[2].innerText = "-";
+                        }
+            
+                        if (val <=0){
+
+                            document.getElementById("table-6").rows[i + 2].cells[3].classList.add("good");
+                            document.getElementById("table-6").rows[i + 2].cells[3].classList.remove("bad");
+                        }
+                        else if (val=="-")
+                        {
+                            document.getElementById("table-6").rows[i + 2].cells[3].classList.remove("good");
+                            document.getElementById("table-6").rows[i + 2].cells[3].classList.remove("bad");
+                        }
+                        else{
+                            
+                            document.getElementById("table-6").rows[i + 2].cells[3].classList.remove("good");
+                            document.getElementById("table-6").rows[i + 2].cells[3].classList.add("bad");
+                        }
+                    }
+                    if(document.getElementById("table-25")){
+
+
+                        let diff =  (parseFloat(rows[i].cells[5].innerText) - parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+                        if (isNaN(diff))
+                        {document.getElementById("table-25").rows[i + 2].cells[1].innerText ="-";}
+                        else{document.getElementById("table-25").rows[i + 2].cells[1].innerText =diff;}
+                        if (document.getElementById("table-25").rows[i + 2].cells[1].innerText == "NaN"){document.getElementById("table-25").rows[i + 2].cells[1].innerText = "-"}
+                            var val = (parseFloat(document.getElementById("table-25").rows[i + 2].cells[1].innerText) * 100 / parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+
+                        if (val != "NaN" && isNaN(val)==false){
+                            document.getElementById("table-25").rows[i + 2].cells[2].innerText = val;
+                        }
+                        else{
+                            val = "-"
+                         document.getElementById("table-25").rows[i + 2].cells[2].innerText = "-";
+                        }
+
+                        if (val <=0){
+                            document.getElementById("table-25").rows[i + 2].cells[3].classList.add("good");
+                            document.getElementById("table-25").rows[i + 2].cells[3].classList.remove("bad");
+                        }
+                        else if ( val == "-")
+                        {
+                            document.getElementById("table-25").rows[i + 2].cells[3].classList.remove("good");
+                            document.getElementById("table-25").rows[i + 2].cells[3].classList.remove("bad");
+                        }
+                        else{
+                            document.getElementById("table-25").rows[i + 2].cells[3].classList.remove("good");
+                            document.getElementById("table-25").rows[i + 2].cells[3].classList.add("bad");
+                        }
+                    }
+                }
+
+                document.getElementById("avg_1").innerText = document.getElementById("table-2").rows[7].cells[1].innerText;
+                if (document.getElementById("table-2").rows[7].cells[1].innerText <= 0){
+                    document.getElementById("avg_1").nextElementSibling.classList.add("good");
+                    document.getElementById("avg_1").nextElementSibling.classList.remove("bad");
+                }
+                else if(document.getElementById("table-2").rows[7].cells[1].innerText == "-")
+                {
+                    document.getElementById("avg_1").nextElementSibling.classList.remove("good");
+                    document.getElementById("avg_1").nextElementSibling.classList.remove("bad");
+                }
+                else{
+                    document.getElementById("avg_1").nextElementSibling.classList.remove("good");
+                    document.getElementById("avg_1").nextElementSibling.classList.add("bad");
+                }
+
+                document.getElementById("avg_2").innerText = document.getElementById("table-2").rows[7].cells[2].innerText;
+                document.getElementById("avg_3").innerText = document.getElementById("table-2").rows[6].cells[1].innerText;
+                if (document.getElementById("table-2").rows[6].cells[1].innerText <= 0){
+                    document.getElementById("avg_3").nextElementSibling.classList.add("good");
+                    document.getElementById("avg_3").nextElementSibling.classList.remove("bad");
+                    document.getElementById("avg_4").innerText = document.getElementById("table-2").rows[6].cells[2].innerText;
+                }
+                else if(document.getElementById("table-2").rows[6].cells[1].innerText == "-")
+                {
+                    document.getElementById("avg_3").nextElementSibling.classList.remove("good");
+                    document.getElementById("avg_3").nextElementSibling.classList.remove("bad");
+                    document.getElementById("avg_4").innerText = "";
+                }
+                else{
+                    document.getElementById("avg_3").nextElementSibling.classList.remove("good");
+                    document.getElementById("avg_3").nextElementSibling.classList.add("bad");
+                    document.getElementById("avg_4").innerText = document.getElementById("table-2").rows[6].cells[2].innerText ;
+                }
+                
+                if(document.getElementById("table-3")){
+                    document.getElementById("avg_5").innerText = document.getElementById("table-3").rows[7].cells[1].innerText;
+                    if (document.getElementById("table-3").rows[7].cells[1].innerText <= 0){
+                        document.getElementById("avg_5").nextElementSibling.classList.add("good");
+                        document.getElementById("avg_5").nextElementSibling.classList.remove("bad");
+                        document.getElementById("avg_6").innerText = document.getElementById("table-3").rows[7].cells[2].innerText + "%";
+                    }
+                    else if(document.getElementById("table-3").rows[7].cells[1].innerText == "-")
+                    {
+                        document.getElementById("avg_5").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_5").nextElementSibling.classList.remove("bad");
+                        document.getElementById("avg_6").innerText = "";
+                    }
+                    else{
+                        document.getElementById("avg_5").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_5").nextElementSibling.classList.add("bad");
+                        document.getElementById("avg_6").innerText = document.getElementById("table-3").rows[7].cells[2].innerText + "%";
+                    }
+                    
+                    document.getElementById("avg_7").innerText = document.getElementById("table-3").rows[6].cells[1].innerText;
+                    if (document.getElementById("table-3").rows[6].cells[1].innerText <= 0){
+                        document.getElementById("avg_7").nextElementSibling.classList.add("good");
+                        document.getElementById("avg_7").nextElementSibling.classList.remove("bad");
+                        document.getElementById("avg_8").innerText = document.getElementById("table-3").rows[6].cells[2].innerText + "%";
+                    }
+                    else if (document.getElementById("table-3").rows[6].cells[1].innerText =="-"){
+                        document.getElementById("avg_7").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_7").nextElementSibling.classList.remove("bad");
+                        document.getElementById("avg_8").innerText = "";
+                    }
+                    else{
+                        document.getElementById("avg_7").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_7").nextElementSibling.classList.add("bad");
+                        document.getElementById("avg_8").innerText = document.getElementById("table-3").rows[6].cells[2].innerText + "%";
+                    }
+                    
+                }
+                if(document.getElementById("table-6")){
+                    document.getElementById("avg_17").innerText = document.getElementById("table-6").rows[7].cells[1].innerText;
+                    if (document.getElementById("table-6").rows[7].cells[1].innerText <= 0){
+                        document.getElementById("avg_17").nextElementSibling.classList.add("good");
+                        document.getElementById("avg_17").nextElementSibling.classList.remove("bad");
+                        document.getElementById("avg_18").innerText = document.getElementById("table-6").rows[7].cells[2].innerText + "%";
+                    }
+                    else if (document.getElementById("table-6").rows[7].cells[1].innerText == "-"){
+                        document.getElementById("avg_17").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_17").nextElementSibling.classList.remove("bad");
+                        document.getElementById("avg_18").innerText = "";
+                    }
+                    else{
+                        document.getElementById("avg_17").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_17").nextElementSibling.classList.add("bad");
+                        document.getElementById("avg_18").innerText = document.getElementById("table-6").rows[7].cells[2].innerText + "%";
+                    }
+                    
+                    document.getElementById("avg_19").innerText = document.getElementById("table-6").rows[6].cells[1].innerText;
+                    if (document.getElementById("table-6").rows[6].cells[1].innerText <= 0){
+                        document.getElementById("avg_19").nextElementSibling.classList.add("good");
+                        document.getElementById("avg_19").nextElementSibling.classList.remove("bad");
+                        document.getElementById("avg_20").innerText = document.getElementById("table-6").rows[6].cells[2].innerText + "%";
+                    }
+                    else if (document.getElementById("table-6").rows[6].cells[1].innerText == "-"){
+                        document.getElementById("avg_19").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_19").nextElementSibling.classList.remove("bad");
+                        document.getElementById("avg_20").innerText = "";
+                    }
+                    else{
+                        document.getElementById("avg_19").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_19").nextElementSibling.classList.add("bad");
+                        document.getElementById("avg_20").innerText = document.getElementById("table-6").rows[6].cells[2].innerText + "%";
+                    }
+                    
+                }
+                if(document.getElementById("table-25")){
+                    document.getElementById("avg_30").innerText = document.getElementById("table-25").rows[7].cells[1].innerText;
+                    if (document.getElementById("table-25").rows[7].cells[1].innerText <= 0){
+                        document.getElementById("avg_30").nextElementSibling.classList.add("good");
+                        document.getElementById("avg_30").nextElementSibling.classList.remove("bad");
+                        document.getElementById("avg_31").innerText = document.getElementById("table-25").rows[7].cells[2].innerText + "%";
+                    }
+                    else if(document.getElementById("table-25").rows[7].cells[1].innerText == "-")
+                    {
+                        document.getElementById("avg_30").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_30").nextElementSibling.classList.remove("bad");
+                        document.getElementById("avg_31").innerText = "";
+                    }
+                    else{
+                        document.getElementById("avg_30").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_30").nextElementSibling.classList.add("bad");
+                        document.getElementById("avg_31").innerText = document.getElementById("table-25").rows[7].cells[2].innerText + "%";
+                    }
+
+                    document.getElementById("avg_32").innerText = document.getElementById("table-25").rows[6].cells[1].innerText;
+                    if (document.getElementById("table-25").rows[6].cells[1].innerText <= 0){
+                        document.getElementById("avg_32").nextElementSibling.classList.add("good");
+                        document.getElementById("avg_32").nextElementSibling.classList.remove("bad");
+                        document.getElementById("avg_33").innerText = document.getElementById("table-25").rows[6].cells[2].innerText + "%";
+                    }
+                    else if (document.getElementById("table-25").rows[6].cells[1].innerText =="-"){
+                        document.getElementById("avg_32").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_32").nextElementSibling.classList.remove("bad");
+                        document.getElementById("avg_33").innerText = "";
+                    }
+                    else{
+                        document.getElementById("avg_32").nextElementSibling.classList.remove("good");
+                        document.getElementById("avg_32").nextElementSibling.classList.add("bad");
+                        document.getElementById("avg_33").innerText = document.getElementById("table-25").rows[6].cells[2].innerText + "%";
+                    }
+
+                }
+            }
+
+            function avg() {
+                speed_type="avg";
+                document.getElementById('speed_type_header').innerText="Average Speed (mph)";
+                setdata_loc();
+                $(".selection-header").removeClass("activeDropDown");
+            }
+
+            function eighth() {
+                speed_type="perc_85th";
+                document.getElementById('speed_type_header').innerText="85th %ile Speed (mph)";
+                setdata_loc();
+                $(".selection-header").removeClass("activeDropDown");
+         
+            }
+
+            function nineth() {
+                speed_type="perc_95th";
+                document.getElementById('speed_type_header').innerText="95th %ile Speed (mph)";
+                setdata_loc();
+                $(".selection-header").removeClass("activeDropDown");
+            }
+            function reset_table()
+            {
+               
+                var tr = document.getElementById('avg-table').querySelector('tbody').querySelectorAll('tr');
+                for (let i = 0; i < tr.length; i++) {
+                    for (let j=1;j<5;j++)
+                    {
+                        tr[i].cells[j].innerText="-"
+                        console.log("table body -", tr[i].cells[j])
+                    }
+                    
+                }
+
+            }
+        </script>
+    {% endif %}
+    {% endblock js %}

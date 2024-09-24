@@ -1,0 +1,195 @@
+{% extends "aecon/admin-base.html" %}
+
+
+{% block selection %}Add New{% endblock %}
+
+{% block content %}
+<div class="view" id="add-view">
+
+    <div class="row align-items-center"  style="height:50px">
+        <div class="col-12 my-auto d-flex align-items-center" >
+            <div><h6 class="text-muted" style="margin:0">Add New</h6></div>
+
+            <ul class="nav" style="margin-left:20px;">
+                <li><a class="btn nav-button sub-view-nav selected" data-view="add-view" data-sub-view="atc-basic-overview">Project</a></li>
+                <li><a class="btn nav-button sub-view-nav" data-view="add-view" data-sub-view="atc-basic-volumes">Client</a></li>
+                <li><a class="btn nav-button sub-view-nav" data-view="add-view" data-sub-view="add-api">API</a></li>
+                <li><a class="btn nav-button sub-view-nav" data-view="add-view" data-sub-view="add-location">Location</a></li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="sub-view  d-none" id="add-api">
+        <div class="row" style=";width:100%;height:100%">
+            <div class="col-12 col-lg-5" style="height:100%">
+                <div class="card header-shadow" style="max-height:100%">
+                    <h5 class="card-header  bg-transparent">
+                        Add API
+                    </h5>
+                    <div class="card-body" style="overflow:auto;max-height:100%">
+                        <form id="api-form" method="post">
+                            {% csrf_token %}
+                            <div class="form-group row">
+                                <label for="apiName" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Location field" data-content="Unique name that identifies this API">API Name</label>
+                                <div class="col-12 col-lg-7">
+                                  <input type="text" class="form-control" id="apiName" name="apiName">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="apiProvider" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Unique Id field" data-content="Name of API provider, eg Vivacity.">API Provider</label>
+                                <div class="col-12 col-lg-7">
+                                  <select class="form-control toggle-fields" id="apiProvider" name="apiProvider">
+                                      <option>Vivacity</option>
+
+                                  </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="apiURL" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Unique Id field" data-content="A String that uniquely identifies this location. For any data received via API, it should be the unique identifier of that data on the API. For uploaded data like ATCs and JTCs, it can be any unique string">API URL</label>
+                                <div class="col-12 col-lg-7">
+                                  <input type="text" class="form-control" id="apiURL" name="baseUrl" value="https://api.vivacitylabs.com/crt-standard/v1/counts">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="apiKey" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Location field" data-content="Type of survey done at this location">API Key</label>
+                                <div class="col-12 col-lg-7">
+                                  <input type="text" class="form-control" id="apiKey" name="APIKey" value="sdjvknw94g90vnsd9842hfhn08wHVCW094YFGHW">
+                                </div>
+                            </div>
+
+
+                        </form>
+
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                                <button class="btn btn-outline-dark" style="margin-left:auto" onclick="saveVivacityAPI('create');">Save</button>
+                                <button class="btn btn-outline-dark" style="margin-left:auto" onclick="testAPI();">Test</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-2" style="max-height:100%">
+                <div class="card header-shadow mb-3" style="max-height:50%">
+                    <div class="card-header  bg-transparent">
+                        <h5>Classes</h5>
+                        <div class="fn-container d-flex">
+                            <div class="fn text-muted" onclick="deleteButtonPressed('shift');"><i class="fa fa-plus"></i></div>
+                            <div class="fn text-muted" onclick="deleteButtonPressed('shift');"><i class="fa fa-trash"></i></div>
+                            <div class="fn text-muted" onclick="deleteButtonPressed('shift');"><i>G</i></div>
+                        </div>
+
+                    </div>
+                    <div class="card-body" style="padding-left:0;padding-right:0">
+                        <div class="col-12" style="padding:0">
+
+                            <div class="conduit-selectable-menu multi" id="obsclass-container">
+                                <ul >
+                                     <li id="5day" class="menu-item">
+                                        <a href="#" class="selected">
+
+                                            <span >Pedestrian</span>
+                                        </a>
+                                    </li>
+                                    <li id="7day" class="menu-item">
+                                        <a href="#" >
+
+                                            <span >Cyclist</span>
+                                        </a>
+                                    </li>
+                                    <li id="Car" class="menu-item">
+                                        <a href="#" >
+
+                                            <span>Car</span>
+                                        </a>
+                                    </li>
+
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div class="col-12 col-lg-5" style="max-height:100%">
+                <div class="card header-shadow mb-3" style="height:100%">
+                    <h5 class="card-header  bg-transparent">
+                        API content
+                    </h5>
+                    <div class="card-body" style="height:100%;overflow:auto">
+                        <pre>
+                            <code style="width:100%" id="json-container">
+
+                            </code>
+                        </pre>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+
+
+    <div class="sub-view" id="add-location" >
+        <div class="row" style=";width:100%;height:100%">
+            <div class="col-12 col-lg-5" style="height:100%">
+                <div class="card header-shadow" style="max-height:100%">
+                    <h5 class="card-header  bg-transparent">
+                        Add Location
+                    </h5>
+                    <div class="card-body" style="overflow:auto;max-height:100%">
+                        {{form}}
+                        <div class="form-group row">
+                            <div class="col-lg-12">
+
+                                <button class="btn btn-outline-dark" style="margin-left:auto" onclick="saveLocation('create');">Save</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="col-12 col-lg-7" style="max-height:100%">
+                <div class="card header-shadow  mb-3" style="height:100%">
+
+                    <div class="card-body">
+                        <div class="col-12 " id="map-wrapper" style="width:100%;height:100%;padding:0;position:relative">
+                            <div class = "map-panel" id = "admin-map">
+
+                            </div>
+                            <div class="d-flex flex-column" style="position:absolute;bottom:20px;left:20px;z-index:3002">
+                                <div class="map-action-icon" style="background-color:rgba(255,255,255,0.7);padding:5px;border:1px solid grey;cursor:pointer" id="marker" data-action="marker" data-function="placeMarker"><img src="/static/tfl/marker.png" width="50" height="50"></div>
+                                <div class="map-action-icon" style="background-color:rgba(255,255,255,0.7);padding:5px;border:1px solid grey;cursor:pointer" id="line" data-action="line" data-function="startLineDraw"><img src="/static/nrtc/line.png" width="50" height="50"></div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+{% endblock %}

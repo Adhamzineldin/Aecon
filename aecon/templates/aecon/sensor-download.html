@@ -1,0 +1,335 @@
+{% extends "aecon/sensor-data.html" %}
+{% load staticversion %} {% load my_filters %} {% load client_tags %}
+{% block class %}
+    <div id="classes-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu multi" id="conduit-selectable-menu-selection">
+            {% distinct_client_classes %}
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+{% load staticversion %} {% load my_filters %} {% load client_tags %}
+
+    <div class="row h-100">
+      <h5 class="col-12 font-weight-bold py-2"> Please note, all data is in UTC</h5>
+      <div class="col-7 h-100 mb-2" id="d-form">
+
+        <div class="row align-items-center py-2" >
+            <div class="col-4 d-flex align-items-center" style="color:#646c9a;font-weight:600;">
+                Date Range
+                <div class="topbar__item" id="calendar" style="margin-left:auto"><span><i class="icon-calendar"></i></span></div>
+            </div>
+            <div class="col-8 form-input d-flex align-items-center">
+            <input type="date" name="startDate" required style="width:50%" class="form-control m-2" id="date_from">
+            <input type="date" name="endDate" required style="width:50%" class="form-control m-2" id="date_to">
+            </div>
+        </div>
+        <div class="row align-items-center py-2" >
+            <div class="col-4 d-flex align-items-center" style="color:#646c9a;font-weight:600;">
+            Classes
+            </div>
+            <div class="col-8 form-input">
+                <div class="selection-header classes-popup-trigger shadow col-md-12"><span>Classifications</span><i class="chevron-icon"></i></div>
+            </div>
+        </div>
+        <div class="row align-items-center py-4" style="height:50px">
+            <div class="col-4 d-flex align-items-center" style="color:#646c9a;font-weight:600;">
+            Directions
+            </div>
+            <div class="col-4 form-input" >
+                <input type="radio" name="directions" id="radio-split" class="css-checkbox" value="split" checked="checked">
+                <label for="radio-split" class="css-label cb0 radGroup2">Split by direction</label>
+            </div>
+            <div class="col-4 form-input" >
+                <input type="radio" name="directions" id="radio-combine" class="css-checkbox" value="combine">
+                <label for="radio-combine" class="css-label cb0 radGroup2">Combine directions</label>
+            </div>
+        </div> 
+        <div class="row" >
+            <div class="col-6">
+                <div class="row ">
+                    <div class="col-12 py-4" style="color:#646c9a;font-weight:600;">Calculations</div>
+                    <div class="col-12 form-input" style="height:50px">
+                        <input type="radio" name="calc" id="radio3" class="css-checkbox" value="hourly_averages" checked="checked">
+                        <label for="radio3" class="css-label cb0 radGroup2 ">Averages across Date range</label>
+                    </div>
+                    <div class="col-12 form-input" style="height:50px">
+                        <input type="radio" name="calc" id="radio4" class="css-checkbox" value="totals">
+                        <label for="radio4" class="css-label cb0 radGroup2" data-target="interval-column">Totals</label>
+                    </div>
+                    <div class="col-12 form-input" style="height:50px">
+                        <input type="radio" name="calc" id="radio5" class="css-checkbox" value="averages">
+                        <label for="radio5" class="css-label cb0 radGroup2">Weekday/Sat/Sun Averages</label>
+                    </div>
+                    {% if  request.user|has_group:'weather'%}
+                    <div class="col-12 form-input" style="height:50px">
+                        <input type="radio" name="calc" id="radio12" class="css-checkbox" value="weather">
+                        <label for="radio12" class="css-label cb0 radGroup2">Weather Data</label>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-6" id="interval-column">
+                <div class="row ">
+                    <div class="col-12 py-4" style="color:#646c9a;font-weight:600;">Intervals</div>
+                    <div class="col-6 form-input" style="height:50px">
+                        <input type="radio" name="period" id="radio7" class="css-checkbox" value="5" >
+                        <label for="radio7" class="css-label cb0 radGroup2">5 Minutes</label>
+                    </div>
+                    <div class="col-6 form-input" style="height:50px">
+                        <input type="radio" name="period" id="radio8" class="css-checkbox" value="15">
+                        <label for="radio8" class="css-label cb0 radGroup2">15 Minutes</label>
+                    </div>
+                    <div class="col-6 form-input" style="height:50px">
+                        <input type="radio" name="period" id="radio9" class="css-checkbox" value="30">
+                        <label for="radio9" class="css-label cb0 radGroup2">30 Minutes</label>
+                    </div>
+                    <div class="col-6 form-input" style="height:50px">
+                        <input type="radio" name="period" id="radio10" class="css-checkbox" value="60">
+                        <label for="radio10" class="css-label cb0 radGroup2">60 Minutes</label>
+                    </div>
+                    <div class="col-6 form-input" style="height:50px">
+                        <input type="radio" name="period" id="radio11" class="css-checkbox" value="D" checked="checked">
+                        <label for="radio11" class="css-label cb0 radGroup2">Daily</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if  request.user|has_group:'regional-report'%}
+            <div class="row">
+                <div class="col-6 d-flex align-items-center">
+                    <input type="radio" name="calc" id="radio6" class="css-checkbox" value="regional" checked="" >
+                    <label for="radio6" class="css-label cb0 radGroup2">Regional Report</label>
+                </div>
+                <div class="col-6 d-flex align-items-center" style="color:#646c9a;font-weight:400;">
+                    <select class="form-control m-2" style="width:100%" id="region" name="region">
+                    {% regional_areas %}
+                    </select>
+                </div>
+            </div>
+        {% endif %}
+        <div class="row " >
+            <div class="col-6 d-flex align-items-center" style="color:#646c9a;font-weight:600;">
+            Email Address
+            </div>
+            <div class="col-6 d-flex align-items-center">
+                <input type="text" class="form-control m-2 " name="email">
+            </div>
+        </div>
+        <div class="row align-items-center pt-4" >
+            <div class="col-12 p-0 py-4 text-center">
+                <button class=" btn shadow btn-traffic my-auto mr-1 ml-4 col-md-4" onclick="startDownload();">
+                <i class="icon-download mx-1"></i> Download</button>
+            </div>
+        </div>
+      </div>
+      <div class="col-5 p-3 h-100">
+          <div class="d-flex flex-column h-100">
+              <div class="row justify-content-center">
+                  <div class="col-12">
+                      <button class="btn btn-outline-dark m-1" onclick="selectAllSites();">Select All</button>
+                      <button class="btn btn-outline-dark m-1" onclick="clearAllSites();">Clear All</button>
+                  </div>
+              </div>
+              <div class="row justify-content-center flex-grow-1 h-100">
+                  <div class="col-12 h-100 p-3" style="overflow:auto">
+                      <div class="table-responsive h-100">
+                          <table class="table table-striped" id="selected-table">
+                              <thead>
+                              <th>Selected Sites</th>
+                              </thead>
+                              <tbody>
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+    </div>
+
+{% endblock %}
+{% block display_date %}
+var multiRv = document.getElementsByClassName("atcList");
+for (var i=0;i<multiRv.length;i++){
+    multiRv[i].classList.contains("multi")?"":multiRv[i].classList.add('multi');
+}
+{% comment %} document.getElementById("atcList").classList.contains("multi")?"":document.getElementById("atcList").classList.add('multi');
+ 
+{% endcomment %}
+{% endblock %}
+{% block js %}
+    <script>
+        var fileToDownload = null;
+        function notifySelectedClasses(){
+            var selected = getSelectedPopupIndexes("classes-popup");
+            //console.log("selected class",selected);
+            var allClasses = document.getElementById("classes-popup").getElementsByTagName("a");
+            //console.log("all classes",allClasses);
+            document.getElementsByClassName("classes-popup-trigger")[0].getElementsByTagName("span")[0].innerText = selected.length + " of " + (allClasses.length - 1) + " classes selected";
+        }  
+        notifySelectedClasses();
+        function viewSite(id,ele){
+            //console.log("viewSite")
+            if(!(ele.classList.contains("selected")))
+            {
+                let tr_id = document.getElementById("selected_"+ele.getAttribute("id"))
+                document.getElementById(ele.getAttribute("id")).classList.remove("selected");
+                removeSite(tr_id);
+               
+            }
+            else{ 
+                addSite(ele.getAttribute("value"),ele.getAttribute("id"));
+               
+            }
+            document.getElementById("location_id").value = id;
+           
+            loadLocation(id).then(function(){
+                document.getElementById("classes-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = location_details.classes;
+                setPopupListeners(document.getElementById("classes-popup"));
+                var items = document.getElementById("classes-popup").getElementsByClassName("menu-item");
+                for(var i=0;i<items.length;i++){
+                    ////console.log("in inline script, setting up click listener for",items[i]);
+                    items[i].addEventListener("click",function(){notifySelectedClasses()});
+                }
+               
+            });
+          }
+
+          function removeSite(ele){
+            //var row = document.getElementById(id);
+            ele.parentNode.removeChild(ele);
+            
+           
+        }
+        
+        function addSite(content,id){
+            var tbody = document.getElementById("selected-table").getElementsByTagName("tbody")[0];
+            var tr = document.createElement("tr");
+            tr.id = "selected_" + id
+            var td = document.createElement("td");
+            td.innerText = content;
+            tr.appendChild(td);
+            document.getElementById(id).classList.add("selected");
+            tr.onclick  = function(e) {
+                    removeSite(tr);
+                    document.getElementById(id).classList.remove("selected");
+                };
+            tbody.appendChild(tr);
+        }
+        
+        
+        function clearAllSites(){
+            //console.log("cleraing all sites");
+            var tbody = document.getElementById("selected-table").getElementsByTagName("tbody")[0];
+            tbody.innerHTML = "";
+            var selected = document.getElementById("atcList").getElementsByClassName("selected");
+            while (selected.length>0){
+                selected[0].classList.remove("selected");
+            }
+        }                
+        function selectAllSites(){
+            //console.log("selecting all");
+            clearAllSites();
+            var sites = document.getElementById("atcList").getElementsByClassName("css-checkbox");
+            //console.log(sites,"atc list")
+            for(var i=0;i<sites.length;i++){
+                //console.log(sites[i],"total list")
+                addSite(sites[i].getAttribute("value"),sites[i].getAttribute("id"));
+                //document.getElementsByClassName("css-checkbox"s).classList.add("selected");
+                /*if(sites[i].getAttribute("value") == "1"){
+                    //console.log(sites[i].getAttribute("value"),"sitesName")
+                    addSite(sites[i].getAttribute("value"),sites[i].getElementsByTagName("input")[0].id);
+                    sites[i].getElementsByTagName("input")[0].classList.add("selected");
+                }*/
+            }
+        }
+        function selectAllTemp(){
+            //console.log("selecting all");
+            clearAllSites();
+            var sites = document.getElementById("atcList").getElementsByClassName("css-checkbox");
+           
+            for(var i=0;i<sites.length;i++){
+                if(sites[i].getAttribute("data-temp") == "0"){
+                    addSite(sites[i].getAttribute("value"),sites[i].getAttribute("id"));
+                    //sites[i].getElementsByTagName("input")[0].classList.add("selected");
+                }
+            }
+        }
+        function selectAllPerm(){
+            //console.log("selecting all");
+            clearAllSites();
+            var sites = document.getElementById("atcList").getElementsByClassName("css-checkbox");
+            for(var i=0;i<sites.length;i++){
+                if(sites[i].getAttribute("data-temp") == "1" ){                                                                                                                                                                                                                              
+                    addSite(sites[i].getAttribute("value"),sites[i].getAttribute("id"));
+                    //sites[i].getElementsByTagName("input")[0].classList.add("selected");
+                }
+            }
+        }
+        
+
+        function startDownload(){
+            
+            if(fileToDownload){
+                alert("You are already in the process of downloading a file");
+                return;
+            }
+            if (document.getElementById("date_from").value >= document.getElementById("date_to").value){
+                alert("The end date cannot be before or equal to the start date");
+                return;
+            }
+            
+            
+            if(getSelectedPopupValues("classes-popup").length == 0)
+            {
+                alert("You must select at least one class");
+                return;
+            }
+            
+            var formData = new FormData();
+            Array.from(document.getElementById("d-form").querySelectorAll('input')).forEach(function(item){
+                if (item.type == "radio"){
+                     if(item.checked){
+                         
+                        item.name =="directions"? formData.append('direction',item.value) : formData.append(item.name,item.value) ;
+                     }
+                }
+                else{
+                    formData.append(item.name,item.value);
+                }
+             });
+            
+            var ids = [];
+            
+            //console.log(document.getElementsByClassName("atcList")[1].getElementsByClassName("selected"))
+            var selected = document.getElementsByClassName("atcList")[1].getElementsByClassName("selected");
+            for (var i=0;i< selected.length;i++){
+                //console.log("for loop")
+                ids.push(selected[i].id.split('_radio')[0]);
+                //console.log("test",selected[i].id.split('_radio')[0])
+            }
+            
+            if(ids.length == 0){
+                alert("Please select one or more locations from the atcList");
+                return;
+            }
+           
+            formData.append("ids",JSON.stringify(ids));
+            formData.append("classes",JSON.stringify(getSelectedPopupValues("classes-popup"))); 
+            formData.append("customRange","true");
+            getSelectedPopupValues
+            //formData.append("form",JSON.stringify($("#download-form").serializeArray()));
+            fetcher(formData,"startDownload",function(response){
+                //console.log("response",response);
+                if(response.status == "download"){
+                    fileToDownload = response.filename;
+                    checkFileReady();
+                }
+                alert(response.message);
+            }).catch(function(err){
+                alert(err.message);
+            })
+        
+        }
+    </script>
+{% endblock %}

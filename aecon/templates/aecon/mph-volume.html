@@ -1,0 +1,724 @@
+{% extends "aecon/mph-data.html" %} {% block content %} {% load staticversion %} {% load my_filters %} {% load client_tags %}
+
+<div class="row main">
+    <div class="col-md-12 mb-3">
+        <div class="row">
+            <div class="selection-header phase-popup-trigger me-3 col-md-2 shadow" id="phase-header"><label class="popup-label">Survey</label><span>Survey </span><i class="chevron-icon"></i></div>
+            <div class="selection-header directions-popup-trigger me-3 col-md-2 shadow" id="directions-header">
+                <label class="popup-label">Direction</label>
+                <span>Combined</span>
+                <i class="chevron-icon"></i>
+            </div>
+            <div class="selection-header classes-popup-trigger col-md-2 shadow"><label class="popup-label">Classifications</label><span>Classifications</span><i class="chevron-icon"></i></div>
+        </div>
+    </div>
+</div>
+<div class="px-3 py-1 bg-white mt-4" style="box-shadow: 0px 0px 10px #0000001A; border-radius: 5px;">
+    <div class="row p-3">
+        <div class="table-responsive table-wrapper ht-40 div1 sen-traff me-5 col-md-8 col-sm-12 ">
+            <table rules="cols" class="table text-center show-data" id="countline-daily-table" style="table-layout: fixed">
+                <thead>
+                    <tr>
+                        <th>Time Period</th>
+                        <th >Monday</th>
+                        <th >Tuesday</th>
+                        <th >Wednesday</th>
+                        <th >Thursday</th>
+                        <th >Friday</th>
+                        <th >Saturday</th>
+                        <th>Sunday</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>00:00-01:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>01:00:-02:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>02:00:-03:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>03:00:-04:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>04:00:-05:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>05:00:-06:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>06:00:-07:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>07:00:-08:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>08:00:-09:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>09:00:-10:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>10:00:-11:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>11:00:-12:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>12:00:-13:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>13:00:-14:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>14:00:-15:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>15:00:-16:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>16:00:-17:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>17:00:-18:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>18:00:-19:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>19:00:-20:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>20:00:-21:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>21:00:-22:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>22:00:-23:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>23:00:-24:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>24:00:-00:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>07:00:-19:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>06:00:-22:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>06:00:-24:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>00:00:-24:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-responsive table-wrapper ht-40 div1 sen-traff ml-5 col-md-4 col-sm-12">
+            <table class="table text-center show-data" rules="cols" id="countline-daily-table-avg">
+                <thead>
+                    <tr>
+                        <th>Time Period</th>
+                        <th >5 Day Avg</th>
+                        <th>7 Day Avg</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>00:00-01:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>01:00:-02:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>02:00:-03:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>03:00:-04:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>04:00:-05:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>05:00:-06:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>06:00:-07:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>07:00:-08:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>08:00:-09:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>09:00:-10:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>10:00:-11:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>11:00:-12:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>12:00:-13:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>13:00:-14:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>14:00:-15:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>15:00:-16:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>16:00:-17:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>17:00:-18:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>18:00:-19:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>19:00:-20:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>20:00:-21:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>21:00:-22:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>22:00:-23:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>23:00:-24:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>24:00:-00:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>07:00:-19:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>06:00:-22:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>06:00:-24:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>00:00:-24:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %}
+<script>
+    $(".table-wrapper").on("scroll", function() {
+        $(".table-wrapper:not(this)").scrollTop($(this).scrollTop());
+    });
+</script>
+<script>
+    function setdata() {
+        let id = document.getElementById("location_id").value;
+        if (!id) {
+            return;
+        }
+        loadData(id).then(function() {
+            setTable();
+        });
+    }
+
+    function setTable() {
+
+        var tabledata = updateDatasets('classes');
+        //console.log(tabledata);
+        var graphLabels = classedData.graphLabels;
+        var table = document.getElementById('countline-daily-table');
+        var tbody = table.querySelector('tbody');
+        tbody.innerHTML = '';
+        var avg_lst = ["07:00:-19:00", "06:00:-22:00", "06:00:-24:00", "00:00:-24:00"];
+
+        var avg_table = document.getElementById('countline-daily-table-avg');
+        var avg_tbody = avg_table.querySelector('tbody');
+        avg_tbody.innerHTML = '';
+        for (var i = 0; i < (graphLabels.length) - 1; i++) {
+            var row = document.createElement('tr');
+            var cell1 = document.createElement('td');
+            if (i < (graphLabels.length) - 2) {
+                cell1.innerHTML = graphLabels[i] + '-' + graphLabels[i + 1];
+            } else {
+                cell1.innerHTML = graphLabels[i] + '-' + "24:00";
+            }
+            day5 = 0;
+            day7 = 0;
+            day5count = 0;
+            day7count = 0;
+            row.appendChild(cell1);
+            for (let j = 0; j <= 6; j++) {
+                var cell2 = document.createElement('td');
+                if (tabledata[j][i]) {
+                    cell2.innerHTML = tabledata[j][i];
+                    if(j<5){
+                        if (typeof tabledata[j][i] == "number") {
+                        day5 += tabledata[j][i];
+                    }
+                        day5count = day5count+1;
+                    }
+                    if (typeof tabledata[j][i] == "number") {
+                        day7 += tabledata[j][i];
+                    }
+                    day7count = day7count+1;
+                } else {
+                    cell2.innerHTML = '-';
+                }
+                row.appendChild(cell2);
+            }
+            tbody.appendChild(row);
+            
+            if (day5count != 0){
+                tabledata[7][i] = Math.round(day5/day5count);
+            }
+            else{
+                tabledata[7][i] = '-';
+            }
+
+            if(day7count != 0){
+                tabledata[8][i] = Math.round(day7/day7count);
+            }
+            else{
+                tabledata[8][i] = '-';
+            }
+           
+            var avg_row = document.createElement('tr');
+            var avg_cell1 = document.createElement('td');
+            //avg_cell1.innerHTML = graphLabels[i];
+
+            if (i < (graphLabels.length) - 2) {
+                avg_cell1.innerHTML = graphLabels[i] + '-' + graphLabels[i + 1];
+            } else {
+                avg_cell1.innerHTML = graphLabels[i] + '-' + "24:00";
+            }
+            avg_row.appendChild(avg_cell1);
+            for (let j = 7; j <= 8; j++) {
+                var avg_cell2 = document.createElement('td');
+                avg_cell2.innerHTML = tabledata[j][i] ? tabledata[j][i] : '-';
+                avg_row.appendChild(avg_cell2);
+            }
+            avg_tbody.appendChild(avg_row);
+
+        }
+        for (let i = 0; i < avg_lst.length; i++) {
+            var row = document.createElement('tr');
+            var cell1 = document.createElement('td');
+            cell1.innerHTML = avg_lst[i];
+            row.appendChild(cell1);
+
+            for (let j = 0; j <= 6; j++) {
+                if (i == 0) {
+                    var cell = document.createElement('td');
+                    var data = tabledata[j].slice(graphLabels.indexOf('07:00'), graphLabels.indexOf('19:00'));
+                    cell.innerHTML = data.reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0);
+                    row.appendChild(cell);
+                } else if (i == 1) {
+                    var cell = document.createElement('td');
+                    var data = tabledata[j].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('22:00'));
+                    cell.innerHTML = data.reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0);
+                    row.appendChild(cell);
+                } else if (i == 2) {
+                    var cell = document.createElement('td');
+                    var data = tabledata[j].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00') + 1);
+                    cell.innerHTML = data.reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0);
+                    row.appendChild(cell);
+                } else if (i == 3) {
+                    var cell = document.createElement('td');
+                    var data = tabledata[j].slice(graphLabels.indexOf('00:00'), graphLabels.indexOf('23:00') + 1);
+                    cell.innerHTML = data.reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0);
+                    row.appendChild(cell);
+                }
+
+            }
+            tbody.appendChild(row);
+
+
+            var avg_row = document.createElement('tr');
+            var avg_cell1 = document.createElement('td');
+            avg_cell1.innerHTML = avg_lst[i];
+            avg_row.appendChild(avg_cell1);
+            for (let j = 7; j <= 8; j++) {
+                if (i == 0) {
+                    var cell = document.createElement('td');
+                    var data = tabledata[j].slice(graphLabels.indexOf('07:00'), graphLabels.indexOf('19:00'));
+                    cell.innerHTML = data.reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0);
+                    avg_row.appendChild(cell);
+                } else if (i == 1) {
+                    var cell = document.createElement('td');
+                    var data = tabledata[j].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('22:00'));
+                    cell.innerHTML = data.reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0);
+                    avg_row.appendChild(cell);
+                } else if (i == 2) {
+                    var cell = document.createElement('td');
+                    var data = tabledata[j].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00') + 1);
+                    cell.innerHTML = data.reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0);
+                    avg_row.appendChild(cell);
+                } else if (i == 3) {
+                    var cell = document.createElement('td');
+                    var data = tabledata[j].slice(graphLabels.indexOf('00:00'), graphLabels.indexOf('23:00') + 1);
+                    cell.innerHTML = data.reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0);
+                    avg_row.appendChild(cell);
+                }
+
+            }
+            avg_tbody.appendChild(avg_row);
+
+
+        }
+    }
+
+    function viewSite(id) {
+        document.getElementById("location_id").value = id;
+        loadLocation(id).then(function() {
+            var project = location_details.project
+            var projectDt = moment(project[0].start_date).format("MMM, YYYY")
+            var html = setProject_popup(project);
+            document.getElementById("phase-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = html;
+            setPopupListeners(document.getElementById("phase-popup"));
+            var items = document.getElementById("phase-popup").getElementsByClassName("menu-item");
+            for (var i = 0; i < items.length; i++) {
+                items[i].addEventListener("click", function() {
+                    loadData(id).then(function() {
+                        setTable();
+                    })
+                });
+            }
+            document.getElementById("directions-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = location_details.directions;
+            setPopupListeners(document.getElementById("directions-popup"));
+            var items = document.getElementById("directions-popup").getElementsByClassName("menu-item");
+            for (var i = 0; i < items.length; i++) {
+
+                items[i].addEventListener("click", function() {
+                    setTable()
+                    $(".selection-header").removeClass("activeDropDown");
+                });
+            }
+            document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = project[0].name+", "+projectDt;
+            var cookieProject = getCookie('MPHProject');
+            var projectid = location_details.project
+            if (cookieProject){
+                projectresult = project.filter(project => project.id == cookieProject)[0]
+                var projectDT = projectresult.start_date;
+                var projectdate = moment(projectDT).format("MMM, YYYY")
+                document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = projectresult.name+", "+projectdate;
+            }
+            //console.log("project name",project[0].name)
+            //document.cookie = "ATCProject=" + project[0].id + ";path=/aecon";
+            loadData(id).then(function() {
+                setTable();
+            });
+
+            document.getElementById("classes-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = location_details.classes;
+            setPopupListeners(document.getElementById("classes-popup"));
+
+            var items = document.getElementById("classes-popup").getElementsByClassName("menu-item");
+            for (var i = 0; i < items.length; i++) {
+                ////console.log("in inline script, setting up click listener for",items[i]);
+            items[i].addEventListener("click",function(){
+                setTable()
+                document.getElementById("classes-popup").style.cssText = "width: auto; top: -1000px; left: -1000px;";
+                $(".selection-header").removeClass("activeDropDown");
+            });
+            }
+
+            //setPopupListeners(document.getElementById("classes-popup"));
+
+        });
+    }
+</script>
+{% endblock %}

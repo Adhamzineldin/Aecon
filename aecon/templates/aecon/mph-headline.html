@@ -1,0 +1,422 @@
+{% extends "aecon/mph-data.html" %} {% block content %} {% load staticversion %} {% load my_filters %} {% load client_tags %}
+
+<div class="row main">
+    <div class="col-md-12 mb-3">
+        <div class="row">
+            <div class="selection-header phase-popup-trigger me-3 col-md-2 shadow" id="phase-header"><label class="popup-label">Survey</label><span>Survey </span><i class="chevron-icon"></i></div>
+            <div class="selection-header time-popup-trigger col-md-2 shadow" id="time-header_popup"><label class="popup-label">Time Frequency</label><span>00:00 - 24:00 </span><i class="chevron-icon"></i></div>
+
+        </div>
+    </div>
+</div>
+<div class="px-5 py-3 bg-white mt-4" style="box-shadow: 0px 0px 10px #0000001A; border-radius: 5px;">
+    <div class="row px-1 mt-4">
+        <h4 class="chart-title ml-3" id="combineDirection">Combined</h4>
+    </div>
+    <div class="row canvass">
+        <div class="col-md-2 px-1 d-flex justify-content-center ">
+            <canvas id="Chart_avg_2_9" width="80" height="50"></canvas>
+            <div class="chart-text text-center ml-4 mb-4 position-absolute">
+                7-Day Average Speed (mph)
+            </div>
+        </div>
+        <div class="col-md-2 px-1 d-flex justify-content-center">
+            <canvas id="Chart_85th_2_9" width="80" height="50"></canvas>
+            <div class="chart-text text-center ml-5 me-4 position-absolute">
+                7-Day 85th Percentile Average Speed (mph)
+            </div>
+        </div>
+        <div class="col-md-2 px-2" style="margin-top: 70px">
+            <h1 class="chart-header text-center my-3" id="count_2_9"> </h1>
+            <div class="chart-text text-center my-1">
+                7-Day Average Volume
+            </div>
+        </div>
+        <div class="vertical"></div>
+        <div class="col-md-2 px-1 d-flex justify-content-center">
+            <div class="chart-text text-center ml-4 mb-4 position-absolute">
+                5-Day Average Speed (mph)
+            </div>
+            <canvas id="Chart_avg_2_8" width="80" height="50"></canvas>
+        </div>
+        <div class="col-md-2 px-1 d-flex justify-content-center">
+            <div class="chart-text text-center ml-5 me-4 position-absolute">
+                5-Day 85th Percentile Average Speed (mph)
+            </div>
+            <canvas id="Chart_85th_2_8" width="80" height="50"></canvas>
+        </div>
+        <div class="chart-side col-md-2 px-2" style="margin-top: 70px">
+            <h1 class="chart-header text-center my-3" id="count_2_8"></h1>
+            <div class="chart-text text-center my-1">
+                5-Day Average Volume
+            </div>
+        </div>
+    </div>
+    <div class="horizontal"></div>
+    <div class="row px-1 mt-4 canvass">
+        <h4 class="chart-title ml-3" id="primaryDirection">Eastbound</h4>
+    </div>
+    <div class="row canvass">
+        <div class="col-md-2 px-1 d-flex justify-content-center">
+            <div class="chart-text text-center ml-4 mb-4 position-absolute">
+                7-Day Average Speed (mph)
+            </div>
+            <canvas id="Chart_avg_0_9" width="80" height="50"></canvas>
+        </div>
+        <div class="col-md-2 px-1 d-flex justify-content-center">
+            <div class="chart-text text-center ml-5 me-4 position-absolute">
+                7-Day 85th Percentile Average Speed (mph)
+            </div>
+            <canvas id="Chart_85th_0_9" width="80" height="50"></canvas>
+        </div>
+        <div class="chart-side col-md-2 px-2" style="margin-top: 70px">
+            <h1 class="chart-header text-center my-3" id="count_0_9"></h1>
+            <div class="chart-text text-center my-1">
+                7-Day Average Volume
+            </div>
+        </div>
+        <div class="vertical"></div>
+        <div class="col-md-2 px-1 d-flex justify-content-center">
+            <div class="chart-text text-center ml-4 mb-4 position-absolute">
+                5-Day Average Speed (mph)
+            </div>
+            <canvas  id="Chart_avg_0_8" width="80" height="50"></canvas>
+        </div>
+        <div class="col-md-2 px-1 d-flex justify-content-center">
+            <div class="chart-text text-center ml-5 me-4 position-absolute">
+                5-Day 85th Percentile Average Speed (mph)
+            </div>
+            <canvas  id="Chart_85th_0_8" width="80" height="50"></canvas>
+        </div>
+        <div class="chart-side col-md-2 px-1" style="margin-top: 70px">
+            <h1 class="chart-header text-center my-3" id="count_0_8">-</h1>
+            <div class="chart-text text-center my-1">
+                5-Day Average Volume
+            </div>
+        </div>
+    </div>
+    <div class="horizontal"></div>
+    <div class="row px-1 mt-4">
+        <h4 class="chart-title ml-3" id="secondoryDirection">Westbound</h4>
+    </div>
+    <div class="row canvass mb-5">
+        <div class="col-md-2 px-1 d-flex justify-content-center">
+            <div class="chart-text text-center ml-4 mb-4 position-absolute">
+                7-Day Average Speed (mph)
+            </div>
+            <canvas  id="Chart_avg_1_9" width="80" height="50"></canvas>
+        </div>
+        <div class="col-md-2 px-1 d-flex justify-content-center">
+            <div class="chart-text text-center ml-5 me-4 position-absolute">
+                7-Day 85th Percentile Average Speed (mph)
+            </div>
+            <canvas  id="Chart_85th_1_9" width="80" height="50"></canvas>
+        </div>
+        <div class="chart-side col-md-2 px-2" style="margin-top: 70px">
+            <h1 class="chart-header text-center my-3" id="count_1_9"></h1>
+            <div class="chart-text text-center ml-1">
+                7-Day Average Volume
+            </div>
+        </div>
+        <div class="vertical"></div>
+        <div class="col-md-2 px-1 d-flex justify-content-center">
+            <div class="chart-text text-center ml-4 mb-4 position-absolute">
+                5-Day Average Speed (mph)
+            </div>
+            <canvas  id="Chart_avg_1_8" width="80" height="50"></canvas>
+        </div>
+        <div class="col-md-2 px-1 d-flex justify-content-center">
+            <canvas  id="Chart_85th_1_8" width="80" height="50"></canvas>
+            <div class="chart-text text-center ml-5 me-4 position-absolute">
+                5-Day 85th Percentile Average Speed (mph)
+            </div>
+        </div>
+        <div class="chart-side col-md-2 px-1" style="margin-top: 70px">
+            <h1 class="chart-header text-center my-3" id="count_1_8"></h1>
+            <div class="chart-text text-center my-1">
+                5-Day Average Volume
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %}
+<script>
+    headerData = []
+    var speedLimit = 20;
+    var avg = 30;
+    chartOptions = {
+        responsive: true,
+        tooltips: {
+            enabled: false
+        },
+        events: [],
+        hover: {mode: null},
+        title: {
+            display: true,
+            text: '0',
+            position: 'center',
+        },
+        layout: {
+            padding: {
+                bottom: 3 //height of the donut 
+            },
+            rotation: 1 * Math.PI,
+            circumference: 1 * Math.PI,
+            cutoutPercentage: 80,
+        },
+        rotation: -Math.PI,
+        cutoutPercentage: 85,
+        circumference: Math.PI,
+        legend: {
+            position: 'left'
+        },
+        animation: {
+            animateRotate: true,
+            animateScale: false,
+        }
+    }
+
+    function viewSite(id) {
+        document.getElementById("location_id").value = id;
+        loadLocation(id).then(function() {
+            var project = location_details.project
+            var html = setProject_popup(project);
+            var projectDt = moment(project[0].start_date).format("MMM, YYYY")
+            //document.cookie = "ATCProject=" + project[0].id + ";path=/aecon";
+            document.getElementById("phase-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = html;
+            setPopupListeners(document.getElementById("phase-popup"));
+            var direction_lst = [];
+            location_details.directions.split("<span>").forEach(function(item) {
+                item.includes("</span>") ? direction_lst.push(item.split("</span>")[0]) : "";
+            });
+            document.getElementById("primaryDirection").innerHTML = direction_lst[0]
+            document.getElementById("secondoryDirection").innerHTML = direction_lst[1]
+            var items = document.getElementById("phase-popup").getElementsByClassName("menu-item");
+            for (var i = 0; i < items.length; i++) {
+                items[i].addEventListener("click", function() {
+                    setATCHeaderData()
+                });
+            }
+
+            var items = document.getElementById("time-popup").getElementsByClassName("menu-item");
+            for (var i = 0; i < items.length; i++) {
+                items[i].addEventListener("click", function() {
+                    setATCHeaderData()
+
+                    document.getElementById('time-header_popup').getElementsByTagName("span")[0].innerHTML = document.getElementById("time-popup").querySelectorAll(".selected span")[0].innerHTML;
+
+                    document.getElementById("time-popup").style.cssText = "width: auto; top: -1000px; left: -1000px;";
+                    $(".selection-header").removeClass("activeDropDown");
+                });
+            }
+
+            
+            setPopupListeners(document.getElementById("time-popup"));
+            document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = project[0].name+", "+projectDt;
+            var cookieProject = getCookie('MPHProject');
+            var projectid = location_details.project
+            if (cookieProject){
+                projectresult = project.filter(project => project.id == cookieProject)[0]
+                if(projectresult){
+                    var projectDT = projectresult.start_date;
+                    var projectdate = moment(projectDT).format("MMM, YYYY")
+                    document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = projectresult.name+", "+projectdate;
+                }
+                else{
+                    let data = getSelectedProject('suvery1');
+                    projectresult = project.filter(project => project.id == data)[0]
+                    if(projectresult){
+                        var projectDT = projectresult.start_date;
+                        var projectdate = moment(projectDT).format("MMM, YYYY")
+                        document.getElementById("phase-header").getElementsByTagName("span")[0].innerHTML = projectresult.name+", "+projectdate;
+                    }
+                }
+            }
+            //document.cookie = "ATCProject=" + project[0].name + ";path=/aecon";
+            loadATCHeaderData(id).then(function() {
+                setATCHeaderData(id)
+            });
+        })
+    }
+
+    
+
+    function loadATCHeaderData(id) {
+        var greyed = document.getElementsByClassName("greyed-out");
+        for (var i = 0; i < greyed.length; i++) {
+            showGreyedOut(greyed[i]);
+        }
+        loadcount_data = {}
+        let project = getSelectedProject('phase-header');
+        var formData = new FormData();
+        formData.append("location_id", id);
+        return fetcher(formData, "getAggregatedHeadlineData", function(response) {
+            //headerData=  JSON.parse(response)
+            headerData = response;
+            //console.log(headerData);
+            for (var i = 0; i < greyed.length; i++) {
+                hideGreyedOut(greyed[i]);
+            }
+            setATCHeaderData(id)
+        });
+    }
+    function getCurrentTime(){
+      var time = 0
+      var times = document.getElementById("time-popup").getElementsByClassName("selectable-menu-item");
+      for (var i=0;i<times.length;i++){
+          if (times[i].classList.contains("selected")){
+            time = times[i].parentNode.id;
+          }
+      } 
+      return time;
+    } 
+
+
+
+    function setATCHeaderData(id) {
+        resetHeadlineData()
+        let data = getSelectedProject('suvery1');
+        var time = 0
+        var times = document.getElementById("time-popup").getElementsByClassName("selectable-menu-item");
+        for (var i=0;i<times.length;i++){
+            if (times[i].classList.contains("selected")){
+                time = times[i].parentNode.id;
+            }
+        } 
+        time = time-1
+        //console.log(time)
+        // let time = getCurrenttime();
+        project = location_details.project.filter(i => i.id == data)
+        var projectid = project[0].id;
+        // document.cookie = "ATCProject=" + project[0].name + ";path=/aecon";
+        //setCookie("ATCProject", 'projectid', 1);
+        speedLimit = project[0].speed_limit
+
+        limitoflessColors = ["#12D231", "#DEEBF7", "#141b4d", "#DEEBF7"]
+        limitofmoreColors = ["#12D231", "#141b4d", "#12D231", "#DEEBF7"]
+            //  headerData.forEach(item => Object.keys(item)[0] == data ?  data = item[data] : "");
+
+        projectData = headerData[data]
+        directions = Object.keys(projectData)
+        Object.keys(projectData).forEach(function(direction) {
+            daysData = projectData[direction]
+            days = Object.keys(daysData)
+            Object.keys(daysData).forEach(function(day) {
+                currectData = daysData[day]
+                avg = currectData[time]['avg']
+                perc_85th = currectData[time]['perc_85th']
+                if (avg >= speedLimit) {
+                    c1 = avg - speedLimit
+                    c2 = 70 -  parseInt(avg)
+                    avgData = [speedLimit, 2, c1, c2]
+                    avgcolor = limitofmoreColors
+                } else {
+                    c1 = speedLimit - avg
+                    c2 = 70 - parseInt(speedLimit)
+                    avgData = [avg, c1, 2, c2]
+                    avgcolor = limitoflessColors
+                }
+                if (perc_85th >= speedLimit) {
+                    percData = [speedLimit, 2, parseInt(perc_85th) - parseInt(speedLimit), 70 - perc_85th]
+                    perccolor = limitofmoreColors
+                } else {
+                    percData = [perc_85th, speedLimit - perc_85th, 2, 70 - speedLimit]
+                    perccolor = limitoflessColors
+                }
+
+                var ctxavg = document.getElementById("Chart_avg_" + direction + "_" + day);
+                var myDoughnutChart = new Chart(ctxavg, {
+                    type: "doughnut",
+                    data: {
+                        datasets: [{
+                            data: avgData,
+                            needleValue: speedLimit, //from here also the needle will fluciate in chart
+                            backgroundColor: avgcolor,
+                            borderColor: avgcolor,
+                            avg: avg
+                        }]
+                    },
+                    options: chartOptions
+                });
+                var ctx85th = document.getElementById("Chart_85th_" + direction + "_" + day);
+                var myDoughnutChart = new Chart(ctx85th, {
+                    type: "doughnut",
+                    data: {
+                        datasets: [{
+                            data: percData,
+                            needleValue: speedLimit, //from here also the needle will fluciate in chart
+                            backgroundColor: perccolor,
+                            borderColor: perccolor,
+                            avg: perc_85th
+                        }]
+                    },
+                    options: chartOptions,
+                });
+                document.getElementById("count_" + direction + "_" + day).innerText = currectData[time]['counts']
+            })
+        })
+    }
+
+    function resetHeadlineData() {
+        speedLimit = 0
+        avg = 0
+        basedirections = ["0", "1", "2"]
+        basedays = ["8", "9"]
+        basedirections.forEach(function(basedirection, index) {
+            basedays.forEach(function(baseday, index) {
+                var ctxavg = document.getElementById("Chart_avg_" + basedirection + "_" + baseday);
+                var myDoughnutChart = new Chart(ctxavg, {
+                    type: "doughnut",
+                    data: {
+                        datasets: [{
+                            data: [0, 0, 0, 70],
+                            needleValue: speedLimit, //from here also the needle will fluciate in chart
+                            backgroundColor: [
+                                "#12D231", "#141b4d", "#12D231", "#DEEBF7"
+                            ],
+                            borderColor: ["#12D231", "#141b4d", "#12D231", "#DEEBF7"],
+                            avg: avg
+                        }]
+                    },
+                    options: chartOptions
+                });
+                var ctx85th = document.getElementById("Chart_85th_" + basedirection + "_" + baseday);
+                var myDoughnutChart = new Chart(ctx85th, {
+                    type: "doughnut",
+                    data: {
+                        datasets: [{
+                            data: [0, 0, 0, 70],
+                            needleValue: speedLimit, //from here also the needle will fluciate in chart
+                            backgroundColor: [
+                                "#12D231", "#DEEBF7", "#141b4d", "#DEEBF7"
+                            ],
+                            borderColor: ["#12D231", "#DEEBF7", "#141b4d", "#DEEBF7"],
+                            avg: avg
+                        }]
+                    },
+                    options: chartOptions
+                });
+                document.getElementById("count_" + basedirection + "_" + baseday).innerText = "-"
+            });
+        });
+    }
+    Chart.pluginService.register({
+        beforeDraw: function(chart) {
+            var width = chart.chart.width,
+                height = chart.chart.height,
+                ctx = chart.chart.ctx;
+            ctx.restore();
+            //var fontSize = (height / 90).toFixed(2);
+            ctx.font = " 40px proxima-nova, sans-serif ";
+            ctx.textBaseline = "middle";
+            var text = chart.data.datasets[0].avg,
+                textX = Math.round((width - ctx.measureText(text).width) / 1.75),
+                textY = height / 1.4;
+            ctx.fillStyle = "#141b4d";
+            ctx.fillText(text, textX, textY);
+            ctx.save();
+
+        }
+    });
+</script>
+{% endblock %}

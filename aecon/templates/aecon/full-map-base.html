@@ -1,0 +1,627 @@
+
+
+{% extends "aecon/dashboard-base.html" %}
+{% load staticversion %}
+
+{% block content %}
+<style>
+
+.animate{
+    -o-animation: fadeIt 2s ease-in-out;
+    animation: fadeIt 2s ease-in-out;
+}
+
+
+@-o-keyframes fadeIt {
+  0%   { background-color: #e8e9ed; }
+  20%  { background-color: #8fffff; }
+  100% { background-color: orange; }
+}
+@keyframes fadeIt {
+  0%   { background-color: rgba(95, 30, 87,0.3); }
+  20%  { background-color: rgba(77, 240, 139,0.9) }
+  100% { background-color: orange }
+}
+
+
+</style>
+<div id="classes-popup" style="width:auto;" class="conduit-popup">
+    <div class="conduit-selectable-menu multi">
+        {{ classes | safe}}
+    </div>
+</div>
+
+
+<div id="subview-selector-popup" style="width:180px" class="conduit-popup">
+    <div class="conduit-selectable-menu  min-1" data-header="subview-selector">
+        <ul >
+             <li id="5day" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item selected ">
+                    <i ></i>
+                    <span >Live Data Feed</span>
+                </a>
+            </li>
+
+            <li id="7day" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item disabled">
+                    <i ></i>
+                    <span>Playback</span>
+                </a>
+            </li>
+
+
+        </ul>
+    </div>
+</div>
+
+
+
+<div id="time-selector-popup" style="width:180px" class="conduit-popup">
+    <div class="conduit-selectable-menu  min-1" data-header="time-selector">
+        <ul >
+             <li id="time_15" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item  ">
+                    <i ></i>
+                    <span >Last 15 minutes</span>
+                </a>
+            </li>
+
+            <li id="time_60" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>Last Hour</span>
+                </a>
+            </li>
+            <li id="time_ALL" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item selected">
+                    <i ></i>
+                    <span>Total for Today</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
+<div class="row align-items-center"  style="height:50px">
+    <div class="col-12 my-auto d-flex align-items-center">
+        <div class="selection-header classes-popup-trigger"><span>Classifications</span><i class="chevron-icon"></i></div>
+        <div class="selection-header subview-selector-popup-trigger d-none" id="subview-selector"><span>Live Data Feed</span><i class="chevron-icon"></i></div>
+        <div class="selection-header time-selector-popup-trigger" id="time-selector"><span>Total for Today</span><i class="chevron-icon"></i></div>
+        {% comment %} <div class="topbar__item events-popup-trigger opens-left d-none" id="events" style="margin-left:auto"><span><i class="icon-internet"></i></span></div> {% endcomment %}
+    </div>
+</div>
+
+
+<div class="row" style="height:calc(100% - 50px)">
+    <div  id="main-container-greyed-out" class="d-none" style="position:absolute;width:calc(100% - 300px);height:calc(100% - 105px);z-index:401;opacity:0.9;background-color:#fcfcfc;"></div>
+    <div class="col-12 " id="map-wrapper" style="width:100%;height:100%;padding:0">
+        <div class = "map-panel" id = "dashboard-base-map" style="width:100%;height:100%">
+
+        </div>
+
+        <div class="row justify-content-between" style="position:absolute;top:0;margin:0;z-index:500;font-size:14px">
+
+            <div class="col-auto mt-3 d-none" id="time-display" style="height:60px">
+
+                <div class="card header-shadow h-100" style="border-radius:10px;border:1px solid grey;background-color:rgba(0,0,0,0.6);color:white">
+                    <div class="greyed-out justify-content-center align-items-center"> <img src ="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img"></div>
+                    <div class="card-body h-100">
+                        <div class="d-flex h-100 align-items-center justify-content-center">
+                            <div class="caret" onclick="decrementDate();" style="color:white;margin-right:20px;cursor:pointer"> <i class="fa fa-caret-left pull-right mx-auto" style="color:white"></i></div>
+                            <div class="date"><h6 class="card-subtitle text-center " id="time"></h6></div>
+                            <div class="caret" onclick="incrementDate();" style="color:white;margin-left:20px;cursor:pointer"> <i class="fa fa-caret-right pull-right mx-auto" style="color:white"></i></div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+
+
+
+<script>
+
+var chart;
+var timeoutVar;
+var id = document.getElementById("mb-id").value
+initMap([53.476404, -2.250621],"dashboard-base-map",id);
+
+    function dealWithLocationFeatureCollection(feature,layer){
+        //console.log("dealing with location",feature)
+        if(feature.geometry.coordinates.length == 0){return;}
+        if (feature.geometry.type == "LineString" && feature.properties.type == "countline"){
+            //console.log("found countline",feature);
+            layer.setStyle({color:"#2483ec",weight:3,lineCap:"butt"});
+            lineLayer.addLayer(layer);
+            var popup = L.popup({maxWidth:350,minWidth:350});
+            popup.setContent(createMetaDataPopup2(feature));
+            layer.bindPopup(popup);
+
+
+        }
+        if (feature.geometry.type == "LineString" && feature.properties.type == "virtual"){
+            //console.log("found countline",feature);
+            layer.setStyle({color:"#2483ec",weight:3,lineCap:"butt"});
+            //layer.addTo(map);
+            //layer.setStyle(locationStyleOptions);
+            lineLayer.addLayer(layer);
+            //var popup = L.popup({maxWidth:350,minWidth:350});
+            //popup.setContent(createMetaDataPopup2(feature));
+            //layer.bindPopup(popup);
+
+            //console.log("line layer is",lineLayer);
+            //setupLocationLineWithArrowhead(layer);
+            //layer.options.direction = feature.properties.direction_id;
+            //layer.options.order = feature.properties.order;
+
+        }
+
+        if (feature.geometry.type == "LineString" && feature.properties.type == "direction"){
+            console.log("found countline",feature);
+            if (feature.properties.name == "Outbound"){
+                layer.setStyle({color:"red",weight:3,lineCap:"butt"});
+                setupDirectionLineWithArrowhead(layer,"red");
+
+            }
+            else if (feature.properties.name == "Inbound"){
+                layer.setStyle({color:"#45f775",weight:3,lineCap:"butt"});
+                setupDirectionLineWithArrowhead(layer,"#45f775");
+
+            }
+            else{
+
+                if (feature.properties.order == 0){
+                layer.setStyle({color:"red",weight:3,lineCap:"butt"});
+                setupDirectionLineWithArrowhead(layer,"red");
+
+                }
+                else if (feature.properties.order == 1){
+                    layer.setStyle({color:"#45f775",weight:3,lineCap:"butt"});
+                    setupDirectionLineWithArrowhead(layer,"#45f775");
+
+                }
+
+
+            }
+
+            var p = layer.getLatLngs()[1];
+            var p2 = map.project(feature.geometry.coordinates[0],map.getZoom());
+            var p1 = map.project(feature.geometry.coordinates[feature.geometry.coordinates.length-1],map.getZoom());
+            var angle = Math.atan2(p2.y -p1.y , p2.x - p1.x)* 180 / Math.PI;
+            if(angle<0){angle=angle+360;}
+            feature.properties.angle = angle;
+            var icon = createIcon(angle,"-");
+            lineLayer.addLayer(layer);
+            layer.marker = L.marker(p, {icon: icon});
+
+
+
+            //console.log("angle is",angle);
+            //drawArrow(p1,20,angle,arrowCol)
+
+
+
+        }
+
+
+        if (feature.geometry.type == "Point" && !feature.properties.temp && layer.feature.properties.obsType.id == 1){
+            var marker = addCountMarker(feature,{});
+            //console.log("marker is",marker);
+            layer.marker = marker;
+            //console.log("setting marker of",layer,"to",marker);
+            //console.log("marker is now",layer.marker);
+        }
+    }
+
+
+function createIcon(angle,val){
+    //console.log("creating icon",angle,val);
+
+    if (angle >=180 && angle < 270){
+        var offset = [25,25];
+        //val="poo"
+    }
+    else{
+        var offset = [0,0];
+    }
+    //var newLatLng = map.containerPointToLatLng(newPoint);
+    var icon = L.divIcon({
+      className: 'n',
+        html: "<div class='map-direction-icon animate d-flex justify-content-center align-items-center'><span>" + val + "</span></div>",
+        iconAnchor:offset,
+        iconSize:[50,50]
+    });
+    return icon;
+}
+
+
+function redirectToAQ(){
+    var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+            showGreyedOut(greyed[i]);
+        }
+    var sites = getSelectedSites(2);
+    var dataToSave = {}
+    for(var i=0;i<sites.length;i++){
+
+        dataToSave[sites[i]]={"direction":0,"selected":false};
+    }
+    saveSitesToLocalStorage(2,dataToSave);
+    window.location.href="/aecon/redirect?view=10";
+}
+
+function viewSite(id){
+    if(downloadActive){return;}
+    layer = findLayer(id);
+    //console.log("id is",id);
+    //console.log("layer is",layer);
+    if (document.getElementById(id).parentNode.getAttribute("data-obstype") == "2"){
+        dataTimeout = setTimeout(redirectToAQ,700);
+        return
+    }
+
+    if(document.getElementById(id).parentNode.getAttribute("data-obstype") != "1"){return;}
+
+    var formData = new FormData();
+    formData.append("location_id",id);
+    //fetcher(formData,"dashboard",function(response){console.log("received response",response);});
+    window.location.href = "/aecon/redirect?view=1&location_id=" + id;
+}
+
+
+function getIdList(){
+    var ids = [];
+    lineLayer.eachLayer(function(layer){
+        if(layer.feature && layer.feature.properties && (layer.feature.properties.type=="countline" || layer.feature.properties.type=="virtual")){
+
+            ids.push(layer.feature.properties.id);
+        }
+
+    });
+    return ids;
+}
+
+
+
+function viewProject(ele){
+
+    var formData = new FormData();
+    formData.append("project",ele.id);
+    fetcher(formData,"getClientLocations",function(result){
+        console.log("received results",result);
+        map.eachLayer(function (layer) {
+            console.log("removing",layer,typeof layer,layer instanceof L.Marker);
+            if (layer instanceof L.Marker){
+
+                map.removeLayer(layer);
+            }
+        });
+        processLocationGeojson(result.locations);
+        map.fitBounds(lineLayer.getBounds());
+
+    });
+
+
+
+
+}
+
+function updateDatasets(){
+    var selectedClasses = getSelectedPopupIndexes("classes-popup");
+    var day = moment().isoWeekday() -1;
+    for (var key in classedData.data){
+        var total = 0;
+        for (var dir=0;dir < 2;dir++){
+            var data = classedData.data[key].directions[dir].baseData[0];
+            //console.log("data for",key,data);
+            var selectedClassVolumes = [];
+            selectedClasses.forEach(function(classIndex,i){
+                //console.log("looking for class index",classIndex,"for dataset",index);
+                //console.log("pushing data",data[classIndex].data);
+                if(data[classIndex]){
+                    selectedClassVolumes.push(data[classIndex].data);
+                }
+
+            });
+            //console.log("looking for",key + "_direction_" + dir);
+            layer = findLayer(key + "_direction_" + dir);
+             //console.log("found layer",layer);
+            if(selectedClassVolumes.length != 0){
+                var val = selectedClassVolumes.reduce(sumOfDatasets).reduce(sumOfArray);
+            }
+            else{
+                var val = 0;
+            }
+            if (typeof val === 'string' || val instanceof String){
+                val = 0;
+            }
+            total = total + val;
+            if(layer && layer.feature.properties.angle){
+                // salford style arrows and countlines
+                var icon = createIcon(layer.feature.properties.angle,val);
+                layer.marker.setIcon(icon);
+            }
+        }
+        layer = findLayer(key);
+        //console.log("looking for",key,"found",layer);
+        if(layer && layer.feature.geometry.type == "Point" && layer.feature.properties.obsType.id == 1){
+            var icon = L.divIcon({
+                html: "<div class='donut-text ' id='" + layer.feature.properties.id + "_total'>" + total +  "</div>",
+                iconSize: [60, 60],
+                className: 'countIcon'
+            });
+            layer.setIcon(icon);
+            void layer._icon.offsetWidth;
+            layer._icon.classList.add("animate");
+
+        }
+    }
+}
+
+function getDates(){
+    var start = moment(document.getElementById("time").innerText.split(",")[0].trim());
+    console.log("start is",start);
+
+    return [start,moment(start).add(1,"d")];
+}
+
+function loadData(start,end){
+
+    console.log(start.format("YYYY-MM-DD HH:mm"),end.format("YYYY-MM-DD HH:mm"));
+    var greyed = document.getElementsByClassName("greyed-out");
+    var ids = getIdList();
+    if (ids.length==0){return;}
+    if (timeoutVar){
+        clearTimeout(timeoutVar);
+    }
+    for (var i=0;i<greyed.length;i++){
+        showGreyedOut(greyed[i]);
+    }
+    if(chart){chart.destroy();}
+    var live = document.getElementById("time-selector-popup").getElementsByClassName("selected")[0].parentNode.id.replace("time_","");
+    var formData = new FormData();
+    formData.append("ids",JSON.stringify(ids));
+    formData.append("resultType","counts");
+    formData.append("live",live);
+    formData.append("period",60);
+    formData.append("startDate",start.format("YYYY-MM-DD HH:mm"));
+    formData.append("endDate",end.format("YYYY-MM-DD HH:mm"));
+    fetcher(formData,"getATCClassedVolumes",function(result){
+        console.log("received results",result);
+        classedData = result.data;
+        document.getElementById("events-container").innerHTML = result.data.events;
+        var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+            hideGreyedOut(greyed[i]);
+        }
+        //document.getElementById("classes-popup").getElementsByClassName("aecon-selectable-menu")[0].innerHTML = classedData.classes;
+        //setPopupListeners(document.getElementById("classes-popup"));
+        updateDatasets();
+        document.getElementById("time").innerHTML = result.data.time;
+        document.getElementById("time-display").classList.remove("d-none");
+        timeoutVar = setTimeout(triggerLoadData,30000);
+
+    });
+}
+
+//loadData(moment().subtract(1,"h"),moment());
+
+function addLineLayer(){
+    //console.log("wee");
+    map.addLayer(lineLayer);
+    map.off("moveend");
+    map.on("zoomend",function(){console.log("zoom ended");map.invalidateSize();checkZoomLevel()});
+    map.on("moveend", function(){console.log("move ended");map.invalidateSize();});
+    triggerLoadData();
+    //document.getElementById("time_ALL").click();
+    checkZoomLevel();
+
+}
+
+
+function checkZoomLevel(){
+
+    var z = map.getZoom();
+
+    lineLayer.eachLayer(function(layer){
+        if(layer.marker){
+            if (z < 19){
+                map.removeLayer(layer.marker);
+            }
+            else{
+                map.addLayer(layer.marker);
+            }
+        }
+    });
+
+}
+
+
+function drawArrow(centre,length,bearing,col){
+    var pointList = [];
+    var arrowWidth = 10;
+    perpendicular = bearing + 90;
+    bearing = toRadians(bearing);
+    // scale length by zoom factor
+    length = length * map.getZoom()/5
+    if(perpendicular >360){perpendicular=perpendicular-360;}
+    //console.log("perp is",perpendicular);
+    perpendicular = toRadians(perpendicular);
+
+
+
+    //move perpendicular to centre
+    var x2 = centre.x -  (arrowWidth * Math.cos(perpendicular))
+    var y2 = centre.y - (arrowWidth * Math.sin(perpendicular))
+    p1 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // move along arrow shaft
+
+    var x2 = x2 +  (length * Math.cos(bearing))
+    var y2 = y2 + (length * Math.sin(bearing))
+    p2 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // draw arrow head
+
+    var x2 = x2 -  (arrowWidth * Math.cos(perpendicular))
+    var y2 = y2 - (arrowWidth * Math.sin(perpendicular))
+    p3 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // draw to tip of arrow, which is in line with centre
+    var x2 = centre.x +  ((length+arrowWidth) * Math.cos(bearing))
+    var y2 = centre.y + ((length+arrowWidth) * Math.sin(bearing))
+    //console.log("in draw arrow, tip is",x2,y2);
+    p4 = map.unproject(L.point(x2,y2),map.getZoom());
+
+
+    //draw other side of arrow
+    var x2 = centre.x +  (arrowWidth * Math.cos(perpendicular))
+    var y2 = centre.y + (arrowWidth * Math.sin(perpendicular))
+    p7 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // move along arrow shaft
+
+    var x2 = x2 +  (length * Math.cos(bearing))
+    var y2 = y2 + (length * Math.sin(bearing))
+    p6 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // draw arrow head
+
+    var x2 = x2 +  (arrowWidth * Math.cos(perpendicular))
+    var y2 = y2 + (arrowWidth * Math.sin(perpendicular))
+    p5 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    pointList = [p1,p2,p3,p4,p5,p6,p7];
+    //console.log("pointlist is",pointList);
+    if (col=="red"){
+        if(inArrow){lineLayer.removeLayer(inArrow)};
+       inArrow =  L.polygon(pointList,{
+            color:col,
+            interactive:true
+
+       }).addTo(lineLayer);
+    }
+    else{
+        if(outArrow){lineLayer.removeLayer(outArrow)};
+        outArrow =  L.polygon(pointList,{
+            color:col,
+            interactive:true
+
+       }).addTo(lineLayer);
+    }
+
+    //console.log("polygo is",p);
+
+
+
+    //p.on("mousedown",poly_clicked);
+   // p.on("touchstart",poly_clicked);
+    //p.on("click",testclick);
+   // p.on("ontouchstart",poly_clicked);
+    //p.bindPopup("<div><button id='arrow_" + col + "' onclick='deleteArrow(event);'>Delete</button></div>");
+    return p4;
+
+}
+
+
+function incrementDate(){
+    var start = moment(document.getElementById("time").innerText.split(",")[0].trim(),"dddd MMM DD, YYYY");
+    start.add(1,"d").set({hour:0,minute:0,second:0,millisecond:0});
+    var end = moment(start).add(1,"d")
+    loadData(start,end);
+}
+
+
+function decrementDate(){
+    var start = moment(document.getElementById("time").innerText.split(",")[0].trim(),"dddd MMM DD, YYYY");
+    start.subtract(1,"d").set({hour:0,minute:0,second:0,millisecond:0});
+    var end = moment(start).add(1,"d")
+    loadData(start,end);
+}
+
+
+
+function triggerLoadData(){
+    var live = document.getElementById("time-selector-popup").getElementsByClassName("selected")[0].parentNode.id.replace("time_","");
+    var carets = document.getElementById("time-display").getElementsByClassName("caret");
+    console.log("inner text is",document.getElementById("time").innerText,document.getElementById("time").innerText == "",document.getElementById("time"))
+    console.log(document.getElementById("time").textContent , document.getElementById("time").textContent == "")
+    if(live == "ALL"){
+        if(document.getElementById("time").innerText == ""){
+            var s = moment();
+        }
+        else{
+            var s = moment(document.getElementById("time").innerText.trim().slice(0, -14),"dddd MMM DD, YYYY");
+        }
+        console.log("in trigger, s is",s);
+        s.set({hour:0,minute:0,second:0,millisecond:0});
+        e = moment(s).add(1,"d");
+        for (var i=0;i<carets.length;i++){
+            carets[i].classList.remove("d-none");
+        }
+    }
+    else{
+        s = moment(new Date());
+        e = moment(new Date());
+        s.subtract(30,"m")
+        for (var i=0;i<carets.length;i++){
+            carets[i].classList.add("d-none");
+        }
+    }
+    loadData(s,e);
+}
+
+var formData = new FormData();
+formData.append("exclude associated",true);
+fetcher(formData,"getClientLocations",function(result){
+    console.log("received results",result);
+    document.getElementById("classes-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = result.classes;
+    setPopupListeners(document.getElementById("classes-popup"));
+    var items = document.getElementById("classes-popup").getElementsByClassName("menu-item");
+    for(var i=0;i<items.length;i++){
+        items[i].addEventListener("click",function(){updateDatasets()});
+    }
+    processLocationGeojson(result.locations);
+    map.removeLayer(lineLayer);
+    if(lineLayer.getBounds().isValid()){
+        map.on("moveend", addLineLayer);
+        map.flyToBounds(lineLayer.getBounds(),{duration:1.5});
+    }
+});
+
+
+
+function getTracks(){
+    var formData = new FormData();
+    formData.append("location_id","test3");
+    fetcher(formData,"getTracks",function(result){
+        console.log("received results",result);
+        L.geoJSON(result.tracks,{style:"red"}).addTo(map);
+    });
+}
+
+
+var items = document.getElementById("time-selector-popup").getElementsByClassName("menu-item");
+    for(var i=0;i<items.length;i++){
+        items[i].addEventListener("click",function(){triggerLoadData()});
+    }
+
+
+</script>
+
+{% endblock %}

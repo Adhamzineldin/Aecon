@@ -1,0 +1,44 @@
+<div class="subnavbar py-2">
+    {% if request.user.is_authenticated %}
+    <div class="container-fluid row flex-wrap align-items-center justify-content-between">
+        <ul class="nav col-10">
+            <li class="nav-item">
+                <a id="headline" onclick="tabContent('headline');" class="nav-link" aria-current="page">
+                    Headline Data
+                </a>
+            </li>
+            <li class="nav-item">
+                <a id="volume" onclick="tabContent('volume');" class="nav-link" aria-current="page">
+                    Hourly Volumes
+                </a>
+            </li>
+            
+            {% if request.path != "/aecon/jtc-upload" %}
+            <li class="nav-item">
+                <a id="overview" onclick="tabContent('overview');" class="nav-link " aria-current="page">
+                    Overview
+                </a>
+            </li>
+            {% endif %}
+
+            {% if request.user.is_superuser %}
+            <li class="nav-item">
+                <a id="jtc-upload" onclick="location.href = '/aecon/jtc-upload';" class="nav-link " aria-current="page">
+                    Upload
+                </a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+                <a id="jtc-download" onclick="location.href='/aecon/jtc-download';" class="nav-link "
+                    aria-current="page">
+                    Download
+                </a>
+            </li>
+        </ul>
+    </div>
+    {% else %}
+    <div class="container-fluid roww flex-wrap align-items-center justify-content-between">
+        <h5 class="text-white col-12 text-right p-3" style="margin-bottom: 0 !important">&nbsp;</h5>
+    </div>
+    {% endif %}
+</div>

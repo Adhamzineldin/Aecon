@@ -1,0 +1,352 @@
+{% extends "aecon/sensor-data.html" %} {% block content %}
+<div class="row main">
+    <div class="col-md-12 mb-3">
+        <div class="row">
+            <div class="font-weight-bold my-auto px-4">
+                Date Range
+            </div>
+            <div class="calendar_green selection-header col-sm-auto shadow px-3" id="calendar">
+                <div id="date-button" class="date-text"><span>+</span></div>
+                <span><img id="changing-calender-icon" class="icon-calendar"
+                           src="/static/aecon/calendar_icon_white.svg"
+                          ></img></span>
+            </div>
+
+            <div class="d-none d-flex align-items-center bg-white justify-content-center date-display col-md-1 shadow my-2">
+                <div id="date_from" class="d-none date"></div>
+            </div>
+
+            <div class="topbar__item d-none" id="calendar2"><span><i class="calendar-icon"></i></span></div>
+            <div class="d-none d-flex align-items-center bg-white justify-content-center date-display col-md-1 shadow my-2">
+                <div id="date_to" class="d-none date"></div>
+            </div>
+            <div class="selection-header col-md-2 shadow" onclick="observationPopup(this)">
+              <label class="popup-label">Observation</label>
+              <span>Observation</span>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="px-5 py-3 bg-white mt-4" style="box-shadow: 0px 0px 10px #0000001A; border-radius: 5px;">
+  <div class="row px-1 mt-4">
+    <h4 class="chart-title ml-3">Combined</h4>
+  </div>
+
+  <div class="row canvass">
+    <div class="col-md-3 px-1 d-flex justify-content-center">
+      <canvas id="dashboardChart_2" width="230" height="143" style="position: relative;
+    left: 120px;"></canvas>
+    </div>
+    <div class="col-md-4 px-1 d-flex justify-content-end">
+      <div class="text-center my-1 position-absolute" style="top: 50px">
+        <ul class="colgraph-nums">
+          <li>
+            <h5 class="mb-4 chart-text text-left" id="count_0_2">
+              <strong> - </strong>
+            </h5>
+          </li>
+          <li>
+            <h5 class="mb-4 chart-text text-left" id="count_1_2">
+              <strong> - </strong>
+            </h5>
+          </li>
+          <li>
+            <h5 class="mb-4 chart-text text-left" id="count_2_2">
+              <strong> - </strong>
+            </h5>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-4 px-1 d-flex" style="top: 45px">
+      <div
+        id="dashboardChartlabel_2"
+        class="text-center my-1 position-absolute"
+      >
+        <ul class="colgraph-text"></ul>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center mb-2">
+    <h5 class="totalVol-text">Total Volume</h5>
+    <h5 class="totalVol-data text-center ml-4" id="total_2">
+      <strong>-</strong>
+    </h5>
+  </div>
+
+  <div class="horizontal"></div>
+  <div class="row px-1 mt-4">
+    <h4 class="chart-title ml-3">Eastbound</h4>
+  </div>
+
+  <div class="row canvass">
+    <div class="col-md-3 px-1 d-flex justify-content-center">
+      <canvas style="position: relative; left: 120px;" id="dashboardChart_0" width="230" height="143"></canvas>
+    </div>
+    <div class="col-md-4 px-1 d-flex justify-content-end">
+      <div class="text-center my-1 position-absolute" style="top: 50px">
+        <ul class="colgraph-nums">
+          <li>
+            <h5 class="mb-4 chart-text text-left" id="count_0_0">
+              <strong> - </strong>
+            </h5>
+          </li>
+          <li>
+            <h5 class="mb-4 chart-text text-left" id="count_1_0">
+              <strong> - </strong>
+            </h5>
+          </li>
+          <li>
+            <h5 class="mb-4 chart-text text-left" id="count_2_0">
+              <strong> - </strong>
+            </h5>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-4 px-1 d-flex" style="top: 45px">
+      <div
+        id="dashboardChartlabel_0"
+        class="text-center my-1 position-absolute"
+      >
+        <ul class="colgraph-text"></ul>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center mb-2">
+    <h5 class="totalVol-text">Total Volume</h5>
+    <h5 class="totalVol-data text-center ml-4" id="total_0">
+      <strong>-</strong>
+    </h5>
+  </div>
+
+  <div class="horizontal"></div>
+  <div class="row px-1 mt-4">
+    <h4 class="chart-title ml-3">Westbound</h4>
+  </div>
+  <div class="row canvass">
+    <div class="col-md-3 px-1 d-flex justify-content-center">
+      <canvas style="position: relative;left: 120px;" id="dashboardChart_1" width="230" height="143"></canvas>
+    </div>
+    <div class="col-md-4 px-1 d-flex justify-content-end">
+      <div class="text-center my-1 position-absolute" style="top: 50px">
+        <ul class="colgraph-nums">
+          <li>
+            <h5 class="mb-4 chart-text text-left" id="count_0_1">
+              <strong> - </strong>
+            </h5>
+          </li>
+          <li>
+            <h5 class="mb-4 chart-text text-left" id="count_1_1">
+              <strong> - </strong>
+            </h5>
+          </li>
+          <li>
+            <h5 class="mb-4 chart-text text-left" id="count_2_1">
+              <strong> - </strong>
+            </h5>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-4 px-1 d-flex" style="top: 45px">
+      <div
+        id="dashboardChartlabel_1"
+        class="text-center my-1 position-absolute"
+      >
+        <ul class="colgraph-text"></ul>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center mb-2">
+    <h5 class="totalVol-text">Total Volume</h5>
+    <h5 class="totalVol-data text-center ml-4" id="total_1">
+      <strong>-</strong>
+    </h5>
+  </div>
+</div>
+{% endblock %} {% block js %}
+<script>
+  var dashboardChart = [];
+  function percentage(partialValue, totalValue) {
+    if (partialValue == "-" || totalValue == "-") {
+      return 0;
+    }
+    return Math.round(((100 * partialValue) / totalValue) * 100) / 100;
+  }
+   var datepicker = $('#calendar').daterangepicker({
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+            singleDatePicker: false,
+            opens: 'right',
+            drops: 'down'
+        });
+
+    datepicker.on('apply.daterangepicker', function (ev, picker) {
+
+        console.log("in apply func");
+        console.log(picker);
+
+        document.getElementById("date-button").innerText = picker.startDate.format('DD/MM/YYYY');
+        document.getElementById("date_from").innerText = picker.startDate.format('DD/MM/YYYY');
+        document.getElementById("date_to").innerText = picker.endDate.format('DD/MM/YYYY');
+        userChangedDate = true;
+        var id = document.getElementById("location_id").value;
+        if (id) {
+          set_data(id);
+        }
+    });
+
+  function set_data(id) {
+    var start = moment(
+      document.getElementsByClassName("date")[0].innerText.trim(),
+      "DD/MM/YYYY"
+    );
+    var end = moment(
+      document.getElementsByClassName("date")[1].innerText.trim(),
+      "DD/MM/YYYY"
+    );
+
+    dashboardChart.forEach(function (item, index) {
+      item.destroy();
+    });
+
+
+
+    loadData(start, end, id).then(function () {
+      var classes_arry = ['cyclist','pedestrian',['car','van',"motorbike","taxi","minibus","bus","rigid","truck","emergency_car","emergency_van","fire_engine","PC/MC","CAR/LGV","OGV1 & PSV 2Axle/LGV","OGV2"]]
+      classedData.data[id].directions.forEach(function (direction, dir_order) {
+        var temp_lst = Array.of(0, 0, 0);
+        for (let i = 0; i < 7; i++) {
+
+          for (let j in classes_arry) {
+            let data = direction.baseData[i].filter(function (el){return classes_arry[j].includes(el.label)})
+            let data_array = 0
+            for ( d of data)
+            {
+              data_array = [data_array,d.data.reduce(function (a, b) {return myReduce(a, b);}, 0)].reduce(function (a, b) {return myReduce(a, b);}, 0)
+            }
+            temp_lst[j] = [temp_lst[j],data_array].reduce(function (a, b) {return myReduce(a, b);}, 0);
+          }
+        }
+        let total = temp_lst.reduce(function (a, b) {
+          return myReduce(a, b);
+        }, 0);
+        temp_lst.forEach(function (item, cls_order) {
+          temp_lst[cls_order] = percentage(item, total);
+          document.getElementById(
+            "count_" + cls_order + "_" + dir_order
+          ).innerText = item;
+        });
+
+        document.getElementById("total_" + dir_order).innerText = total;
+        var ctx = document.getElementById("dashboardChart_" + dir_order);
+        //temp_lst[temp_lst.length] = (total == 0 ? 100:0);
+        var labledata = ["Cyclist", "Pedestrians", "Motorised"];
+        var updatedlable = [];
+
+        for (var i = 0; i < labledata.length; i++) {
+          var lablewithper =
+            "<h5><strong>" +
+            labledata[i] +
+            "</strong></h5><h5 class='' style='width:60px;text-align:left'><strong>" +
+            (temp_lst[i] ? temp_lst[i] + "%" : "0%") +
+            "</strong></h5>";
+          updatedlable.push(lablewithper);
+        }
+        var uldata = "";
+        for (var j = 0; j < updatedlable.length; j++) {
+          uldata1 =
+            "<li class='mb-3'><div class='d-flex justify-content-between'>" +
+            updatedlable[j] +
+            "</div><div class='square'></div></li>";
+          uldata = uldata + uldata1;
+        }
+        var iddata = "dashboardChartlabel_" + dir_order;
+        $("#" + iddata + " .colgraph-text").html(uldata);
+
+        var max = Math.max(...temp_lst);
+        temp_lst.forEach(function (item, i) {
+          if (temp_lst[i] < 1 && temp_lst[i] > 0) {
+            var temp = 1 - temp_lst[i];
+            temp_lst[temp_lst.indexOf(max)] = max - temp;
+            temp_lst[i] = temp_lst[i] + temp;
+          }
+        });
+        console.log("after -", temp_lst, temp_lst.length);
+        dashboardChart[dir_order] = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: labledata,
+            datasets: [
+              {
+                data: temp_lst,
+                backgroundColor: ["#222e83", "#12D231", "#FF0000"],
+                borderColor: [
+                  "rgb(255,255,255)",
+                  "rgb(255,255,255)",
+                  "rgb(255,255,255)",
+                ],
+                borderWidth: 2,
+              },
+            ],
+          },
+          options: {
+            rotation: 1 * Math.PI,
+            circumference: 1 * Math.PI,
+            legend: {
+              display: false,
+            },
+            tooltips: {
+              enabled: false,
+            },
+            layout: {
+              padding: 20,
+            },
+            cutoutPercentage: 80,
+            plugins: {
+              labels: {
+                render: function (args) {
+                  return args.label.split(" ")[0];
+                },
+                fontColor: ["#848182", "#848182", "#848182"],
+                fontSize: 14,
+                position: "border",
+                fontStyle: "bold"
+              },
+            },
+          },
+        });
+      });
+    });
+  }
+  Chart.pluginService.register({
+    beforeDraw: function (chart) {
+      var width = chart.chart.width,
+        height = chart.chart.height,
+        ctx = chart.chart.ctx;
+      ctx.restore();
+      ctx.save();
+    },
+  });
+
+  function viewSite(id, ele) {
+    document.getElementById("location_id").value = id;
+    loadLocation(id).then(function () {
+      var dir_names = [];
+      set_data(id);
+      location_details.directions.split("<span>").forEach(function (item) {
+        item.includes("</span>")
+          ? dir_names.push(item.split("</span>")[0])
+          : "";
+      });
+    });
+  }
+</script>
+
+{% endblock %}

@@ -1,0 +1,1449 @@
+{% extends "aecon/dashboard-base.html" %}
+{% load staticversion %}
+
+{% block content %}
+
+<style>
+
+    #countline-table tr.selected{
+        background-color: rgba(167, 183, 209,0.6);
+
+    }
+
+
+    #countline-table tr{
+        background-color:white;
+
+    }
+
+
+    #countline-table-header{
+        table-layout:fixed;
+    }
+
+    #countline-table-header th{
+        height:55px;
+        min-height:30px;
+        text-align: center;
+      vertical-align: middle;
+      color:#3f4347;
+      background-color:white;
+      border-top:0;
+      padding:5px;
+      font-size:0.85rem;
+
+
+    }
+
+    #countline-table td{
+
+        height:50px;
+        vertical-align:middle;
+        padding:5px;
+        text-align:center;
+        font-weight:200;
+        font-size:1.2rem;
+    }
+
+    #countline-table td.temp{
+        color:blue;
+    }
+
+
+    #countline-table td.perm{
+        color:red;
+    }
+
+    #countline-table .variable-cell,#countline-table-header .variable-cell{
+        width:90px;
+        min-width:90px;
+        max-width:90px;
+    }
+
+
+    #countline-table .small-header,#countline-table-header .small-header{
+        width:70px;
+        min-width:70px;
+        max-width:70px;
+    }
+
+    #countline-table .bar-header,#countline-table-header .bar-header{
+        width:200px;
+        min-width:200px;
+        max-width:200px;
+    }
+
+    #countline-table .large-header,#countline-table-header .large-header{
+        width:100px;
+        min-width:100px;
+        max-width:100px;
+    }
+
+    .leaf a.normal:before {
+        font-family: 'Font Awesome 5 Free';
+        content: '\f111';
+        font-weight:900;
+        font-size:0.5rem;
+        margin:0 5px 0 5px;
+        color: red;
+    }
+
+
+    .leaf a.temp:before {
+        font-family: 'Font Awesome 5 Free';
+        content: '\f111';
+        font-weight:900;
+        font-size:0.5rem;
+        margin:0 5px 0 5px;
+        color: orange;
+    }
+
+
+    .leaf a.aq:before {
+        font-family: 'Font Awesome 5 Free';
+        content: '\f111';
+        font-weight:900;
+        font-size:0.5rem;
+        margin:0 5px 0 5px;
+        color: yellow;
+    }
+
+    .canvaswrapper .topbar__item span{
+        height:33px;
+        width:33px;
+        font-size:0.88rem;
+    }
+
+    .canvaswrapper .topbar__item i{
+
+        font-size:1.4rem;
+    }
+
+
+</style>
+
+
+<div id="graph-limit-popup" style="width:240px" class="conduit-popup">
+    <div class="conduit-selectable-menu  multi">
+        <ul >
+             <li data-limit="0.09" data-text-low="CO" data-text-high="" data-col="rgba(44, 168, 54, .4)" data-col-low="rgba(44, 168, 54, .4)" data-col-high="rgba(214, 162, 17, .5)" class="menu-item popup-item" >
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <div class="d-flex align-items-center popup-item-container" style="margin-left:10px;">
+                        <div style="margin-right:auto;width:120px">Carbon Monoxide</div>
+                        <div ><input type="text" name="projectNumber" class="form-control" style="width:60px;"></div>
+                    </div>
+
+                </a>
+            </li>
+
+            <li data-limit="200" data-text-low="NO" data-text-high="" data-col="rgba(44, 168, 54, .4)" data-col-low="rgba(44, 168, 54, .4)" data-col-high="rgba(214, 162, 17, .5)" class="menu-item popup-item">
+                <a href="#"  class="selectable-menu-item">
+                    <i ></i>
+                    <div class="d-flex align-items-center popup-item-container" style="margin-left:10px;">
+                        <div style="margin-right:auto;width:120px">Nitrogen Monoxide</div>
+                        <div ><input type="text" name="projectNumber" class="form-control" style="width:60px;"></div>
+                    </div>
+
+
+                </a>
+            </li>
+            <li data-limit="100" data-text-low="NO2" data-text-high="" data-col="rgba(44, 168, 54, .4)" data-col-low="rgba(44, 168, 54, .4)" data-col-high="rgba(214, 162, 17, .5)" class="menu-item popup-item" >
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <div class="d-flex align-items-center popup-item-container" style="margin-left:10px;">
+                        <div style="margin-right:auto;width:120px">Nitrogen Dioxide</div>
+                        <div ><input type="text" name="projectNumber" class="form-control" style="width:60px;"></div>
+                    </div>
+
+                </a>
+            </li>
+
+
+            <li data-limit="30" data-text-low="Temp" data-text-high="" data-col="rgba(44, 168, 54, .4)" data-col-low="rgba(44, 168, 54, .4)" data-col-high="rgba(214, 162, 17, .5)" class="menu-item popup-item" >
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <div class="d-flex align-items-center popup-item-container" style="margin-left:10px;">
+                        <div style="margin-right:auto;width:120px">Temperature</div>
+                        <div ><input type="text" name="projectNumber" class="form-control" style="width:60px;"></div>
+                    </div>
+
+                </a>
+            </li>
+
+            <li data-limit="100" data-text-low="Noise" data-text-high="" data-col="rgba(44, 168, 54, .4)" data-col-low="rgba(44, 168, 54, .4)" data-col-high="rgba(214, 162, 17, .5)" class="menu-item popup-item">
+                <a href="#"  class="selectable-menu-item">
+                    <i ></i>
+                    <div class="d-flex align-items-center popup-item-container" style="margin-left:10px;">
+                        <div style="margin-right:auto;width:120px">Noise</div>
+                        <div ><input type="text" name="projectNumber" class="form-control" style="width:60px;"></div>
+                    </div>
+
+
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<div id="classes-popup" style="width:auto;" class="conduit-popup">
+    <div class="conduit-selectable-menu multi">
+        {{ classes | safe}}
+    </div>
+</div>
+
+<div id="site-details-popup" class="conduit-popup" style="width:370px;z-index:3002;line-height:1.4;background-color:#E6E8E7;border:1px solid grey">
+
+</div>
+
+<div id="period-selector-popup" style="width:180px" class="conduit-popup">
+    <div class="conduit-selectable-menu  min-1" data-header="period-selector">
+        <ul >
+             <li id="60" class="menu-item popup-item" data-offset="4">
+                <a href="#" class="selectable-menu-item selected ">
+                    <i ></i>
+                    <span >60 Minutes</span>
+                </a>
+            </li>
+            <li id="30" class="menu-item popup-item" data-offset="2">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>30 Minutes</span>
+                </a>
+            </li>
+            <li id="15" class="menu-item popup-item" data-offset="1">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>15 Minutes</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div id="subview-selector-popup" style="width:180px" class="conduit-popup">
+    <div class="conduit-selectable-menu  min-1" data-header="subview-selector">
+        <ul >
+             <li id="weekday_1" class="menu-item popup-item" data-datetype="average day" data-table="crt_full_averages">
+                <a href="#" class="selectable-menu-item selected ">
+                    <i ></i>
+                    <span>Average Weekday </span>
+                </a>
+            </li>
+            <li id="weekday_2" class="menu-item popup-item" data-datetype="average day" data-table="crt_full_averages">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>Average Saturday</span>
+                </a>
+            </li>
+            <li id="weekday_3" class="menu-item popup-item" data-datetype="average day" data-table="crt_full_averages">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>Average Sunday</span>
+                </a>
+            </li>
+            <li id="specific_day" class="menu-item popup-item " data-datetype="specific day">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span >Specific Day</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<div class="row align-items-center"  style="height:50px">
+    <div class="col-12 my-auto d-flex align-items-center">
+        <div class="selection-header subview-selector-popup-trigger" style="width:200px;" id="subview-selector"><span>Average Weekday</span><i class="chevron-icon"></i></div>
+        <div class="selection-header period-selector-popup-trigger" id="period-selector"><span>60 Minutes</span><i class="chevron-icon"></i></div>
+
+
+        <div class="d-flex align-items-center justify-content-center date-display">
+            <div class="topbar__item d-none" onclick="decrementDate();"> <i class="fa fa-caret-left pull-right mx-auto"></i></div>
+            <div class="date"></div>
+            <div class="topbar__item d-none" onclick="incrementDate();"> <i class="fa fa-caret-right pull-right mx-auto"></i></div>
+        </div>
+        <div class="topbar__item" id="calendar"><span><i class="icon-calendar"></i></span></div>
+        <div class="topbar__item" id="reset" onclick="resetView();"><span><i class="icon-close"></i></span></div>
+        
+
+    </div>
+</div>
+
+<div class="row" style="height:calc(100% - 55px)" >
+    <div  id="main-container-greyed-out" class="d-none" style="position:absolute;width:calc(100% - 300px);height:calc(100% - 105px);z-index:401;opacity:0.9;background-color:#fcfcfc;"></div>
+    <div class="col-6 h-100">
+        <div class="row" style="height:50%" id="map-row">
+            <div class="col-12 col-xl-12 pb-3 h-100" id="table-container">
+                <div class = "card header-shadow" style="width:100%;height:100%"  data-group="atc-volumes-daily">
+                    <div id="data-table-wrapper" style="height:100%;width:100%;overflow-x:auto;overflow-y:hidden;position:relative">
+                        <div class="greyed-out justify-content-center align-items-center"> <img src ="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img"></div>
+                        <table class="table" id="countline-table-header" style = "width:100%;cursor:pointer;overflow-x:hidden">
+                            <thead>
+                                <tr>
+                                    <th scope="col" onclick="tableHeaderClicked(event);" class="large-header">Area</th>
+                                    <th scope="col" onclick="tableHeaderClicked(event);" class="bar-header">Site</th>
+                                    <th scope="col" onclick="tableHeaderClicked(event);" class="bar-header">Direction</th>
+                                    <th scope="col" onclick="tableHeaderClicked(event);" class="bar-header">Chart</th>
+                                    <th scope="col" onclick="tableHeaderClicked(event);" class="small-header">Days</th>
+                                    <th scope="col" onclick="tableHeaderClicked(event);" class="small-header">Total</th>
+                                    <th class='padding-cell' style='width:0px'></th>
+                                </tr>
+                            </thead>
+                            <tbody style="margin-top:5px;">
+
+                            </tbody>
+                        </table>
+                        <div class="table-inner" style="height:calc(100% - 61px);width:auto;overflow-y:auto;overflow-x:hidden;display:inline-block">
+
+                            <table class="table" id="countline-table" style = "cursor:pointer;width:100%">
+                                <tbody style="margin-top:5px;">
+
+                                </tbody>
+                            </table>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-12 pb-3 h-100" id="map-container">
+
+                <div class = "card header-shadow" style="width:100%;height:100%"  data-group="atc-volumes-daily">
+
+                    <div class="col-12 " id="map-wrapper" style="width:100%;height:100%;padding:10px">
+                        <div class = "map-panel" id = "countline-map" style="height:100%">
+
+                        </div>
+                        <div class="topbar__item" onclick="toggleExpandMap();" style="width:30px;height:30px;line-height:25px;background-color:white;position:absolute;bottom:10px;left:10px;z-index:400;border-radius:2px;border:2px solid grey;text-align:center;font-size:16px;cursor:pointer">
+                            <span class="icon-toggle"><i class="fa fa-expand" data-alt="fa fa-compress"></i></span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="col-6 h-100" style="overflow:auto">
+        <div class="row" style="height:100%" id="graph-container">
+            {% for i in "01234"|make_list %}
+                <div class="col-12 col-xl-6 pl-0 pb-1" style="height:264px">
+                    <div class = "card header-shadow " style="width:100%;height:100%"  >
+                        <div class="greyed-out justify-content-center align-items-center show"> <img src ="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+                        <div class="d-flex justify-content-center align-items-center" style="height:40px">
+                                <div style="margin-right:auto;padding-left:30px;color: #a0a6ac !important;" id="title_{{i}}"></div>
+                                <div style="padding-right:10px;margin-left:auto" class="d-flex">
+                                    <div class="topbar__item" onclick="saveGraphImage();" >
+                                        <span class="icon-toggle"><i class="icon-picture"></i></span>
+                                    </div>
+                                    <div class="topbar__item graph-limit-popup-trigger opens-left" >
+                                        <span class="icon-toggle"><i class="icon-controls-1" ></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="canvaswrapper" style="padding:0 10px;">
+
+                            <canvas id="graph_{{i}}" >
+                            </canvas>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+
+var dataTimeout;
+var dataRetrievalActive = false;
+var retrievedData;
+var locations;
+var id = document.getElementById("mb-id").value
+initMap([53.476404, -2.250621],"countline-map",id);
+dateType = "average day";
+var chartDict = {};
+var graphLabels = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00"];
+var graphColors = ["red","green","blue","orange","black","yellow","brown","purple"];
+var selectedSiteData = {};
+var chartView = "line";
+var combine = false;
+var userChangedDate = false;
+
+
+
+ var datepicker = $('#calendar').daterangepicker({locale: {
+            format: 'DD/MM/YYYY'
+        },
+        singleDatePicker: false,
+        opens: 'left',
+        drops:'down'
+        });
+
+datepicker.on('apply.daterangepicker', function(ev, picker) {
+
+    console.log("in apply func");
+    console.log(picker);
+    userChangedDate = true;
+    dateChanged(picker.startDate,picker.endDate,"")});
+
+
+function dateChanged(start,end,label){
+    console.log(start,end);
+    if (dateType=="specific day"){
+        end.add(1,"days");
+    }
+
+    if (dateType=="specific week"){
+        start.subtract(start.isoWeekday() - 1,"d");
+        end = moment(start).add(7,"days");
+    }
+
+    else{
+
+    }
+    //console.log("retrieving dates",s,e)
+    displayDates(start,end);
+
+    console.log("setting userChangedDate to true 1");
+     userChangedDate = true;
+     getData(start,end);
+}
+
+
+function incrementDate(){
+    if (dataRetrievalActive) {return;}
+    clearTimeout(dataTimeout);
+    var dates = getDates();
+    start = dates[0];
+    end = dates[1];
+    if (dateType == "specific day"){
+        start.add(1,"d");
+        end.add(1,"d");
+    }
+    if (dateType == "specific week"){
+        var start = moment(document.getElementsByClassName("date")[0].innerText.split("-")[0].trim(),"ddd DD/MM/YYYY");
+        var end = moment(document.getElementsByClassName("date")[0].innerText.split("-")[1].trim(),"ddd DD/MM/YYYY");
+        start.subtract(start.isoWeekday() - 1,"d").add(7,"d");
+        end.subtract(end.isoWeekday() - 1,"d").add(7,"d");
+    }
+    displayDates(start,end);
+    dataTimeout = setTimeout(triggerGetData,700);
+    return;
+}
+
+
+function decrementDate(){
+    if (dataRetrievalActive) {return;}
+    clearTimeout(dataTimeout);
+    var dates = getDates();
+    start = dates[0];
+    end = dates[1];
+    if (dateType == "specific day"){
+        start.subtract(1,"d");
+        end.subtract(1,"d");
+    }
+    if (dateType == "specific week"){
+        var start = moment(document.getElementsByClassName("date")[0].innerText.split("-")[0].trim(),"ddd DD/MM/YYYY");
+        var end = moment(document.getElementsByClassName("date")[0].innerText.split("-")[1].trim(),"ddd DD/MM/YYYY");
+        start.subtract(start.isoWeekday() - 1,"d").subtract(7,"d");
+        end = moment(start).add(7,"d");
+    }
+
+    displayDates(start,end);
+    dataTimeout = setTimeout(triggerGetData,700);
+
+    return;
+}
+
+
+function displayDates(start,end){
+    console.log("in display dates, datyetype is",dateType);
+    if (dateType == "specific day"){
+        document.getElementsByClassName("date")[0].innerText = start.format("ddd DD/MM/YYYY");
+    }
+    else{
+        document.getElementsByClassName("date")[0].innerText = start.format("ddd DD/MM/YYYY") + " - " + end.format("ddd DD/MM/YYYY");
+    }
+}
+
+
+function getDates(){
+    if (document.getElementsByClassName("date")[0].innerText == ""){
+        return [moment(),moment()];
+    }
+    var start = moment(document.getElementsByClassName("date")[0].innerText.split("-")[0].trim(),"ddd DD/MM/YYYY");
+    console.log("start is",start);
+    console.log(" in get dates, dateType is", dateType);
+    var arr = document.getElementsByClassName("date")[0].innerText.split("-");
+    if (arr.length == 1){arr.push(moment(start).format("ddd DD/MM/YYYY"))};
+    if (dateType == "specific day"){
+        end = moment(arr[0].trim(),"ddd DD/MM/YYYY").add(1,"days");
+    }
+    else if (dateType == "average day"){
+        end = moment(arr[1].trim(),"ddd DD/MM/YYYY")
+    }
+    else if (dateType == "specific week"){
+        start.subtract(start.isoWeekday() - 1,"d");
+        end = moment(start).add(7,"days");
+    }
+    else{
+        end = moment(arr[1].trim(),"ddd DD/MM/YYYY").add(1,"days");
+    }
+    return [start,end];
+}
+
+
+function toggleGraphDisplay(){
+    console.log("current chart view is",chartView);
+    if (chartView == "line"){
+        chartView = "bar";
+    }
+    else{
+        chartView = "line";
+    }
+    setUpChart();
+    updateDatasets();
+}
+
+function toggleCombine(){
+    combine = !combine;
+    updateDatasets();
+}
+
+
+function expandGraph(){
+    hideAllPopups();
+    if(document.getElementById("map-row").classList.contains("d-none")){
+        document.getElementById("map-row").classList.remove("d-none")
+        document.getElementById("graph-container").style.height = "50%";
+    }
+    else{
+        document.getElementById("map-row").classList.add("d-none")
+        document.getElementById("graph-container").classList.remove("mt-3");
+        document.getElementById("graph-container").style.height = "100%"
+    }
+}
+
+function saveGraphImage(){
+    getElementAsCanvas("graph-container").then(function(innerCanvas){
+        var downloadLink = document.createElement("a");
+        var canvas = document.createElement("canvas");
+
+        var title = document.getElementById("subview-selector").getElementsByTagName("span")[0].innerText;
+        if(combine){
+            title = title + " - combined "
+        }
+         if(title == "Average Day"){
+            title = title + " - " + document.getElementById("day-selector").getElementsByTagName("span")[0].innerText;
+         }
+         title = title + " - " +  document.getElementsByClassName("date")[0].innerText;
+        canvas.width = 300 + innerCanvas.width;
+        canvas.height = innerCanvas.height;
+        ctx = canvas.getContext("2d");
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.textAlign = "left";
+        ctx.font = "10px Arial";
+        ctx.fillStyle = "black";
+        ctx.fillText(title,50,20);
+        ctx.drawImage(innerCanvas,300,0);
+        var rows = document.getElementById("countline-table").getElementsByClassName("selected");
+        for(var i=0;i<rows.length;i++){
+            ctx.textAlign = "left";
+            ctx.font = "10px Arial";
+            if(!combine){
+                ctx.fillStyle = rows[i].cells[1].style.color;
+            }
+            ctx.fillText(rows[i].cells[0].innerText + " - " + rows[i].cells[1].innerText , 50, 20 * (i + 2));
+        }
+        //document.body.appendChild(canvas);
+        var img = canvas.toDataURL("image/jpeg");
+        downloadLink.href = img;
+        downloadLink.download = "chart.jpg";  //Name the file here
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        document.getElementById("graph-overlay").classList.remove("d-none");
+        document.getElementById("graph-overlay").classList.add("d-flex");
+    });
+
+
+
+
+    //setTimeout(function(){genScreenshotgraph("weeeee","hi");},1);
+
+}
+
+
+
+function dealWithLocationFeatureCollection(feature,layer){
+    //console.log("dealing with location")
+    if (feature.geometry.type == "LineString" && feature.properties.type == "countline"){
+        //console.log("found countline",feature);
+        layer.setStyle({color:"#2483ec",weight:5});
+        //layer.addTo(map);
+        //layer.setStyle(locationStyleOptions);
+        lineLayer.addLayer(layer);
+        var popup = L.popup({maxWidth:350,minWidth:350});
+        //popup.setContent(createMetaDataPopup2(feature));
+        //layer.bindPopup(popup);
+
+        //console.log("line layer is",lineLayer);
+        //setupLocationLineWithArrowhead(layer);
+        //layer.options.direction = feature.properties.direction_id;
+        //layer.options.order = feature.properties.order;
+
+    }
+    if (feature.geometry.type == "Point" && feature.properties.obsType.id == 2){
+        console.log("feature",feature);
+        var marker = addPlainMarker(feature,"aq");
+
+    }
+}
+
+
+
+
+function toggleExpandMap(){
+    graph = document.getElementById("graph-container");
+    if (graph.classList.contains("d-none")){
+        document.getElementById("table-container").classList.remove("d-none");
+
+        document.getElementById("map-row").classList.remove("h-100");
+        graph.classList.remove("d-none");
+    }
+    else{
+        document.getElementById("table-container").classList.add("d-none");
+        document.getElementById("table-container").classList.add("d-none");
+        document.getElementById("map-row").classList.add("h-100");
+        graph.classList.add("d-none");
+
+    }
+    map.invalidateSize();
+}
+
+
+function toggleDelegate(elem){
+    //console.log("setting up toggle listener for",elem);
+    return function(){
+
+        if(dataRetrievalActive || downloadActive){elem.getElementsByTagName("a")[0].classList.remove("selected");return;}
+        var sites = getSelectedSites(2);
+        if(sites.length == 8 && !elem.getElementsByTagName("a")[0].classList.contains("selected")){alert("you can only select max 8 sites");return}
+        if(!elem.getElementsByTagName("a")[0].classList.contains("selected")){
+            console.log("site was deselected!!!!!",elem.getElementsByTagName("a")[0].id);
+            var key = elem.getElementsByTagName("a")[0].id;
+            if(key in selectedSiteData){
+                delete selectedSiteData[key];
+            }
+        }
+        clearTimeout(dataTimeout);
+        var obsType = elem.getAttribute("data-obstype");
+        if (obsType == "2"){
+            dataTimeout = setTimeout(triggerGetData,700);
+        }
+        else if(obsType == "1"){
+            dataTimeout = setTimeout(redirectToCountline,700);
+            return;
+        }
+        else{
+            return;
+        }
+    }
+}
+
+var leaves = document.getElementById("sidebar").getElementsByClassName("leaf");
+for (var i=0;i<leaves.length;i++){
+
+    leaves[i].addEventListener("click",toggleDelegate(leaves[i]));
+}
+
+function viewSite(){
+
+}
+
+
+
+
+
+function redirectToCountline(){
+    var sites = getSelectedSites(1);
+    var dataToSave = {}
+    var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+            showGreyedOut(greyed[i]);
+        }
+    for(var i=0;i<sites.length;i++){
+
+        dataToSave[sites[i]]={"direction":2,"selected":false};
+    }
+    saveSitesToLocalStorage(1,dataToSave);
+    window.location.href="/aecon/redirect?view=9";
+}
+
+
+function buildCountlineTable(data){
+
+
+    var table = document.getElementById("countline-table-header");
+    var thead = table.getElementsByTagName("thead")[0];
+    var tbody = document.getElementById("countline-table").getElementsByTagName("tbody")[0];
+    if(!data){
+        selectedCountlineSites = [];
+        tbody.innerHTML = "";
+        return;
+    }
+    var wrapperWidth = document.getElementById("data-table-wrapper").offsetWidth;
+    thead.innerHTML=data.headers;
+
+    // hide 2 extra headers, direction and chart
+
+    thead.rows[0].cells[2].classList.add("d-none");
+    thead.rows[0].cells[3].classList.add("d-none");
+    thead.rows[0].cells[5].classList.add("d-none");
+
+
+    var headerRow = thead.rows[0];
+    tbody.innerHTML = data.table;
+    var rows = document.getElementById("countline-table").getElementsByTagName("tr");
+    for(var i=0;i<rows.length;i++){
+        rows[i].cells[0].addEventListener("mouseenter",showSiteDetailsPopup);
+        rows[i].cells[0].addEventListener("mouseout",function(){$('#site-details-popup').hide();});
+        rows[i].addEventListener("click",function(ele){
+                                            return function(event){
+                                            if(event.target.tagName === 'SELECT'){return;}
+                                            ele.classList.toggle("selected");
+                                            displayCountlineTable();
+                                            updateDatasets();
+                                            updateMap();}
+                                            }(rows[i]));
+        console.log("creating chart");
+
+
+
+
+        var barChart = createHorizontalBarChart(rows[i].getElementsByTagName("canvas")[0],{});
+        var id = rows[i].id.replace("_row","");
+
+        if (!selectedSiteData[id]){
+            selectedSiteData[id] = {};
+        }
+
+
+
+        if (selectedSiteData[id].selected){
+            rows[i].classList.add("selected");
+        }
+        rows[i].getElementsByTagName("select")[0].selectedIndex = selectedSiteData[id].direction;
+
+
+        selectedSiteData[id] = {"chart": barChart};
+
+
+    }
+
+    var items = document.getElementsByTagName("select");
+    for(var i=0;i<items.length;i++){
+        //console.log("in inline script, setting up click listener for",items[i]);
+        items[i].addEventListener("change",function(){displayCountlineTable();updateDatasets();});
+    }
+}
+
+
+function displayCountlineTable(){
+
+    var table = document.getElementById("countline-table-header");
+    var thead = table.getElementsByTagName("thead")[0];
+    var tbody = document.getElementById("countline-table").getElementsByTagName("tbody")[0];
+    var wrapperWidth = document.getElementById("data-table-wrapper").offsetWidth;
+
+    var classes = document.getElementById("classes-popup").getElementsByTagName("a");
+    for (var i=1;i<classes.length;i++){
+        //console.log("class is",classes[i],classes[i].classList);
+        var vehicle = classes[i].getAttribute("data-vehicle");
+
+        var cells = document.getElementById("data-table-wrapper").querySelectorAll("[data-vehicle='" + vehicle + "']");
+        //console.log("cells for",vehicle,"are",cells);
+        if(!classes[i].classList.contains("selected")){
+            for (var c=0;c<cells.length;c++){
+                //console.log("setting",cells[c],"to none")
+                cells[c].classList.add("d-none");
+            }
+        }
+        else{
+            for (var c=0;c<cells.length;c++){
+                cells[c].classList.remove("d-none");
+            }
+        }
+
+    }
+
+
+    var headers = document.getElementById("countline-table-header").getElementsByTagName("th");
+    totalWidth = 0;
+    for(var i=0;i<headers.length;i++){
+        if(!headers[i].classList.contains("d-none")){
+            var width = parseInt(headers[i].getAttribute("data-width"));
+            if(width){
+                totalWidth = totalWidth + width;
+            }
+        }
+    }
+    var padding = 0;
+    if (totalWidth < wrapperWidth){
+        var padding = wrapperWidth - totalWidth
+    }
+    paddingCells = document.getElementById("data-table-wrapper").getElementsByClassName("padding-cell");
+    for(var i=0;i<paddingCells.length;i++){
+        paddingCells[i].style.width = padding + "px";
+    }
+
+    var selectedClasses = getSelectedPopupIndexes("classes-popup");
+    var dates = getDates();
+    var day = getSelectedDay();
+    var rows = document.getElementById("countline-table").getElementsByTagName("tr");
+    maxValue = 0;
+    //console.log("DAY is ",day);
+    for(var i=0;i<rows.length;i++){
+        var key = rows[i].id.replace("_row","");
+        var total = 0;
+        var towpathTotal = 0;
+        var watercraftTotal = 0;
+
+        // hide 2 extra headers, direction and chart
+
+        rows[i].cells[2].classList.add("d-none");
+        rows[i].cells[3].classList.add("d-none");
+        rows[i].cells[5].classList.add("d-none");
+
+
+
+        barchartDatasets = []
+        barchartLabels = [];
+        var direction = document.getElementById(key + "_row").getElementsByTagName("select")[0].selectedIndex;
+        if(dateType == "specific day" || dateType == "average day"){
+            var dailyData = retrievedData.data[key].directions[direction].baseData[day];
+        }
+        else{
+
+            var dailyData = retrievedData.data[key].directions[direction].dailyChart.totals.datasets;
+        }
+
+        dailyData.forEach(function(dataset,classIndex){
+            console.log("reducing",dataset);
+            var val = dataset.data.reduce(sumOfArray,0)/dataset.data.length;
+            //console.log("reduced val is",val);
+            rows[i].querySelectorAll("[data-vehicle='" + dataset.label + "']")[0].innerText = val.toFixed(3);;
+            result = {"label":dataset.label,"backgroundColor":dataset.backgroundColor,"data":[val],"hidden":true};
+            if (selectedClasses.indexOf(classIndex) != -1){
+                total = total + val;
+                result.hidden=false;
+                if (classIndex == 4 | classIndex == 5){
+                    watercraftTotal = watercraftTotal + val;
+                }
+                else{
+                    towpathTotal = towpathTotal + val;
+                }
+
+            }
+            barchartLabels.push(dataset.label);
+            barchartDatasets.push(result);
+         });
+         if (total > maxValue){
+            maxValue = total;
+         }
+         console.log("datasets are",barchartDatasets);
+
+
+         selectedSiteData[key].direction = direction;
+         selectedSiteData[key].selected = rows[i].classList.contains("selected");
+
+
+         selectedSiteData[key].chart.data.datasets =barchartDatasets;
+    }
+    var dataToSave = {}
+    for(var key in selectedSiteData){
+        var chart = selectedSiteData[key].chart;
+        chart.data.datasets.forEach(function (e){
+                e.data[0] = e.data[0]/maxValue;
+        });
+        chart.update();
+        dataToSave[key]={"direction":selectedSiteData[key].direction,"selected":selectedSiteData[key].selected};
+    }
+    saveSitesToLocalStorage(2,dataToSave);
+
+}
+
+
+function changeGraph(){
+
+
+}
+
+
+
+function showSiteDetailsPopup(event){
+    return;
+    console.log("event is",event.target);
+    var id = event.target.parentNode.id.replace("_row","");
+
+    console.log("id of feature is",id);
+    var feature = findFeature(id);
+    console.log("feature is",feature);
+    var br = event.target.getBoundingClientRect();
+    console.log("btr is",br);
+    popup = document.getElementById("site-details-popup");
+    //var div = popup.getElementsByClassName("site-details-wrapper")[0];
+    popup.innerHTML = "";
+    popup.appendChild(createMetaDataPopup2(feature));
+    //popup.innerText = event.target.innerText;
+    //console.log("set value of widget to",popup.getElementsByTagName("div")[0].innerText );
+    //console.log("display is",popup.style.display);
+    var x = br.x ;
+    var y = br.bottom;
+    console.log("x,y,",x,y);
+    popup.style.top = (y - 50) + 'px';
+    //console.log("width is",popup.offsetWidth,"-", popup.clientWidth,"-",popup.style.width);
+    popup.style.left = (x) + 'px';
+    event.target.classList.add("expanded");
+    $('#site-details-popup').show();
+
+}
+
+
+function buildGraphLabels(tooltip,data){
+    //console.log("hi",tooltip,data);
+    text = [];
+    data.datasets.forEach(function(item,index){
+        var val = item.data[tooltip.index];
+        if(typeof val == "string"){ val = "-";}
+        if (chart.config.type == "line"){
+            text.push(item.label + " - " + val);
+
+        }
+        else{
+            if (val !=0 && val != "-" ){
+                text.push(item.label + " - " + item.vehicle  + " - " + val);
+            }
+
+        }
+
+    });
+    return text;
+}
+
+
+function setUpChart(){
+    var selectors = document.querySelectorAll("[data-graph-group='daily']");
+    for (var key in chartDict){
+        chartDict[key].destroy();
+    }
+    chartDict = {};
+    var labels = ["CO","NO","NO2","Temp","Noise"]
+    for (var i=0;i<5;i++){
+        chartDict[labels[i]] = createLineChart(document.getElementById("graph_" + i),{"labels":graphLabels,"datasets":[]});
+        document.getElementById("title_" + i).innerText = labels[i];
+        chartDict[labels[i]].options.scales.yAxes[0].scaleLabel.display = false;
+        //chartDict[labels[i]].options.scales.yAxes[0].ticks.maxTicksLimit = 8.1;
+        chartDict[labels[i]].update()
+        chartDict[labels[i]].yAxesticks = yAxesticks;
+    }
+}
+
+
+function getWeeklyLabels(d){
+result = [];
+d.subtract(1,"d");
+for(var i=0;i< 7;i++){
+    result.push(d.add(1,"d").format("YYYY-MM-DD"));
+}
+console.log("result",result);
+return result
+}
+
+
+function getSelectedDay(){
+    var dates = getDates();
+    if(dateType == "specific day"){
+        var day = dates[0].isoWeekday() -1;
+    }
+    if (dateType == "average day"){
+        var day = 0;// parseInt(document.getElementById("day-selector-popup").getElementsByClassName("selected")[0].parentNode.id.replace("day_",""))
+    }
+
+    if (dateType == "specific week"){
+        var day = "ALL";
+    }
+
+    return day;
+}
+
+
+function updateDatasets(){
+    var datasets = [];
+
+    for (var graph in chartDict){
+        chartDict[graph].data.datasets = [];
+        chartDict[graph].options.scales.yAxes[0].ticks.suggestedMax = 0.1;
+    }
+    var siteCount= 0;
+    var dates = getDates();
+
+    var day = getSelectedDay();
+    //console.log("DAY IS",day);
+
+    var rows = document.getElementById("countline-table").getElementsByTagName("tr");
+    for(let r of rows){
+        r.cells[1].style.color = "#212529";
+    }
+    var selectedSites = document.getElementById("countline-table").getElementsByClassName("selected");
+    for (let site of selectedSites){
+        var key = site.id.replace("_row","");
+        feature = findFeature(key);
+
+        var direction = 0;
+        //console.log("retrieved data is",retrievedData);
+        var dailyData = retrievedData.data[key].directions[direction].baseData[day];
+        //console.log("daily data is",dailyData)
+        for (var d=0;d<dailyData.length;d++){
+            var chart = chartDict[dailyData[d].label];
+            //console.log("chart is",chart);
+            //console.log("data is",dailyData[d]);
+            chart.data.datasets.push({"label":feature.properties.name,"borderColor":graphColors[siteCount],backgroundColor:graphColors[siteCount],
+                                "data":dailyData[d].data,"fill":false,"pointRadius":0,"borderWidth":1,"name":feature.properties.name})
+        }
+
+
+
+        site.cells[1].style.color = graphColors[siteCount];
+        siteCount = siteCount + 1;
+
+
+    //console.log("datasets are",datasets);
+
+    }
+
+    for (var graph in chartDict){
+        chartDict[graph].options.horizontalLine = [];
+        chartDict[graph].update();
+        chartDict[graph].yAxesticks = yAxesticks;
+    }
+    var lines = getLimitLines();
+    for (var i=0;i< lines.length;i++){
+        var selectedChart = chartDict[lines[i].lowtext];
+        displayLimitLines(selectedChart,[lines[i]]);
+    }
+}
+
+
+function updateMap(){
+    selectedMarkerLayer.eachLayer(function(layer){
+        selectedMarkerLayer.removeLayer(layer);
+        lineLayer.addLayer(layer);
+
+    });
+    var flag = false;
+    sites = getSelectedSites(2);
+    for(var i=0;i<sites.length;i++){
+        var row = document.getElementById(sites[i] + "_row");
+        console.log("row is",row);
+        if(row.classList.contains("selected")){
+            flag = true;
+            var col = row.cells[1].style.color;
+            console.log("color is",col);
+            console.log("color of",sites[i],"is",col);
+            layer = findLayer(sites[i]);
+            console.log("layer is",layer);
+            if (layer){
+                lineLayer.removeLayer(layer);
+                var icon = L.divIcon({
+                    html: "<div class='donut-text' id='" + layer.feature.properties.id + "'>" + '56' +  "</div>",
+                    iconSize: [60, 60],
+                    className: 'countIcon'
+                });
+                //layer.setStyle({radius:10,weight:2,color:col,fill:true,fillOpacity:0.6});
+                console.log("icon is",layer.options.icon.options.iconSize);
+                selectedMarkerLayer.addLayer(layer);
+                layer._icon.classList.add("selected");
+                layer._icon.style.background = col;
+                layer._icon.style.borderColor = col;
+
+            }
+        }
+
+    }
+    lineLayer.eachLayer(function(layer){
+        layer._icon.classList.remove("aq");
+        layer._icon.classList.remove("perm");
+        layer._icon.classList.remove("grey");
+        layer._icon.classList.remove("selected");
+        if (flag){
+            var className="grey";
+        }
+        else{
+            className = "aq";
+        }
+        layer.options.icon.options.className=className;
+        //console.log("updating layer",layer);
+        //console.log("marker is",layer._icon.classList.contains("temp"));
+        layer._icon.classList.add(className);
+
+    });
+    if(selectedMarkerLayer.getBounds().isValid()){
+        map.fitBounds(selectedMarkerLayer.getBounds(),{maxZoom:18,padding:[20,20]});
+    }
+    selectedMarkerLayer.bringToFront();
+    lineLayer.bringToBack()
+
+}
+
+
+function resetView(){
+    document.getElementById("countline-table").getElementsByTagName("tbody")[0].innerHTML = "";
+    for (var graph in chartDict){
+        chartDict[graph].data.datasets = [];
+        chartDict[graph].options.horizontalLine = [];
+        chartDict[graph].update();
+    }
+    var selected = getSelectedSites(2);
+    for (var i=0;i<selected.length;i++){
+        var ele = document.getElementById(selected[i]);
+        ele.classList.remove("selected");
+    }
+    console.log("selected site data is",selectedSiteData);
+    selectedSiteData = {};
+    saveSitesToLocalStorage(2,{});
+    updateMap();
+    console.log("in resetview settting changed date to",false);
+    userChangedDate = false;
+    document.getElementsByClassName("date")[0].innerText = "";
+    document.getElementById("weekday_1").click();
+
+}
+
+
+function switchSubView(ele){
+    var dateDisplay = document.getElementsByClassName("date-display")[0];
+    var carets = dateDisplay.getElementsByClassName("topbar__item")
+    var oldDateType = dateType;
+    var dates = getDates();
+    console.log("in switch sub view, dates are",dates);
+    if (dateType != ele.getAttribute("data-datetype")){
+        console.log("in switchsubview settting changed date to",false);
+        userChangedDate = false;
+    }
+    dateType = ele.getAttribute("data-datetype");
+    console.log("dateType is", dateType);
+    if (dateType == "specific day"){
+        var single = true;
+        //document.getElementById("day-selector").classList.add("d-none");
+        for(var i=0;i<carets.length;i++){
+            carets[i].classList.remove("d-none");
+        }
+        userChangedDate = true;
+        displayDates(moment(),moment().add(1,"d"));
+        triggerGetData();
+    }
+    if (dateType == "average day"){
+        var single = false;
+        for(var i=0;i<carets.length;i++){
+            carets[i].classList.add("d-none");
+        }
+        var day = moment(dates[0]);
+        day.subtract(1,"months");
+        day.subtract(day.date()-1,"d");
+        //displayDates(day,dates[0]);
+        //document.getElementById("day-selector-popup").getElementsByTagName("li")[dates[0].isoWeekday() - 1].click();
+        triggerGetData();
+    }
+    if (dateType == "specific week"){
+        var single = true;
+        document.getElementById("day-selector").classList.add("d-none");
+        for(var i=0;i<carets.length;i++){
+            carets[i].classList.remove("d-none");
+        }
+    }
+    if (dateType == "average week"){
+        var single = true;
+        document.getElementById("day-selector").classList.add("d-none");
+        for(var i=0;i<carets.length;i++){
+            carets[i].classList.add("d-none");
+        }
+    }
+    datepicker = $('#calendar').daterangepicker({locale: {
+            format: 'DD/MM/YYYY'
+        },
+        singleDatePicker: single,
+        opens: 'left',
+        drops:'down'
+        });
+    datepicker.on('apply.daterangepicker', function(ev, picker) {dateChanged(picker.startDate,picker.endDate)});
+     var dates = getDates();
+     console.log("dates are",dates);
+     displayDates(dates[0],dates[1]);
+}
+
+
+
+function triggerGetData(){
+    var dates = getDates();
+    console.log("before getting data, dates are", dates);
+    getData(dates[0],dates[1]);
+}
+
+
+function getData(start,end){
+    console.log("getting data", start, end);
+
+    dataRetrievalActive = true;
+    var ids = [];
+    var selected = document.getElementById("sidebar").getElementsByClassName("selected");
+    for (var i=0;i< selected.length;i++){
+        ids.push(selected[i].id);
+    }
+    if(selected.length == 0){
+        dataRetrievalActive = false;
+        return;
+    }
+    //setTimeout(function(){dataRetrievalActive = false;hideAllGreyedOut();},1000);
+    var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+            showGreyedOut(greyed[i]);
+        }
+    var formData = new FormData();
+    formData.append("ids",JSON.stringify(ids));
+    if (dateType == "average day"){
+        formData.append("weekday",document.getElementById("subview-selector-popup").getElementsByClassName("selected")[0].parentNode.id.replace("weekday_",""));
+        formData.append("table",true);
+        console.log(" in get data use changed date is", userChangedDate);
+        if (userChangedDate){
+            formData.append("customRange","true");
+        }
+    }
+
+    formData.append("startDate",start.format("YYYY-MM-DD 00:00"));
+    formData.append("endDate",end.format("YYYY-MM-DD 00:00"));
+    formData.append("resultType","counts");
+    formData.append("period",document.getElementById("period-selector-popup").getElementsByClassName("selected")[0].parentNode.id);
+    fetcher(formData,"getCRTStyleData",function(response){
+        console.log("received response",response);
+        console.log("after getting data, dates are ", getDates());
+        document.getElementById("classes-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = response.classes;
+        document.getElementById("events-container").innerHTML = response.data.events;
+        setPopupListeners(document.getElementById("classes-popup"));
+        var items = document.getElementById("classes-popup").getElementsByClassName("menu-item");
+        for(var i=0;i<items.length;i++){
+            //console.log("in inline script, setting up click listener for",items[i]);
+            items[i].addEventListener("click",function(){displayCountlineTable();updateDatasets();});
+        }
+        console.log("before building table, dates are ", getDates());
+        buildCountlineTable(response);
+        retrievedData = response.data;
+        graphLabels = response.data.graphLabels;
+        setUpChart();
+        displayCountlineTable();
+        updateDatasets();
+        updateMap();
+        hideAllGreyedOut();
+        dataRetrievalActive = false;
+        if (!userChangedDate){
+            document.getElementsByClassName("date")[0].innerText = response.dateRange;
+        }
+    }
+
+    );
+
+}
+
+
+var formData = new FormData();
+formData.append("exclude associated",false);
+function addLineLayer(){
+    map.addLayer(lineLayer);
+    map.off("moveend");
+    rebuildFromPreviousData();
+
+}
+
+
+fetcher(formData,"getClientLocations",function(result){
+    console.log("received results",result);
+    locations = result.locations;
+    processLocationGeojson(locations);
+    map.removeLayer(lineLayer);
+
+    if(lineLayer.getBounds().isValid()){
+        map.on("moveend", addLineLayer);
+        map.flyToBounds(lineLayer.getBounds(),{duration:1});
+    }
+});
+
+
+function findFeature(location_id){
+    console.log("looking for feature for",location_id);
+    console.log("locations are",locations);
+    for (var i=0;i<locations.features.length;i++){
+
+        if(locations.features[i].properties.id == location_id){
+            return locations.features[i];
+        }
+    }
+    return null;
+}
+
+
+
+hideAllGreyedOut();
+
+var subviews = document.getElementById("subview-selector-popup").getElementsByClassName("popup-item");
+for(var i=0;i<subviews.length;i++){
+        subviews[i].addEventListener("click",function(ele){
+                                                return function(event){
+                                                switchSubView(ele);
+                                                }
+                                            }(subviews[i]));
+
+
+
+}
+
+var periods = document.getElementById("period-selector-popup").getElementsByClassName("popup-item");
+for(var i=0;i<periods.length;i++){
+        periods[i].addEventListener("click",function(ele){
+                                                return function(event){
+                                                triggerGetData();
+                                                }
+                                            }(periods[i]));
+
+
+
+}
+
+var items = document.getElementById("graph-limit-popup").getElementsByClassName("menu-item");
+    for(var i=0;i<items.length;i++){
+        items[i].addEventListener("click",function(){updateDatasets();saveLimits();});
+    }
+
+
+document.getElementById("sidebar").classList.add("multi");
+
+
+var items = document.getElementsByClassName("submenu-item");
+    for(var i=0;i<items.length;i++){
+        items[i].addEventListener("click",function(ele){
+                                           return function(){
+                                                if(cntrlIsPressed){
+                                                    var target = ele.getElementsByTagName("a")[0]
+                                                    console.log("target is",target.getAttribute("data-target"),target.getAttribute("data-target").replace("#",""));
+                                                    var sites = document.getElementById(target.getAttribute("data-target").replace("#","")).getElementsByTagName("a");
+                                                    for (var i=0;i<sites.length;i++){
+                                                        sites[i].classList.add("selected");
+                                                    }
+                                                    triggerGetData();
+                                                }
+                                            }
+                                        }(items[i]));
+    }
+
+
+function saveLimits(){
+    var limits = getLimits();
+    var items = document.getElementById("graph-limit-popup").getElementsByClassName("menu-item");
+    for(var i=0;i<items.length;i++){
+        var name = items[i].getAttribute("data-text-low");
+        var value = items[i].getAttribute("data-limit");
+        var selected = items[i].getElementsByTagName("a")[0].classList.contains("selected");
+        //console.log("setting",name,"to",[value,selected]);
+        limits[name] = [value,selected];
+        saveLimitsToLocalStorage(limits);
+    }
+}
+
+
+function setUpLimits(){
+    var limits = getLimits();
+    //console.log("limits are",limits);
+    var items = document.getElementById("graph-limit-popup").getElementsByClassName("menu-item");
+    for(var i=0;i<items.length;i++){
+        var limit = items[i].getAttribute("data-text-low");
+        items[i].setAttribute("data-limit",limits[limit][0]);
+        //console.log("found",limits[limit]);
+        if(limits[limit][1]){
+            items[i].getElementsByTagName("a")[0].classList.add("selected");
+        }
+        else{
+            items[i].getElementsByTagName("a")[0].classList.remove("selected");
+        }
+        items[i].getElementsByTagName("input")[0].value = limits[limit][0];
+    }
+}
+
+function rebuildFromPreviousData(){
+    selectedSiteData = getSitesFromLocalStorage(2);
+    //console.log("selectedSiteData is",selectedSiteData);
+    for (var key in selectedSiteData){
+        selectedSiteData[key]["chart"] = null;
+        if (!document.getElementById(key)){
+            saveSitesToLocalStorage(2,{});
+            selectedSiteData = {};
+            return;
+        }
+        document.getElementById(key).classList.add("selected");
+    }
+
+    triggerGetData();
+}
+
+function inputClicked(event){
+    console.log("event was",event);
+    event.stopPropagation();
+}
+
+
+var items = document.getElementById("graph-limit-popup").getElementsByTagName("input");
+    for(var i=0;i<items.length;i++){
+        items[i].addEventListener("click",inputClicked);
+
+        items[i].addEventListener("keyup",function(ele){
+                                                return function(event){
+                                                    if (event.key === "Enter") {
+                                                        var limit =ele.parentNode.parentNode.parentNode.parentNode.getAttribute("data-text-low");
+                                                        var value = ele.value;
+                                                        //console.log("limit for",limit,"is",value);
+                                                        if (!isNumber(value)){return;}
+                                                        ele.parentNode.parentNode.parentNode.parentNode.setAttribute("data-limit",value);
+                                                        saveLimits();
+                                                        updateDatasets();
+
+                                                    }
+                                                }
+                                            }(items[i]));
+
+
+
+    }
+
+
+setUpLimits();
+
+
+</script>
+
+
+
+
+{% endblock %}

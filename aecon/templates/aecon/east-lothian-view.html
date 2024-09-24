@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159283885-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-159283885-1');
+    </script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Bootstrap CSS -->
+
+    {% load staticversion %}
+    {% load my_filters %}
+    {% load client_tags %}
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/aecon/daterangepicker.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css">
+    <link rel="stylesheet" href="{% staticversion 'aecon/leaflet.awesome-markers.css' %}" type="text/css">
+    {% if DEBUG %}
+        <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css">
+    {% else %}
+        <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css">
+    {% endif %}
+    <link rel="stylesheet" href="{% staticversion 'aecon/nouislider.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% staticversion 'aecon/cv2-base.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% staticversion 'aecon/checkbox-style.css' %}" type="text/css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
+
+    <title></title>
+    <style>
+        thead{
+
+        }
+
+        .good i:after{
+            font-family: 'Font Awesome 5 Free';
+            content: '\f063';
+            font-weight:900;
+            color: green;
+        }
+
+        .bad i:after{
+            font-family: 'Font Awesome 5 Free';
+            content: '\f062';
+            font-weight:900;
+            color: red;
+        }
+
+        .selection-header{
+            background-color:#F2F3F8;
+        }
+
+        .selection-header:hover,.dropdown-header:hover{
+            background-color:#d9d9db;
+
+        }
+
+        #map-wrapper{
+            width:100%;
+            height:100%
+        }
+
+        .blank{
+            width:35px;
+            min-width:20px;
+            background-color:white !important;
+            border:0;
+            border-top:0 !important;
+
+        }
+        .timef{
+            width:75px;
+            min-width:75px;
+        }
+
+        #avg-table td, #table-1 td, #table-2 td, #perc-table td, #table-3 td, #table-4 td , #table-5 td{
+            text-align:center;
+        }
+
+        #avg-table th, #table-1 th, #table-2 th, #perc-table th, #table-3 th, #table-4 th, #table-5 th{
+            text-align:center;
+        }
+
+
+        @media (max-width: 960px) {
+          #map-wrapper {
+            height:350px !important;
+          }
+
+
+}
+
+    </style>
+</head>
+<body>
+
+<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/aecon/moment.min.js"></script>
+    <script type="text/javascript" src="/static/aecon/daterangepicker.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+
+
+<div id="classes-popup" style="width:auto;" class="conduit-popup">
+    <div class="conduit-selectable-menu multi">
+        {{ classes | safe}}
+    </div>
+</div>
+
+ <div id="directions-popup" style="width:auto;" class="conduit-popup">
+    <div class="conduit-selectable-menu min-1" data-header="direction-selector">
+        <ul>
+            {% for d in location.directions.all %}
+                <li id="direction_{{forloop.counter0}}" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item {% if d.order == params.direction %} selected {% endif %}">
+                        <i ></i>
+                        <span >{{d.direction.descriptive}}</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div id="day-popup" style="width:180px" class="conduit-popup">
+    <div class="conduit-selectable-menu  min-1" data-header="day-selector">
+        <ul >
+             <li id="day_0" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item selected ">
+                    <i ></i>
+                    <span >5 Day Avg</span>
+                </a>
+            </li>
+
+            <li id="day_1" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>7 Day Avg</span>
+                </a>
+            </li>
+
+
+        </ul>
+    </div>
+</div>
+
+<div id="time-selector-popup" style="width:180px" class="conduit-popup">
+    <div class="conduit-selectable-menu  min-1" data-header="time-selector">
+        <ul >
+             <li id="time_15" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item  ">
+                    <i ></i>
+                    <span >Last 15 minutes</span>
+                </a>
+            </li>
+
+            <li id="time_60" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>Last Hour</span>
+                </a>
+            </li>
+            <li id="time_ALL" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item selected">
+                    <i ></i>
+                    <span>Total for Today</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<input hidden type="text" value="{{mapCode}}" id="mb-id">
+<input hidden type="text" value="{{location.id}}" id="loc-id">
+{% csrf_token %}
+<div class="container-fluid w-100 h-100 d-flex flex-column">
+
+    <div class="row align-items-center">
+        <div class="col-12 col-lg-6 d-flex align-items-center">
+            <div class="pt-1" style="height:50px;width:auto">
+                <span>
+                    <img src='/static/aecon/{{logo}}' style="height:50px;width:auto">
+                </span>
+            </div>
+            <div class="flex-grow-1 d-none d-lg-flex px-3 pt-1"><h1>Traffic Speed and Volume Dashboard</h1></div>
+            <div class="flex-grow-1 d-none d-sm-flex d-lg-none justify-content-center  px-3 pt-1"><h3>Traffic Speed and Volume Dashboard</h3></div>
+            <div class="flex-grow-1 d-flex d-sm-none justify-content-center  px-3 pt-1"><h5>Traffic Speed and Volume Dashboard</h5></div>
+        </div>
+        <div class="col-6 my-auto d-none d-lg-flex  align-items-center">
+            <div class="" style="height:50px;margin-left:auto">
+                <img src="{% staticversion 'aecon/NewTracsisLogo.png' %}" style="height:80%;width:auto;position:relative;top:-20px">
+                <img class="d-none" src="{% staticversion 'aecon/Transport_Scotland.JPG' %}" style="height:100px;width:auto;position:relative;top:-20px">
+                <img src="{% staticversion 'aecon/Sustrans.GIF' %}" style="height:100px;width:auto;position:relative;top:-25px">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-12 col-lg-4 d-flex flex-column h-100 p-2" id="map-wrapper" >
+            <div class = "map-panel" id = "dashboard-base-map" style="width:100%;height:100%">
+            </div>
+            <div class="topbar__item" onclick="window.location.href='/conduit/{{client}}';" style="width:30px;height:30px;line-height:25px;background-color:white;position:absolute;bottom:10px;left:10px;z-index:400;border-radius:2px;border:2px solid grey;text-align:center;font-size:16px;cursor:pointer">
+                <span class=""><i class="fa fa-redo" data-alt="fa fa-compress"></i></span>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-8 h-100">
+
+            <div class="row">
+                <div class="col-12 col-lg d-none d-lg-flex" style="-ms-flex: 0 0 180px;flex: 0 0 180px;">
+                    <div class="d-flex flex-column">
+                        <div class="row ">
+                            <div class="col-6 col-lg-12">
+                                <div class="selection-header directions-popup-trigger" style="width:130px" id="direction-selector">
+                                    <span>Combined</span><i class="chevron-icon"></i>
+                                </div>
+                            </div>
+                            <div class="col-6 col-lg-12">
+                                <div class="selection-header day-popup-trigger" style="width:130px" id="day-selector">
+                                    <span>5 Day Avg</span><i class="chevron-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 d-flex d-lg-none">
+                        <div class="row w-100">
+                            <div class="col-6 d-flex justify-content-center">
+                                <div class="selection-header directions-popup-trigger" style="width:130px" id="direction-selector-2">
+                                    <span>Combined</span><i class="chevron-icon"></i>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex justify-content-center">
+                                <div class="selection-header day-popup-trigger" style="width:130px" id="day-selector-2">
+                                    <span>5 Day Avg</span><i class="chevron-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                </div>
+                <div class="col-lg d-flex flex-grow-1 justify-content-center">
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="text-center text-muted px-3" style="font-size:25px">{{location.name}}</div>
+                        <div class="d-flex align-items-center justify-content-between  py-1" style="width:200px">
+                            <div style="position:relative">
+                                <img src="/static/aecon/speed-limit.png" width="60" height="60">
+                                <div class="donut-text"><span class="donut-number text-bold" style="color:black !important;font-weight:bold;font-size:20px">{{location.speedLimit}}</span></div>
+                            </div>
+                            <div>
+                                <i class="fa fa-arrow-right text-muted" style="font-size:30px"></i>
+                            </div>
+                            <div style="position:relative">
+                                <img src="/static/aecon/speed-limit.png" width="60" height="60">
+                                <div class="donut-text"><span class="donut-number text-bold" style="color:black !important;font-weight:bold;font-size:20px">{% if not location.speedLimit3 or location.speedLimit2 < location.speedLimit3 %}{{location.speedLimit2}} {% else %} {{location.speedLimit3}} {% endif %}</span></div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center" style="width:280px">
+                            <div class="w-50">
+                                <div class="text-muted text-center">
+                                    Primary Direction
+                                </div>
+                                <div class="text-center" style="color:red;font-size:15px">
+                                    {{location.directions.all.0.direction.descriptive}}
+                                </div>
+                            </div>
+                            <div class="w-50">
+                                <div class="text-muted text-center">
+                                    Secondary Direction
+                                </div>
+                                <div class="text-center" style="color:red;font-size:15px">
+                                   {{location.directions.all.1.direction.descriptive}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-lg-6 mt-3">
+                    <div class="card w-100">
+                        <div class="card-header">
+                            <h5>Average Speed (mph)</h5>
+                        </div>
+                        <div class="card-body d-flex" >
+
+                            <div class="row">
+                                <div class="col-12 col-lg-12">
+                                    <div class="table-responsive w-100" style="font-size:12px">
+                                        <table class="table table-sm table-striped w-100" id="avg-table">
+                                            <thead>
+                                            <tr style="height:50px">
+                                                <th ></th>
+                                                <th>
+                                                    <div style="position:relative">
+                                                        <img src="/static/aecon/speed-limit.png" width="40" height="40">
+                                                        <div class="donut-text"><span class="donut-number text-bold" style="color:black !important;font-weight:bold;font-size:15px">{{location.speedLimit}}</span></div>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div style="position:relative">
+                                                        <img src="/static/aecon/speed-limit.png" width="40" height="40">
+                                                        <div class="donut-text"><span class="donut-number text-bold" style="color:black !important;font-weight:bold;font-size:15px">{{location.speedLimit2}}</span></div>
+                                                    </div>
+                                                </th>
+                                                {% if client == 'borders' %}
+                                                <th>
+                                                    <div style="position:relative">
+                                                        <img src="/static/aecon/speed-limit.png" width="40" height="40">
+                                                        <div class="donut-text"><span class="donut-number text-bold" style="color:black !important;font-weight:bold;font-size:15px">{% if location.speedLimit3 %}{{location.speedLimit3}} {% else %} - {% endif %}</span></div>
+                                                    </div>
+                                                </th>
+                                                {% endif %}
+                                            </tr>
+                                            <tr>
+                                                <th class="text-muted text-center">Time </th>
+                                                <th class="text-muted text-center text-nowrap">Survey 1</th>
+                                                <th class="text-muted text-center text-nowrap">Survey 2</th>
+                                                {% if client == 'borders' %}
+                                                    <th class="text-muted text-center text-nowrap">Survey 3</th>
+                                                {% endif %}
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr data-timeval="8">
+                                                    <td class="timef" style="border-right:1px solid #8cceed" >08:00-09:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    {% if client == 'borders' %}
+                                                        <td></td>
+                                                    {% endif %}
+                                                </tr>
+                                                <tr data-timeval="15">
+                                                    <td class="timef" style="border-right:1px solid #8cceed" >15:00-16:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    {% if client == 'borders' %}
+                                                        <td></td>
+                                                    {% endif %}
+                                                </tr>
+                                                <tr data-timeval="25">
+                                                    <td class="timef" style="border-right:1px solid #8cceed" >06:00-22:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    {% if client == 'borders' %}
+                                                        <td></td>
+                                                    {% endif %}
+                                                </tr>
+                                                <tr data-timeval="26">
+                                                    <td class="timef" style="border-right:1px solid #8cceed" >06:00-24:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    {% if client == 'borders' %}
+                                                        <td></td>
+                                                    {% endif %}
+                                                </tr>
+                                                <tr data-timeval="24">
+                                                    <td class="timef" style="border-right:1px solid #8cceed" >07:00-19:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    {% if client == 'borders' %}
+                                                        <td></td>
+                                                    {% endif %}
+                                                </tr>
+                                                <tr data-timeval="27">
+                                                    <td class="timef" style="border-right:1px solid #8cceed" >All Day</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    {% if client == 'borders' %}
+                                                        <td></td>
+                                                    {% endif %}
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 {% if client == 'borders' %} col-lg-6" {% else %} col-lg-12 {% endif %}">
+                                    <div class="table-responsive w-100" style="font-size:12px">
+                                        <table class="table table-sm table-striped w-100" id="table-2">
+                                            <thead>
+                                            <tr style="height:50px">
+                                                <th colspan="4">Difference between Survey 2 and baseline Survey 1</th>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-muted text-center d-table-cell">Time</th>
+                                                <th class="text-muted text-center">Diff</th>
+                                                <th class="text-muted text-center">%Diff</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr data-timeval="8">
+                                                    <td class="timef d-table-cell " style="border-right:1px solid #8cceed" >08:00-09:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        <i class="fa" style="font-size:12px"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr data-timeval="15">
+                                                    <td class="timef d-table-cell " style="border-right:1px solid #8cceed" >15:00-16:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        <i class="fa" style="font-size:12px"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr data-timeval="25">
+                                                    <td class="timef d-table-cell " style="border-right:1px solid #8cceed" >06:00-22:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        <i class="fa" style="font-size:12px"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr data-timeval="26">
+                                                    <td class="timef d-table-cell" style="border-right:1px solid #8cceed" >06:00-24:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        <i class="fa" style="font-size:12px"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr data-timeval="24">
+                                                    <td class="timef d-table-cell" style="border-right:1px solid #8cceed" >07:00-19:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        <i class="fa" style="font-size:12px"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr data-timeval="27">
+                                                    <td class="timef d-table-cell" style="border-right:1px solid #8cceed" >All Day</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        <i class="fa" style="font-size:12px"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="4">
+                                                        <div class="d-flex flex-column align-items-center">
+                                                            <div class="d-flex w-100">
+                                                                <div class="w-50">
+                                                                    <div class="text-center text-muted">(00:00 - 24:00)</div>
+                                                                    <div class="d-flex align-items-center justify-content-center">
+                                                                        <div style="font-size:20px" id="avg_1"></div>
+                                                                        <div class="p-2"><i class="fa" style="font-size:20px"></i></div>
+                                                                    </div>
+                                                                    <div class="text-center text-muted" id="avg_2"></div>
+
+                                                                </div>
+                                                                <div class="w-50">
+                                                                    <div class="text-center text-muted">(07:00 - 19:00)</div>
+                                                                    <div class="d-flex align-items-center justify-content-center">
+                                                                        <div style="font-size:20px" id="avg_3"></div>
+                                                                        <div class="p-2"><i class="fa " style="font-size:20px"></i></div>
+                                                                    </div>
+                                                                    <div class="text-center text-muted" id="avg_4"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                     </th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                {% if client == 'borders' %}
+
+                                    <div class="col-12 col-lg-6">
+                                        <div class="table-responsive w-100" style="font-size:12px">
+                                            <table class="table table-sm table-striped w-100" id="table-3">
+                                                <thead>
+                                                <tr style="height:50px">
+                                                    <th colspan="4">Difference between Survey 3 and baseline Survey 1</th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-muted d-table-cell d-lg-none">Time Period</th>
+                                                    <th class="text-muted">Diff</th>
+                                                    <th class="text-muted">%Diff</th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr data-timeval="8">
+                                                        <td class="timef d-table-cell d-lg-none" style="border-right:1px solid #8cceed" >08:00-09:00</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <i class="fa" style="font-size:12px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr data-timeval="15">
+                                                        <td class="timef d-table-cell d-lg-none" style="border-right:1px solid #8cceed" >15:00-16:00</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <i class="fa" style="font-size:12px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr data-timeval="25">
+                                                        <td class="timef d-table-cell d-lg-none" style="border-right:1px solid #8cceed" >06:00-22:00</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <i class="fa" style="font-size:12px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr data-timeval="26">
+                                                        <td class="timef d-table-cell d-lg-none" style="border-right:1px solid #8cceed" >06:00-24:00</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <i class="fa" style="font-size:12px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr data-timeval="24">
+                                                        <td class="timef d-table-cell d-lg-none" style="border-right:1px solid #8cceed" >07:00-19:00</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <i class="fa" style="font-size:12px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr data-timeval="27">
+                                                        <td class="timef d-table-cell d-lg-none" style="border-right:1px solid #8cceed" >All Day</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <i class="fa" style="font-size:12px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th colspan="4">
+                                                            <div class="d-flex flex-column align-items-center">
+                                                                <div class="d-flex w-100">
+                                                                    <div class="w-50">
+                                                                        <div class="text-center text-muted">(00:00 - 24:00)</div>
+                                                                        <div class="d-flex align-items-center justify-content-center">
+                                                                            <div style="font-size:20px" id="avg_5"></div>
+                                                                            <div class="p-2"><i class="fa" style="font-size:20px"></i></div>
+                                                                        </div>
+                                                                        <div class="text-center text-muted" id="avg_6"></div>
+
+                                                                    </div>
+                                                                    <div class="w-50">
+                                                                        <div class="text-center text-muted">(07:00 - 19:00)</div>
+                                                                        <div class="d-flex align-items-center justify-content-center">
+                                                                            <div style="font-size:20px" id="avg_7"></div>
+                                                                            <div class="p-2"><i class="fa " style="font-size:20px"></i></div>
+                                                                        </div>
+                                                                        <div class="text-center text-muted" id="avg_8"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                         </th>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6 d-flex mt-3">
+                    <div class="card w-100">
+                        <div class="card-header">
+                            <h5>85th %ile Speed (mph)</h5>
+                        </div>
+                        <div class="card-body d-flex" style="font-size:12px">
+                            <div class="row">
+                                <div class="col-12 col-lg-12">
+                                    <div class="table-responsive w-100" style="font-size:12px">
+                                        <table class="table table-sm table-striped w-100" id="perc-table">
+                                            <thead>
+                                            <tr style="height:50px">
+                                                <th ></th>
+                                                <th>
+                                                    <div style="position:relative">
+                                                        <img src="/static/aecon/speed-limit.png" width="40" height="40">
+                                                        <div class="donut-text"><span class="donut-number text-bold" style="color:black !important;font-weight:bold;font-size:15px">{{location.speedLimit}}</span></div>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div style="position:relative">
+                                                        <img src="/static/aecon/speed-limit.png" width="40" height="40">
+                                                        <div class="donut-text"><span class="donut-number text-bold" style="color:black !important;font-weight:bold;font-size:15px">{{location.speedLimit2}}</span></div>
+                                                    </div>
+                                                </th>
+                                                {% if client == 'borders' %}
+                                                <th>
+                                                    <div style="position:relative">
+                                                        <img src="/static/aecon/speed-limit.png" width="40" height="40">
+                                                        <div class="donut-text"><span class="donut-number text-bold" style="color:black !important;font-weight:bold;font-size:15px">{{location.speedLimit3}}</span></div>
+                                                    </div>
+                                                </th>
+                                                {% endif %}
+                                            </tr>
+                                            <tr>
+                                                <th class="text-muted text-center">Time </th>
+                                                <th class="text-muted text-center text-nowrap">Survey 1</th>
+                                                <th class="text-muted text-center text-nowrap">Survey 2</th>
+                                                {% if client == 'borders' %}
+                                                    <th class="text-muted text-center text-nowrap">Survey 3</th>
+                                                {% endif %}
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr data-timeval="8">
+                                                    <td class="timef" style="border-right:1px solid #8cceed" >08:00-09:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    {% if client == 'borders' %}
+                                                        <td></td>
+                                                    {% endif %}
+                                                </tr>
+                                                <tr data-timeval="15">
+                                                    <td class="timef" style="border-right:1px solid #8cceed" >15:00-16:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    {% if client == 'borders' %}
+                                                        <td></td>
+                                                    {% endif %}
+                                                </tr>
+                                                <tr data-timeval="25">
+                                                    <td class="timef" style="border-right:1px solid #8cceed" >06:00-22:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    {% if client == 'borders' %}
+                                                        <td></td>
+                                                    {% endif %}
+                                                </tr>
+                                                <tr data-timeval="26">
+                                                    <td class="timef" style="border-right:1px solid #8cceed" >06:00-24:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    {% if client == 'borders' %}
+                                                        <td></td>
+                                                    {% endif %}
+                                                </tr>
+                                                <tr data-timeval="24">
+                                                    <td class="timef" style="border-right:1px solid #8cceed" >07:00-19:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    {% if client == 'borders' %}
+                                                        <td></td>
+                                                    {% endif %}
+                                                </tr>
+                                                <tr data-timeval="27">
+                                                    <td class="timef" style="border-right:1px solid #8cceed" >All Day</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    {% if client == 'borders' %}
+                                                        <td></td>
+                                                    {% endif %}
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 {% if client == 'borders' %} col-lg-6" {% else %} col-lg-12 {% endif %}">
+                                    <div class="table-responsive w-100" style="font-size:12px">
+                                        <table class="table table-sm table-striped w-100" id="table-4">
+                                            <thead>
+                                            <tr style="height:50px">
+                                                <th colspan="4">Difference between Survey 2 and baseline Survey 1</th>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-muted text-center d-table-cell">Time</th>
+                                                <th class="text-muted text-center">Diff</th>
+                                                <th class="text-muted text-center">%Diff</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr data-timeval="8">
+                                                    <td class="timef d-table-cell" style="border-right:1px solid #8cceed" >08:00-09:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        <i class="fa" style="font-size:12px"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr data-timeval="15">
+                                                    <td class="timef d-table-cell " style="border-right:1px solid #8cceed" >15:00-16:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        <i class="fa" style="font-size:12px"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr data-timeval="25">
+                                                    <td class="timef d-table-cell " style="border-right:1px solid #8cceed" >06:00-22:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        <i class="fa" style="font-size:12px"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr data-timeval="26">
+                                                    <td class="timef d-table-cell " style="border-right:1px solid #8cceed" >06:00-24:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        <i class="fa" style="font-size:12px"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr data-timeval="24">
+                                                    <td class="timef d-table-cell " style="border-right:1px solid #8cceed" >07:00-19:00</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        <i class="fa" style="font-size:12px"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr data-timeval="27">
+                                                    <td class="timef d-table-cell" style="border-right:1px solid #8cceed" >All Day</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        <i class="fa" style="font-size:12px"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="4">
+                                                        <div class="d-flex flex-column align-items-center">
+                                                            <div class="d-flex w-100">
+                                                                <div class="w-50">
+                                                                    <div class="text-center text-muted">(00:00 - 24:00)</div>
+                                                                    <div class="d-flex align-items-center justify-content-center">
+                                                                        <div style="font-size:20px" id="avg_9"></div>
+                                                                        <div class="p-2"><i class="fa" style="font-size:20px"></i></div>
+                                                                    </div>
+                                                                    <div class="text-center text-muted" id="avg_10"></div>
+
+                                                                </div>
+                                                                <div class="w-50">
+                                                                    <div class="text-center text-muted">(07:00 - 19:00)</div>
+                                                                    <div class="d-flex align-items-center justify-content-center">
+                                                                        <div style="font-size:20px" id="avg_11"></div>
+                                                                        <div class="p-2"><i class="fa " style="font-size:20px"></i></div>
+                                                                    </div>
+                                                                    <div class="text-center text-muted" id="avg_12"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                     </th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                {% if client == 'borders' %}
+                                    <div class="col-12 col-lg-6">
+                                        <div class="table-responsive w-100" style="font-size:12px">
+                                            <table class="table table-sm table-striped w-100" id="table-5">
+                                                <thead>
+                                                <tr style="height:50px">
+                                                    <th colspan="4">Difference between Survey 3 and baseline Survey 1</th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-muted d-table-cell d-lg-none">Time Period</th>
+                                                    <th class="text-muted">Diff</th>
+                                                    <th class="text-muted">%Diff</th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr data-timeval="8">
+                                                        <td class="timef d-table-cell d-lg-none" style="border-right:1px solid #8cceed" >08:00-09:00</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <i class="fa" style="font-size:12px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr data-timeval="15">
+                                                        <td class="timef d-table-cell d-lg-none" style="border-right:1px solid #8cceed" >15:00-16:00</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <i class="fa" style="font-size:12px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr data-timeval="25">
+                                                        <td class="timef d-table-cell d-lg-none" style="border-right:1px solid #8cceed" >06:00-22:00</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <i class="fa" style="font-size:12px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr data-timeval="26">
+                                                        <td class="timef d-table-cell d-lg-none" style="border-right:1px solid #8cceed" >06:00-24:00</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <i class="fa" style="font-size:12px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr data-timeval="24">
+                                                        <td class="timef d-table-cell d-lg-none" style="border-right:1px solid #8cceed" >07:00-19:00</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <i class="fa" style="font-size:12px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr data-timeval="27">
+                                                        <td class="timef d-table-cell d-lg-none" style="border-right:1px solid #8cceed" >All Day</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>
+                                                            <i class="fa" style="font-size:12px"></i>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th colspan="4">
+                                                            <div class="d-flex flex-column align-items-center">
+                                                                <div class="d-flex w-100">
+                                                                    <div class="w-50">
+                                                                        <div class="text-center text-muted">(00:00 - 24:00)</div>
+                                                                        <div class="d-flex align-items-center justify-content-center">
+                                                                            <div style="font-size:20px" id="avg_13"></div>
+                                                                            <div class="p-2"><i class="fa" style="font-size:20px"></i></div>
+                                                                        </div>
+                                                                        <div class="text-center text-muted" id="avg_14"></div>
+
+                                                                    </div>
+                                                                    <div class="w-50">
+                                                                        <div class="text-center text-muted">(07:00 - 19:00)</div>
+                                                                        <div class="d-flex align-items-center justify-content-center">
+                                                                            <div style="font-size:20px" id="avg_15"></div>
+                                                                            <div class="p-2"><i class="fa " style="font-size:20px"></i></div>
+                                                                        </div>
+                                                                        <div class="text-center text-muted" id="avg_16"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                         </th>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% if client == "borders" %}
+            <div class="col-12 d-flex mt-3 justify-content-center" >
+                <a  href="https://arcg.is/1rOCWu0" target="_blank" style="text-decoration: none;color:black">
+                    <div class="p-2"  style="background-color:#c3d2d9;border-radius:5px;border:1px solid black">
+                        <div class="text-center">Click here for access to</div>
+                        <div class="text-center"><h5>Pedestrian and Cyclist Accidents</h5></div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-12 my-auto d-flex d-lg-none  align-items-center justify-content-center">
+                <div class="" style="height:50px">
+                        <img src="{% staticversion 'aecon/NewTracsisLogo.png' %}" style="height:80%;width:auto;position:relative;top:5px">
+                        <img class="d-none" src="{% staticversion 'aecon/Transport_Scotland.JPG' %}" style="height:100px;width:auto;position:relative;top:5px">
+                        <img src="{% staticversion 'aecon/Sustrans.GIF' %}" style="height:100px;width:auto;position:relative;top:0px">
+
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="/static/aecon/moment.min.js"></script>
+<script type="text/javascript" src="/static/aecon/daterangepicker.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+<script src="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+<script src="{% staticversion 'aecon/leaflet.polylineDecorator.js' %}"></script>
+<script src="{% staticversion 'aecon/L.Line3.js' %}"></script>
+<script src="{% staticversion 'aecon/nouislider.js' %}"></script>
+<script src="{% staticversion 'aecon/leaflet.lineextremities.js' %}"></script>
+
+<script src="{% staticversion 'aecon/cv2-data-func.js' %}"></script>
+<script src="{% staticversion 'aecon/cv2-base.js' %}"></script>
+<script src="{% staticversion 'aecon/cv2-local-storage.js' %}"></script>
+<script src="{% staticversion 'aecon/cv2-graphs.js' %}"></script>
+<script src="{% staticversion 'aecon/cv2-map.js' %}"></script>
+<script src="{% staticversion 'aecon/atc.js' %}"></script>
+<script src="{% staticversion 'aecon/cv2-main.js' %}"></script>
+<script src="https://d3js.org/d3.v3.js"></script>
+<script src="https://mapbox.github.io/geojson-vt/geojson-vt-dev.js"></script>
+
+<script>
+
+var data = {{data|safe}}
+
+
+
+
+var chart;
+var timeoutVar;
+var id = document.getElementById("mb-id").value
+initMap([53.476404, -2.250621],"dashboard-base-map",id);
+
+    function dealWithLocationFeatureCollection(feature,layer){
+        //console.log("dealing with location",feature)
+        if(feature.geometry.coordinates.length == 0){return;}
+        if (feature.geometry.type == "LineString" && feature.properties.type == "countline"){
+            //console.log("found countline",feature);
+            layer.setStyle({color:"#2483ec",weight:3,lineCap:"butt"});
+            lineLayer.addLayer(layer);
+            var popup = L.popup({maxWidth:350,minWidth:350});
+            popup.setContent(createMetaDataPopup2(feature));
+            layer.bindPopup(popup);
+
+
+        }
+        if (feature.geometry.type == "LineString" && feature.properties.type == "virtual"){
+            //console.log("found countline",feature);
+            layer.setStyle({color:"#2483ec",weight:3,lineCap:"butt"});
+            //layer.addTo(map);
+            //layer.setStyle(locationStyleOptions);
+            lineLayer.addLayer(layer);
+            //var popup = L.popup({maxWidth:350,minWidth:350});
+            //popup.setContent(createMetaDataPopup2(feature));
+            //layer.bindPopup(popup);
+
+            //console.log("line layer is",lineLayer);
+            //setupLocationLineWithArrowhead(layer);
+            //layer.options.direction = feature.properties.direction_id;
+            //layer.options.order = feature.properties.order;
+
+        }
+
+        if (feature.geometry.type == "LineString" && feature.properties.type == "direction"){
+            console.log("found countline",feature);
+            if (feature.properties.name == "Outbound"){
+                layer.setStyle({color:"red",weight:3,lineCap:"butt"});
+                setupDirectionLineWithArrowhead(layer,"red");
+
+            }
+            else if (feature.properties.name == "Inbound"){
+                layer.setStyle({color:"#45f775",weight:3,lineCap:"butt"});
+                setupDirectionLineWithArrowhead(layer,"#45f775");
+
+            }
+            else{
+
+                if (feature.properties.order == 0){
+                layer.setStyle({color:"red",weight:3,lineCap:"butt"});
+                setupDirectionLineWithArrowhead(layer,"red");
+
+                }
+                else if (feature.properties.order == 1){
+                    layer.setStyle({color:"#45f775",weight:3,lineCap:"butt"});
+                    setupDirectionLineWithArrowhead(layer,"#45f775");
+
+                }
+
+
+            }
+
+            var p = layer.getLatLngs()[1];
+            var p2 = map.project(feature.geometry.coordinates[0],map.getZoom());
+            var p1 = map.project(feature.geometry.coordinates[feature.geometry.coordinates.length-1],map.getZoom());
+            var angle = Math.atan2(p2.y -p1.y , p2.x - p1.x)* 180 / Math.PI;
+            if(angle<0){angle=angle+360;}
+            feature.properties.angle = angle;
+            var icon = createIcon(angle,"-");
+            lineLayer.addLayer(layer);
+            layer.marker = L.marker(p, {icon: icon});
+
+
+
+            //console.log("angle is",angle);
+            //drawArrow(p1,20,angle,arrowCol)
+
+
+
+        }
+
+
+        if (feature.geometry.type == "Point" && !feature.properties.temp && layer.feature.properties.obsType.id == 1){
+            var marker = addPlainMarker(feature,"perm");
+            //console.log("marker is",marker);
+            layer.marker = marker;
+            //console.log("setting marker of",layer,"to",marker);
+            //console.log("marker is now",layer.marker);
+            var popup = L.popup({maxWidth:200,minWidth:200});
+            content = "<div class='d-flex flex-column justify-content-center'><div class='text-center p-2' style=\x22font-size:14px\x22>" + feature.properties.name + "</div><div class='text-center'><button class='btn btn-primary' onclick=\x22viewSite('" + feature.properties.id  + "')\x22>View</div></div>"
+            popup.setContent(content);
+            marker.bindPopup(popup);
+        }
+    }
+
+
+function createIcon(angle,val){
+    //console.log("creating icon",angle,val);
+
+    if (angle >=180 && angle < 270){
+        var offset = [25,25];
+        //val="poo"
+    }
+    else{
+        var offset = [0,0];
+    }
+    //var newLatLng = map.containerPointToLatLng(newPoint);
+    var icon = L.divIcon({
+      className: 'n',
+        html: "<div class='map-direction-icon animate d-flex justify-content-center align-items-center'><span>" + val + "</span></div>",
+        iconAnchor:offset,
+        iconSize:[50,50]
+    });
+    return icon;
+}
+
+
+function viewSite(id){
+
+    console.log("id is",id);
+    var formData = new FormData();
+    formData.append("location_id",id);
+    //fetcher(formData,"dashboard",function(response){console.log("received response",response);});
+    window.location.href = "/conduit/{{client}}?location_id=" + id;
+}
+
+
+function getIdList(){
+    var ids = [];
+    lineLayer.eachLayer(function(layer){
+        if(layer.feature && layer.feature.properties && (layer.feature.properties.type=="countline" || layer.feature.properties.type=="virtual")){
+
+            ids.push(layer.feature.properties.id);
+        }
+
+    });
+    return ids;
+}
+
+
+
+function viewProject(ele){
+
+    var formData = new FormData();
+    formData.append("project",ele.id);
+    fetcher(formData,"getClientLocations",function(result){
+        console.log("received results",result);
+        map.eachLayer(function (layer) {
+            console.log("removing",layer,typeof layer,layer instanceof L.Marker);
+            if (layer instanceof L.Marker){
+
+                map.removeLayer(layer);
+            }
+        });
+        processLocationGeojson(result.locations);
+        map.fitBounds(lineLayer.getBounds());
+
+    });
+
+
+
+
+}
+
+function updateDatasets(){
+    var selectedClasses = getSelectedPopupIndexes("classes-popup");
+    var day = moment().isoWeekday() -1;
+    for (var key in classedData.data){
+        var total = 0;
+        for (var dir=0;dir < 2;dir++){
+            var data = classedData.data[key].directions[dir].baseData[0];
+            console.log("data for",key,data);
+            var selectedClassVolumes = [];
+            selectedClasses.forEach(function(classIndex,i){
+                //console.log("looking for class index",classIndex,"for dataset",index);
+                //console.log("pushing data",data[classIndex].data);
+                if(data[classIndex]){
+                    selectedClassVolumes.push(data[classIndex].data);
+                }
+
+            });
+            //console.log("looking for",key + "_direction_" + dir);
+            layer = findLayer(key + "_direction_" + dir);
+             //console.log("found layer",layer);
+            if(selectedClassVolumes.length != 0){
+                var val = selectedClassVolumes.reduce(sumOfDatasets).reduce(sumOfArray);
+            }
+            else{
+                var val = 0;
+            }
+            if (typeof val === 'string' || val instanceof String){
+                val = 0;
+            }
+            total = total + val;
+            if(layer && layer.feature.properties.angle){
+                // salford style arrows and countlines
+                var icon = createIcon(layer.feature.properties.angle,val);
+                layer.marker.setIcon(icon);
+            }
+        }
+        layer = findLayer(key);
+        //console.log("looking for",key,"found",layer);
+        if(layer && layer.feature.geometry.type == "Point" && layer.feature.properties.obsType.id == 1){
+            var icon = L.divIcon({
+                html: "<div class='donut-text ' id='" + layer.feature.properties.id + "_total'>" + total +  "</div>",
+                iconSize: [60, 60],
+                className: 'countIcon'
+            });
+            layer.setIcon(icon);
+            void layer._icon.offsetWidth;
+            layer._icon.classList.add("animate");
+
+        }
+    }
+}
+
+function getDates(){
+    var start = moment(document.getElementById("time").innerText.split(",")[0].trim());
+    console.log("start is",start);
+
+    return [start,moment(start).add(1,"d")];
+}
+
+function loadData(start,end){
+
+    console.log(start.format("YYYY-MM-DD HH:mm"),end.format("YYYY-MM-DD HH:mm"));
+    var greyed = document.getElementsByClassName("greyed-out");
+    var ids = getIdList();
+    if (ids.length==0){return;}
+    if (timeoutVar){
+        clearTimeout(timeoutVar);
+    }
+    for (var i=0;i<greyed.length;i++){
+        showGreyedOut(greyed[i]);
+    }
+    if(chart){chart.destroy();}
+    var live = document.getElementById("time-selector-popup").getElementsByClassName("selected")[0].parentNode.id.replace("time_","");
+    var formData = new FormData();
+    formData.append("ids",JSON.stringify(ids));
+    formData.append("resultType","counts");
+    formData.append("live",live);
+    formData.append("period",60);
+    formData.append("startDate",start.format("YYYY-MM-DD HH:mm"));
+    formData.append("endDate",end.format("YYYY-MM-DD HH:mm"));
+    fetcher(formData,"getATCClassedVolumes",function(result){
+        console.log("received results",result);
+        classedData = result.data;
+        document.getElementById("events-container").innerHTML = result.data.events;
+        var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+            hideGreyedOut(greyed[i]);
+        }
+        //document.getElementById("classes-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = classedData.classes;
+        //setPopupListeners(document.getElementById("classes-popup"));
+        updateDatasets();
+        document.getElementById("time").innerHTML = result.data.time;
+        document.getElementById("time-display").classList.remove("d-none");
+        timeoutVar = setTimeout(triggerLoadData,30000);
+
+    });
+}
+
+//loadData(moment().subtract(1,"h"),moment());
+
+function addLineLayer(){
+    //console.log("wee");
+    map.addLayer(lineLayer);
+    map.off("moveend");
+    map.on("zoomend",function(){console.log("zoom ended");map.invalidateSize();checkZoomLevel()});
+    map.on("moveend", function(){console.log("move ended");map.invalidateSize();});
+    triggerLoadData();
+    //document.getElementById("time_ALL").click();
+    checkZoomLevel();
+
+}
+
+
+function checkZoomLevel(){
+
+    var z = map.getZoom();
+
+    lineLayer.eachLayer(function(layer){
+        if(layer.marker){
+            if (z < 19){
+                map.removeLayer(layer.marker);
+            }
+            else{
+                map.addLayer(layer.marker);
+            }
+        }
+    });
+
+}
+
+
+function drawArrow(centre,length,bearing,col){
+    var pointList = [];
+    var arrowWidth = 10;
+    perpendicular = bearing + 90;
+    bearing = toRadians(bearing);
+    // scale length by zoom factor
+    length = length * map.getZoom()/5
+    if(perpendicular >360){perpendicular=perpendicular-360;}
+    //console.log("perp is",perpendicular);
+    perpendicular = toRadians(perpendicular);
+
+
+
+    //move perpendicular to centre
+    var x2 = centre.x -  (arrowWidth * Math.cos(perpendicular))
+    var y2 = centre.y - (arrowWidth * Math.sin(perpendicular))
+    p1 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // move along arrow shaft
+
+    var x2 = x2 +  (length * Math.cos(bearing))
+    var y2 = y2 + (length * Math.sin(bearing))
+    p2 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // draw arrow head
+
+    var x2 = x2 -  (arrowWidth * Math.cos(perpendicular))
+    var y2 = y2 - (arrowWidth * Math.sin(perpendicular))
+    p3 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // draw to tip of arrow, which is in line with centre
+    var x2 = centre.x +  ((length+arrowWidth) * Math.cos(bearing))
+    var y2 = centre.y + ((length+arrowWidth) * Math.sin(bearing))
+    //console.log("in draw arrow, tip is",x2,y2);
+    p4 = map.unproject(L.point(x2,y2),map.getZoom());
+
+
+    //draw other side of arrow
+    var x2 = centre.x +  (arrowWidth * Math.cos(perpendicular))
+    var y2 = centre.y + (arrowWidth * Math.sin(perpendicular))
+    p7 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // move along arrow shaft
+
+    var x2 = x2 +  (length * Math.cos(bearing))
+    var y2 = y2 + (length * Math.sin(bearing))
+    p6 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // draw arrow head
+
+    var x2 = x2 +  (arrowWidth * Math.cos(perpendicular))
+    var y2 = y2 + (arrowWidth * Math.sin(perpendicular))
+    p5 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    pointList = [p1,p2,p3,p4,p5,p6,p7];
+    //console.log("pointlist is",pointList);
+    if (col=="red"){
+        if(inArrow){lineLayer.removeLayer(inArrow)};
+       inArrow =  L.polygon(pointList,{
+            color:col,
+            interactive:true
+
+       }).addTo(lineLayer);
+    }
+    else{
+        if(outArrow){lineLayer.removeLayer(outArrow)};
+        outArrow =  L.polygon(pointList,{
+            color:col,
+            interactive:true
+
+       }).addTo(lineLayer);
+    }
+
+    //console.log("polygo is",p);
+
+
+
+    //p.on("mousedown",poly_clicked);
+   // p.on("touchstart",poly_clicked);
+    //p.on("click",testclick);
+   // p.on("ontouchstart",poly_clicked);
+    //p.bindPopup("<div><button id='arrow_" + col + "' onclick='deleteArrow(event);'>Delete</button></div>");
+    return p4;
+
+}
+
+
+function incrementDate(){
+    var start = moment(document.getElementById("time").innerText.split(",")[0].trim(),"dddd MMM DD, YYYY");
+    start.add(1,"d").set({hour:0,minute:0,second:0,millisecond:0});
+    var end = moment(start).add(1,"d")
+    loadData(start,end);
+}
+
+
+function decrementDate(){
+    var start = moment(document.getElementById("time").innerText.split(",")[0].trim(),"dddd MMM DD, YYYY");
+    start.subtract(1,"d").set({hour:0,minute:0,second:0,millisecond:0});
+    var end = moment(start).add(1,"d")
+    loadData(start,end);
+}
+
+
+
+function triggerLoadData(){
+    return;
+    var live = document.getElementById("time-selector-popup").getElementsByClassName("selected")[0].parentNode.id.replace("time_","");
+    var carets = document.getElementById("time-display").getElementsByClassName("caret");
+    console.log("inner text is",document.getElementById("time").innerText,document.getElementById("time").innerText == "",document.getElementById("time"))
+    console.log(document.getElementById("time").textContent , document.getElementById("time").textContent == "")
+    if(live == "ALL"){
+        if(document.getElementById("time").innerText == ""){
+            var s = moment();
+        }
+        else{
+            var s = moment(document.getElementById("time").innerText.trim().slice(0, -14),"dddd MMM DD, YYYY");
+        }
+        console.log("in trigger, s is",s);
+        s.set({hour:0,minute:0,second:0,millisecond:0});
+        e = moment(s).add(1,"d");
+        for (var i=0;i<carets.length;i++){
+            carets[i].classList.remove("d-none");
+        }
+    }
+    else{
+        s = moment(new Date());
+        e = moment(new Date());
+        s.subtract(30,"m")
+        for (var i=0;i<carets.length;i++){
+            carets[i].classList.add("d-none");
+        }
+    }
+    loadData(s,e);
+}
+
+var formData = new FormData();
+formData.append("exclude associated",true);
+result = {{locations|safe}}
+
+console.log("received results",result);
+document.getElementById("classes-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = result.classes;
+setPopupListeners(document.getElementById("classes-popup"));
+var items = document.getElementById("classes-popup").getElementsByClassName("menu-item");
+for(var i=0;i<items.length;i++){
+    items[i].addEventListener("click",function(){updateDatasets()});
+}
+processLocationGeojson(result);
+map.removeLayer(lineLayer);
+var locId = document.getElementById("loc-id").value;
+console.log("locId is", locId)
+if(lineLayer.getBounds().isValid()){
+    map.on("moveend", addLineLayer);
+    layer = findLayer(locId);
+    console.log("layer would be", layer);
+    if(locId){
+        map.setView(layer.getLatLng(),18);
+    }
+    else{
+        map.fitBounds(lineLayer.getBounds(),{maxZoom:18,padding:[30,30]});
+    }
+
+}
+
+
+
+
+function getTracks(){
+    var formData = new FormData();
+    formData.append("location_id","test3");
+    fetcher(formData,"getTracks",function(result){
+        console.log("received results",result);
+        L.geoJSON(result.tracks,{style:"red"}).addTo(map);
+    });
+}
+
+
+var items = document.getElementById("day-popup").getElementsByClassName("menu-item");
+    for(var i=0;i<items.length;i++){
+        items[i].addEventListener("click",function(){displayData()});
+    }
+
+
+var items = document.getElementById("directions-popup").getElementsByClassName("menu-item");
+for(var i=0;i<items.length;i++){
+    items[i].addEventListener("click",function(){displayData()});
+}
+
+
+function displayData(){
+    if (!data){
+        console.log("no data")
+        return
+    }
+    //console.log("full data is", data);
+    var dir = parseInt(document.getElementById("directions-popup").getElementsByClassName("selected")[0].parentNode.id.replace("direction_", ""))
+    var day = parseInt(document.getElementById("day-popup").getElementsByClassName("selected")[0].parentNode.id.replace("day_", ""))
+    //console.log("in display data", dir, day);
+    document.getElementById("direction-selector-2").getElementsByTagName("span")[0].innerText = document.getElementById("directions-popup").getElementsByClassName("selected")[0].getElementsByTagName("span")[0].innerText
+    document.getElementById("day-selector-2").getElementsByTagName("span")[0].innerText = document.getElementById("day-popup").getElementsByClassName("selected")[0].getElementsByTagName("span")[0].innerText
+
+    for (var d=0;d< data.length;d++){
+        if (data[d]["day"] == day && data[d]["direction__order"] == dir){
+            console.log(data[d]);
+            var row = document.getElementById("avg-table").querySelector("[data-timeval='" + data[d]["timeval"] + "']");
+            var rowIndex = row.rowIndex
+            if (data[d]["avg"] != 0){
+                row.cells[data[d]["phase"] + 1].innerText = data[d]["avg"].toFixed(1)
+            }
+            else{
+                row.cells[data[d]["phase"] + 1].innerText = "-"
+            }
+
+            var row = document.getElementById("perc-table").querySelector("[data-timeval='" + data[d]["timeval"] + "']");
+            if (data[d]["perc_85th"] != 0){
+                row.cells[data[d]["phase"] + 1].innerText = data[d]["perc_85th"].toFixed(1)
+            }
+            else{
+                row.cells[data[d]["phase"] + 1].innerText = "-"
+            }
+
+
+
+        }
+    }
+    var rows = document.getElementById("avg-table").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+    for (var i=0;i<rows.length;i++){
+        //
+        // set up first comparison
+        //
+        //console.log(rows[i].cells[1].innerText ,rows[i].cells[2].innerText, document.getElementById("table-2").rows[i + 2].cells[1])
+        document.getElementById("table-2").rows[i + 2].cells[1].innerText = (parseFloat(rows[i].cells[2].innerText) - parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+        var val = (parseFloat(document.getElementById("table-2").rows[i + 2].cells[1].innerText) * 100 / parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+
+        if (val != "-"){
+            document.getElementById("table-2").rows[i + 2].cells[2].innerText = val;
+        }
+        else{
+         document.getElementById("table-2").rows[i + 2].cells[2].innerText = "-";
+        }
+
+        if (val <=0){
+            document.getElementById("table-2").rows[i + 2].cells[3].classList.add("good");
+            document.getElementById("table-2").rows[i + 2].cells[3].classList.remove("bad");
+        }
+        else{
+            document.getElementById("table-2").rows[i + 2].cells[3].classList.remove("good");
+            document.getElementById("table-2").rows[i + 2].cells[3].classList.add("bad");
+        }
+        //
+        // set up second comparison
+        //
+        if(document.getElementById("table-3")){
+
+
+
+            document.getElementById("table-3").rows[i + 2].cells[1].innerText = (parseFloat(rows[i].cells[3].innerText) - parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+            if (document.getElementById("table-3").rows[i + 2].cells[1].innerText == "NaN"){document.getElementById("table-3").rows[i + 2].cells[1].innerText = "-"}
+            var val = (parseFloat(document.getElementById("table-3").rows[i + 2].cells[1].innerText) * 100 / parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+
+            if (val != "NaN"){
+                document.getElementById("table-3").rows[i + 2].cells[2].innerText = val;
+            }
+            else{
+             document.getElementById("table-3").rows[i + 2].cells[2].innerText = "-";
+            }
+
+            if (val <=0){
+                document.getElementById("table-3").rows[i + 2].cells[3].classList.add("good");
+                document.getElementById("table-3").rows[i + 2].cells[3].classList.remove("bad");
+            }
+            else{
+                document.getElementById("table-3").rows[i + 2].cells[3].classList.remove("good");
+                document.getElementById("table-3").rows[i + 2].cells[3].classList.add("bad");
+            }
+        }
+    }
+    document.getElementById("avg_1").innerText = document.getElementById("table-2").rows[7].cells[1].innerText;
+    if (document.getElementById("table-2").rows[7].cells[1].innerText <= 0){
+        document.getElementById("avg_1").nextElementSibling.classList.add("good");
+        document.getElementById("avg_1").nextElementSibling.classList.remove("bad");
+    }
+    else{
+        document.getElementById("avg_1").nextElementSibling.classList.remove("good");
+        document.getElementById("avg_1").nextElementSibling.classList.add("bad");
+    }
+    document.getElementById("avg_2").innerText = document.getElementById("table-2").rows[7].cells[2].innerText; + "%";
+    document.getElementById("avg_3").innerText = document.getElementById("table-2").rows[6].cells[1].innerText;
+    if (document.getElementById("table-2").rows[6].cells[1].innerText <= 0){
+        document.getElementById("avg_3").nextElementSibling.classList.add("good");
+        document.getElementById("avg_3").nextElementSibling.classList.remove("bad");
+    }
+    else{
+        document.getElementById("avg_3").nextElementSibling.classList.remove("good");
+        document.getElementById("avg_3").nextElementSibling.classList.add("bad");
+    }
+    document.getElementById("avg_4").innerText = document.getElementById("table-2").rows[6].cells[2].innerText + "%";
+    //
+    // set up 2nd headline stats section
+    if(document.getElementById("table-3")){
+        document.getElementById("avg_5").innerText = document.getElementById("table-3").rows[7].cells[1].innerText;
+        if (document.getElementById("table-3").rows[7].cells[1].innerText <= 0){
+            document.getElementById("avg_5").nextElementSibling.classList.add("good");
+            document.getElementById("avg_5").nextElementSibling.classList.remove("bad");
+        }
+        else{
+            document.getElementById("avg_5").nextElementSibling.classList.remove("good");
+            document.getElementById("avg_5").nextElementSibling.classList.add("bad");
+        }
+        document.getElementById("avg_6").innerText = document.getElementById("table-3").rows[7].cells[2].innerText + "%";
+        document.getElementById("avg_7").innerText = document.getElementById("table-3").rows[6].cells[1].innerText;
+        if (document.getElementById("table-3").rows[6].cells[1].innerText <= 0){
+            document.getElementById("avg_7").nextElementSibling.classList.add("good");
+            document.getElementById("avg_7").nextElementSibling.classList.remove("bad");
+        }
+        else{
+            document.getElementById("avg_7").nextElementSibling.classList.remove("good");
+            document.getElementById("avg_7").nextElementSibling.classList.add("bad");
+        }
+        document.getElementById("avg_8").innerText = document.getElementById("table-3").rows[6].cells[2].innerText + "%";
+    }
+
+    var rows = document.getElementById("perc-table").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+    for (var i=0;i<rows.length;i++){
+        //
+        // set up first comparison
+        //
+        document.getElementById("table-4").rows[i + 2].cells[1].innerText = (parseFloat(rows[i].cells[2].innerText) - parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+        var val = (parseFloat(document.getElementById("table-4").rows[i + 2].cells[1].innerText) * 100 / parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+        document.getElementById("table-4").rows[i + 2].cells[2].innerText = val;
+        if (val <=0){
+            document.getElementById("table-4").rows[i + 2].cells[3].classList.add("good");
+            document.getElementById("table-4").rows[i + 2].cells[3].classList.remove("bad");
+        }
+        else{
+            document.getElementById("table-4").rows[i + 2].cells[3].classList.remove("good");
+            document.getElementById("table-4").rows[i + 2].cells[3].classList.add("bad");
+        }
+        //
+        // set up second comparison
+        //
+        if(document.getElementById("table-3")){
+            document.getElementById("table-5").rows[i + 2].cells[1].innerText = (parseFloat(rows[i].cells[3].innerText) - parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+            if (document.getElementById("table-5").rows[i + 2].cells[1].innerText == "NaN"){document.getElementById("table-5").rows[i + 2].cells[1].innerText = "-"}
+            var val = (parseFloat(document.getElementById("table-5").rows[i + 2].cells[1].innerText) * 100 / parseFloat(rows[i].cells[1].innerText)).toFixed(1);
+            console.log(val, typeof val);
+            if (val != "NaN"){
+                document.getElementById("table-5").rows[i + 2].cells[2].innerText = val;
+            }
+            else{
+             document.getElementById("table-5").rows[i + 2].cells[2].innerText = "-";
+            }
+            if (val <=0){
+                document.getElementById("table-5").rows[i + 2].cells[3].classList.add("good");
+                document.getElementById("table-5").rows[i + 2].cells[3].classList.remove("bad");
+            }
+            else{
+                document.getElementById("table-5").rows[i + 2].cells[3].classList.remove("good");
+                document.getElementById("table-5").rows[i + 2].cells[3].classList.add("bad");
+            }
+        }
+    }
+    document.getElementById("avg_9").innerText = document.getElementById("table-4").rows[7].cells[1].innerText;
+    if (document.getElementById("table-4").rows[7].cells[1].innerText <= 0){
+        document.getElementById("avg_9").nextElementSibling.classList.add("good");
+        document.getElementById("avg_9").nextElementSibling.classList.remove("bad");
+    }
+    else{
+        document.getElementById("avg_9").nextElementSibling.classList.remove("good");
+        document.getElementById("avg_9").nextElementSibling.classList.add("bad");
+    }
+    document.getElementById("avg_10").innerText = document.getElementById("table-4").rows[7].cells[2].innerText + "%";
+    document.getElementById("avg_11").innerText = document.getElementById("table-4").rows[6].cells[1].innerText;
+    if (document.getElementById("table-4").rows[6].cells[1].innerText <= 0){
+        document.getElementById("avg_11").nextElementSibling.classList.add("good");
+        document.getElementById("avg_11").nextElementSibling.classList.remove("bad");
+    }
+    else{
+        document.getElementById("avg_11").nextElementSibling.classList.remove("good");
+        document.getElementById("avg_11").nextElementSibling.classList.add("bad");
+    }
+    document.getElementById("avg_12").innerText = document.getElementById("table-4").rows[6].cells[2].innerText + "%";
+    //
+    // set up 2nd headline stats section
+    if(document.getElementById("table-3")){
+        document.getElementById("avg_13").innerText = document.getElementById("table-5").rows[7].cells[1].innerText;
+        if (document.getElementById("table-5").rows[7].cells[1].innerText <= 0){
+            document.getElementById("avg_13").nextElementSibling.classList.add("good");
+            document.getElementById("avg_13").nextElementSibling.classList.remove("bad");
+        }
+        else{
+            document.getElementById("avg_13").nextElementSibling.classList.remove("good");
+            document.getElementById("avg_13").nextElementSibling.classList.add("bad");
+        }
+        document.getElementById("avg_14").innerText = document.getElementById("table-5").rows[7].cells[2].innerText + "%";
+        document.getElementById("avg_15").innerText = document.getElementById("table-5").rows[6].cells[1].innerText;
+        if (document.getElementById("table-5").rows[6].cells[1].innerText <= 0){
+            document.getElementById("avg_15").nextElementSibling.classList.add("good");
+            document.getElementById("avg_15").nextElementSibling.classList.remove("bad");
+        }
+        else{
+            document.getElementById("avg_15").nextElementSibling.classList.remove("good");
+            document.getElementById("avg_15").nextElementSibling.classList.add("bad");
+        }
+        document.getElementById("avg_16").innerText = document.getElementById("table-5").rows[6].cells[2].innerText + "%";
+    }
+
+
+}
+displayData();
+</script>
+
+</html>

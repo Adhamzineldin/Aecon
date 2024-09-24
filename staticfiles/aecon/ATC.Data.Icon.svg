@@ -1,0 +1,13 @@
+<svg id="ATC.Data.Icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="19.931" viewBox="0 0 20 19.931">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_614" data-name="Rectangle 614" width="20" height="19.931" fill="#141b4d"/>
+    </clipPath>
+  </defs>
+  <g id="Group_406" data-name="Group 406" clip-path="url(#clip-path)">
+    <path id="Path_448" data-name="Path 448" d="M36.651,51.968a5.141,5.141,0,0,1,7.272,0l.909.909,1.819-1.819-.9-.915a7.714,7.714,0,0,0-10.927,0l-.9.916,1.819,1.819Z" transform="translate(-30.287 -42.745)" fill="#141b4d"/>
+    <path id="Path_449" data-name="Path 449" d="M18.181,6.494,20,4.675l-.91-.91a12.857,12.857,0,0,0-18.181,0L0,4.674,1.819,6.493l.909-.909a10.284,10.284,0,0,1,14.543,0Z" fill="#141b4d"/>
+    <path id="Path_450" data-name="Path 450" d="M41.468,116.4v-1.286a7.071,7.071,0,0,0-14.141,0V116.4H29.9v-1.286a4.5,4.5,0,1,1,9,0V116.4Z" transform="translate(-24.399 -96.47)" fill="#141b4d"/>
+    <path id="Path_451" data-name="Path 451" d="M83.9,163.3a1.286,1.286,0,1,1-2.571,0,1.286,1.286,0,0,1,2.571,0" transform="translate(-72.614 -144.659)" fill="#141b4d"/>
+  </g>
+</svg>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+    <style>
+        #daily-table tr.bad-data {color:red;}
+        #calendar-wrapper td.bad-data {border:2px solid red;}
+
+        #daily-table tr.removed-data {color:blue;}
+        #calendar-wrapper td.removed-data {border:2px solid blue;}
+
+    </style>
+
+
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Bootstrap CSS -->
+
+    {% load staticversion %}
+    {% load my_filters %}
+
+    <link rel="stylesheet" type="text/css" href="/static/aecon/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.css" />
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="/static/media/icons/flaticon-basic/font/flaticon.css" type="text/css">
+    <link rel="stylesheet" href="{% staticversion 'aecon/cv2-base.css' %}" type="text/css">
+    <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.21/datatables.min.css"/>
+
+
+    <title>Tracsis AECON</title>
+</head>
+<body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/aecon/moment.min.js"></script>
+    <script type="text/javascript" src="/static/aecon/daterangepicker.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.21/datatables.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script>
+    <script src="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.js"></script>
+    <script src="{% staticversion 'aecon/cv2-main.js' %}"></script>
+
+    <div id="messages-popup" style="width:320px;height:200px" class="conduit-popup">
+
+    </div>
+
+
+    <div id="upload-popup" style="width:600px;height:200px" class="conduit-popup">
+        <div id="upload-calendar">
+
+        </div>
+    </div>
+
+    <div id="login-popup" class="conduit-popup">
+    <div class="d-flex flex-row align-items-center" style="padding:20px 10px">
+
+        <div class="info-cell-value">
+           Logged in as {{request.user.username}}
+        </div>
+        <div class="topbar__item" onclick="location.href = '/aecon/logoff?admin=true'">
+            <span><i class="icon-exit-1"></i></span>
+        </div>
+    </div>
+
+</div>
+
+
+    <div id="settings-popup" style="width:300px;height:auto" class="conduit-popup">
+        <div class="col-12" style="font-size:0.88rem">
+            <div class="row justify-content-center">
+                <div class="col-12 text-center p-2 mb-1" style="background-color:grey;font-size:1rem;color:white">Sensor Variance levels</div>
+                <div class="col-11 d-flex align-items-center  mb-1 text-muted" style="font-size:1rem">
+                    <div class="mr-3"><i class="fa fa-square" style="color:#c9f7f5;font-size:20px"></i></div>
+                    <div> Acceptable Variance</div>
+                </div>
+                <div class="col-11 d-flex align-items-center  justify-content-between mb-4" style="font-size:0.88rem">
+                    <div class="mr-3"><input type="number" class="form-control" id="acceptable" value="80" name="min" onchange="editSettings();" style="width:60px;font-size:0.88rem !important"></div>
+                    <div class="d-flex flex-grow-1 justify-content-left"><label for="acceptable" class="text-muted  col-form-label" >75% - 125%</label></div>
+                </div>
+                <div class="col-11 d-flex align-items-center   mb-1 text-muted" style="font-size:1rem">
+                    <div class="mr-3"><i class="fa fa-square" style="color:#fff4de;font-size:20px"></i></div>
+                    <div> Medium Variance</div>
+                </div>
+                <div class="col-11 d-flex align-items-center justify-content-between mb-4" style="font-size:0.88rem">
+                    <div class="mr-3"><input type="number" class="form-control" id="medium" value="80" name="min" onchange="editSettings();" style="width:60px"></div>
+                    <div class="d-flex flex-grow-1 justify-content-left"><label for="medium" class="text-muted  col-form-label " >75% - 125%</label></div>
+                </div>
+                <div class="col-11 d-flex align-items-center mb-1 text-muted" style="font-size:1rem">
+                    <div class="mr-3"><i class="fa fa-square" style="color:#ffe2e5;font-size:20px"></i></div>
+                    <div> Unacceptable Variance</div>
+                </div>
+                <div class="col-11 d-flex align-items-center justify-content-between mb-4" style="font-size:0.88rem">
+                    <div class="mr-3  " style="width:60px"><input type="number" class="form-control d-none" id="unacceptable" value="80" name="min" onchange="editSettings();" style="width:60px"></div>
+                    <div class="d-flex flex-grow-1 justify-content-left"><label for="unacceptable" class="text-muted  col-form-label" >75% - 125%</label></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="classes-popup" style="width:600px" class="conduit-popup">
+
+            <div class="row" style="height:100%">
+                <div class="card  col-5 " style="padding:0">
+                    <div class="card-header  bg-transparent">
+                        <h5>Classes</h5>
+                        <div class="fn-container d-flex">
+                            <div class="fn text-muted" onclick="deleteButtonPressed('shift');"><i class="fa fa-plus"></i></div>
+                            <div class="fn text-muted" onclick="deleteButtonPressed('shift');"><i class="fa fa-trash"></i></div>
+                        </div>
+
+                    </div>
+                    <div class="card-body" style="padding:0;overflow-y:auto;max-height:350px">
+                        <div class="col-12" style="padding:0">
+
+                            <div class="conduit-selectable-menu multi" id="obsclass-container" >
+                                <ul >
+                                    {% for class in classes %}
+                                     <li id="{{class.id}}" class="menu-item">
+                                        <a href="#" class="selected selectable-menu-item">
+
+                                            <span >{{class.displayName}}</span>
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card  col-3 " style="padding:0">
+                    <div class="card-header  bg-transparent">
+                        <h5>Groups</h5>
+                    </div>
+                    <div class="card-body" style="padding:0;overflow-y:auto;max-height:350px">
+                        <div class="col-12" style="padding:0">
+
+                            <div class="conduit-selectable-menu multi" id="obsclass-group-container" >
+                                <ul >
+                                     <li id="5day" class="menu-item">
+                                        <a href="#" class="selected selectable-menu-item">
+
+                                            <span >Pedestrian</span>
+                                        </a>
+                                    </li>
+                                    <li id="7day" class="menu-item ">
+                                        <a href="#" class="selectable-menu-item">
+
+                                            <span >Cyclist</span>
+                                        </a>
+                                    </li>
+                                    <li id="Car" class="menu-item">
+                                        <a href="#" class="selectable-menu-item">
+
+                                            <span>Car</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card col-4" style="padding:0">
+                    <div class="card-header  bg-transparent">
+                        <h5>Selected</h5>
+                        <div class="fn-container d-flex">
+                            <div class="fn text-muted" onclick="clearClasses();"><i class="fa fa-eraser" ></i></div>
+                        </div>
+
+                    </div>
+                    <div class="card-body" style="padding:0;overflow-y:auto;max-height:350px">
+                        <div class="col-12" style="padding:0">
+
+                            <div class="conduit-selectable-menu multi" id="selected-obsclass-container" >
+                                <ul >
+                                    {% for class in loc.classes.all %}
+                                     <li id="obsclass_{{class.id}}" class="menu-item">
+                                        <a href="#" class="selected selectable-menu-item">
+
+                                            <span >{{class.obsClass.displayName}}</span>
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+
+
+     <div id="view-popup" style="width:300px" class="conduit-popup">
+        <div class="conduit-selectable-menu  min-1">
+            <ul >
+                 <li id="add-client" class="menu-item popup-item "    >
+                    <a href="/aecon/admin/allLocations" class="selected ">
+                        <i ></i>
+                        <span >All Sensors Overview</span>
+                    </a>
+                </li>
+
+                <li id="add-project" class="menu-item popup-item" >
+                    <a href="/aecon/admin/weekly-view">
+                        <i ></i>
+                        <span>All Sensors Overview - Weekly</span>
+                    </a>
+                </li>
+                <li id="api-view" class="menu-item popup-item" >
+                    <a href="/aecon/admin/events">
+                        <i ></i>
+                        <span>Events Overview</span>
+                    </a>
+                </li>
+                <li id="location-view" class="menu-item popup-item" >
+                    <a href="/aecon/admin/location">
+                        <i ></i>
+                        <span>Site Summary</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+<div id = "sidebar" class="normal">
+        <div class="sidebar-brand align-items-center">
+
+            <div class="sidebar-brand-logo" style="height:90%">
+                <img src="{% staticversion 'aecon/conduit_logo_color.png' %}" style="height:100%;width:auto;padding:7px 0;" alt="" class="img-fluid">
+
+            </div>
+            <div class="sidebar-brand-button" onclick="toggleSideBar(event);">
+                <i class="icon-menu"></i>
+            </div>
+        </div>
+
+        <div class="col-12 sidebar-icons pull-left">
+            {% for key,item in sensors.items %}
+                <div class=" min-vh-100 d-flex align-items-center justify-content-center">
+                    <div class="sidebar-brand-button">
+                <i class="fa {{item.icon}} pull-right mx-auto"></i>
+            </div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+
+        <div class="col-12  sidebar-list" >
+            {% format_for_sidebar "admin" %}
+        </div>
+    </div>
+
+
+    <div id = "topbar" class="header-shadow">
+
+        <div class="dropdown-header large view-popup-trigger " style="margin-left:80px" id="view-selector">
+            <span>{{header}}</span><i class="chevron-icon"></i>
+        </div>
+
+        <div class="selection-header large view-popup-trigger d-none" style="" id="some-selector">
+            <span>View</span><i class="chevron-icon"></i>
+        </div>
+
+        <div class="topbar__item-holder">
+
+            <div class="topbar__item d-none">
+                <span><i class="flaticon-calendar"></i></span>
+            </div>
+
+            <div class="topbar__item d-none">
+                <span><i class="flaticon-calendar"></i></span>
+            </div>
+            {% comment %} <div class="topbar__item settings-popup-trigger opens-left">
+                <span><i class="flaticon-settings-5"></i></span>
+            </div> {% endcomment %}
+            <div class="topbar__item login-popup-trigger opens-left">
+                <span><i class="flaticon-user"></i></span>
+            </div>
+
+            <div class="topbar__item messages-popup-trigger opens-left d-none">
+                <span><i class="flaticon-alarm"></i></span>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="container-fluid" id="main-container">
+
+
+        {% block content %}
+
+        {% endblock %}
+
+    </div>
+
+    <div class="d-none">
+        <form method="post" action="/aecon/admin">
+            <input id="target" value="hi">
+        </form>
+    </div>
+
+
+
+</body>
+
+
+<script type="text/javascript" src="/static/aecon/moment.min.js"></script>
+<script type="text/javascript" src="/static/aecon/daterangepicker.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
+<script src="/static/aecon/leaflet.polylineDecorator.js"></script>
+<script src="/static/aecon/Leaflet.Editable.js"></script>
+<script src="/static/aecon/L.Line3.js"></script>
+<script src="{% staticversion 'aecon/cv2-data-func.js' %}"></script>
+<script src="{% staticversion 'aecon/cv2-base.js' %}"></script>
+
+<script src="{% staticversion 'aecon/cv2-graphs.js' %}"></script>
+<script src="{% staticversion 'aecon/cv2-map.js' %}"></script>
+<script src="{% staticversion 'aecon/admin.js' %}"></script>
+<script src="http://d3js.org/d3.v3.js"></script>
+<script src="https://mapbox.github.io/geojson-vt/geojson-vt-dev.js"></script>
+{% block js %}
+{% endblock %}
+
+<script src="/static/aecon/leaflet.curve.js" ></script>
+
+<script>
+
+    $(function () {
+      $('[data-toggle="popover"]').popover({ trigger: "hover" })
+    })
+
+
+</script>
+
+
+</html>

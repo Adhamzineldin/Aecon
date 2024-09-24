@@ -1,0 +1,45 @@
+input[type=radio].css-checkbox {
+    /* position: absolute; */
+    position: fixed;
+    z-index: -1000;
+    left: -1000px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+}
+
+input[type=radio].css-checkbox+label.css-label {
+    padding-left: 24px;
+    height: 15px;
+    display: inline-block;
+    line-height: 15px;
+    background-repeat: no-repeat;
+    background-position: -5px -1px;
+    font-size: 1rem;
+    vertical-align: middle;
+    cursor: pointer;
+    /* max-width: 50rem; */
+    width: 30rem;
+}
+
+input[type=radio].selected+label.css-label {
+    background-position: -5px -16px !important;
+}
+
+input[type=radio].css-checkbox:checked+label.cb0 {
+    background-position: -5px -16px;
+}
+
+label.css-label {
+    background-image: url(/static/aecon/Screenshot_5.png);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

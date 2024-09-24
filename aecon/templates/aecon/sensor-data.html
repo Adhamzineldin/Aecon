@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Bootstrap CSS -->
+
+    {% load staticversion %} {% load my_filters %} {% load client_tags %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/aecon/daterangepicker.css" />
+    <link rel="stylesheet" href="https://use.typekit.net/qhi7zfc.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css" />
+    <link rel="stylesheet" href="{% staticversion 'aecon/leaflet.awesome-markers.css' %}" type="text/css" /> {% if DEBUG %}
+    <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css" /> {% else %}
+    <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css" /> {% endif %}
+    <link rel="stylesheet" href="{% staticversion 'aecon/nouislider.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% staticversion 'aecon/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% staticversion 'aecon/cv2-base.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% staticversion 'aecon/checkbox-style.css' %}" type="text/css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+    <script src="https://mapbox.github.io/geojson-vt/geojson-vt-dev.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
+    <script src="/static/aecon/moment.min.js"></script>
+    {% comment %} <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script> {% endcomment %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <script src="https://mapbox.github.io/geojson-vt/geojson-vt-dev.js"></script>
+    
+    <script src="{% staticversion 'aecon/leaflet.polylineDecorator.js' %}"></script>
+    <script src="{% staticversion 'aecon/L.Line3.js' %}"></script>
+    <script src="{% staticversion 'aecon/nouislider.js' %}"></script>
+    <script src="{% staticversion 'aecon/leaflet.lineextremities.js' %}"></script>
+    
+    <script src="{% staticversion 'aecon/cv2-data-func.js' %}"></script>
+    {% comment %} <script src="{% staticversion 'aecon/cv2-base.js' %}"></script> {% endcomment %}
+    <script src="{% staticversion 'aecon/cv2-local-storage.js' %}"></script>
+    <script src="{% staticversion 'aecon/cv2-graphs.js' %}"></script>
+    <script src="{% staticversion 'aecon/labels_plugin.js' %}"></script>
+    <script src="{% staticversion 'aecon/cv2-map.js' %}"></script>
+    <script src="{% staticversion 'aecon/atc.js' %}"></script>
+    <script src="{% staticversion 'aecon/cv2-main.js' %}"></script>
+    {% comment %} <script src="{% staticversion 'aecon/cv2-atc-view.js' %}"></script> {% endcomment %}
+  
+    
+    <title>Tracsis AECON</title>
+</head>
+
+<body>
+    <style>
+      *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        }
+      body{
+        background: #EFEFEF;
+    }
+        .pb-6{
+          padding-bottom: 9rem!important;
+        }
+        .modal,
+        .modal-backdrop {
+            position: absolute !important;
+        }
+        
+        .modal-dialog {
+            max-width: 90% !important;
+        }
+        
+        .modal-dialog,
+        .modal-content {
+            /* 80% of window height */
+            height: 90%;
+        }
+        
+        .modal-body {
+            /* 100% = dialog height, 120px = header + footer */
+            overflow: hidden;
+        }
+        .footer-bottom div{
+          background: #141b4d;
+        
+      }
+      .footer-bottom p{
+          float: left;
+          font-size: 14px;
+          word-spacing: 2px;
+          text-transform: capitalize;
+       }
+       .footer-bottom p img{
+         justify-content:center;
+       }
+       .footer-bottom span{
+           text-transform: uppercase;
+           opacity: .4;
+           font-weight: 200;
+       }
+       .footer-menu
+       {
+        float: right;
+      }
+      
+      .footer-menu ul{
+        display: flex;
+      }
+      
+      .footer-menu ul li{
+      padding-right: 10px;
+      display: block;
+      }
+      
+      .footer-menu ul li a{
+        color: #fff;
+        text-decoration: none;
+        background-color: #ffffff;
+      }
+      
+      .footer-menu ul li a:hover{
+        color: #fff;
+      }
+      .socials{
+        list-style: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0px;
+      }
+    
+        {% comment %} .socials li{
+            margin: 0 10px;
+        } {% endcomment %}
+        
+        .socials a{
+            text-decoration: none;
+            color: #fff;
+            border: 1.1px solid white;
+            padding: 5px;
+            border-radius: 50%;
+        }
+        
+        .socials a i{
+            font-size: 1.1rem;
+            width: 18px;
+            transition: color .4s ease;
+            text-align: center;
+            color: #1d2fa9;
+        }
+        
+        .socials a:hover i{
+            color: #1b144d;
+        }
+        .footer {
+          height: 60px;
+          margin-top: 20px;
+      }
+      
+      .footer {
+        background-color: #1b144d;
+        height: auto;
+        width: 100%;
+        {% comment %} position: fixed; {% endcomment %}
+        bottom: 0;
+    }
+      .ht-40{
+        height: 35rem !important;
+      }
+      @media (max-width:500px) {
+        .footer-menu ul{
+          display: flex;
+          margin-top: 10px;
+          margin-bottom: 20px;
+        }
+      }
+
+      /****Headline Column Data****/
+      .col-text1{
+        font-weight: 800;
+        margin-left: 58px;
+      }
+      .col-text2{
+        font-weight: 800;
+        margin-left: 58px;
+      }
+      .col-text3{
+        font-weight: 800;
+        margin-left: 58px;
+      }
+      
+      .col-data{
+        margin-top: 50px;
+        margin-left: 64px;
+        font-size:19px;
+      }
+      .totalVol-text{
+        font-weight: bold;
+        margin-left: -64px;
+        font-size:24px
+      }
+      .totalVol-data{
+        margin-left: -66px;
+        font-size:24px;
+      }
+      /****colgraph UL Nums*******/
+      ul.colgraph-nums{
+        list-style: none;
+        list-style-type: none;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      /****colgraph Ul Text*******/
+      ul.colgraph-text{
+        list-style: none;
+        list-style-type: none;
+        overflow: hidden;
+        white-space: pre;
+
+      }
+      ul.colgraph-text li{
+        /* margin-left: 50px; */
+        width:160px ;
+      }
+      ul.colgraph-text li:nth-child(1)>h5{
+        /* margin-left:120px; */
+      }
+      ul.colgraph-text li:nth-child(2)>h5{
+        /* margin-left:155px; */
+        margin-top:20px;
+      }
+      ul.colgraph-text li:nth-child(3)>h5{
+        /* margin-left:155px; */
+        margin-top:20px;
+      }
+      ul.colgraph-text li:nth-child(1)> div.square {
+        height: 25px;
+        width: 25px;
+        background-color: #1b144d;
+        margin-top: -30px;
+        z-index: 16;
+        position: absolute;
+        margin-left: 180px;
+      }
+      ul.colgraph-text li:nth-child(2)> div.square {
+        height: 25px;
+        width: 25px;
+        background-color: #00FF00;
+        margin-top: -30px;
+        z-index: 16;
+        position: absolute;
+        margin-left: 180px;
+      }
+      ul.colgraph-text li:nth-child(3)> div.square {
+        height: 25px;
+        width: 25px;
+        background-color: red;
+        margin-top: -30px;
+        z-index: 16;
+        position: absolute;
+        margin-left: 180px;
+      }
+
+      #graph-container{
+        height: 39.5em !important;
+      }
+
+      .modal-dialog{
+        max-width:500px !important;
+        height:0% !important;
+      }
+      .modal-dialog .modal-content{
+        height: fit-content;
+      }
+
+      .observation-save-btn {
+        background-color: #141b4d !important;
+        color: #fff;
+      }
+
+      .observation-close-btn{
+        color: #fff;
+      }
+
+      .observation-guideline{
+        font-weight: bold;
+      }
+
+      #Observation-name::-webkit-scrollbar-thumb {
+        cursor: pointer;
+      }
+
+      #date-button{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+      }
+      #date-button span{
+          padding: 0;
+          font-weight: 400;
+          font-size: 26px;
+      }
+
+      
+    </style>
+     {% csrf_token %}
+     <div class="greyed-out justify-content-center align-items-center "> <img src ="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+     <input hidden value="{{location.id}}" id="location_id">
+     <input hidden type="text" value="{{client.mapCode}}" id="mb-id">
+    <div id="phase-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu" id="phase-selectable-menu-selection">
+            <ul>
+                <li id="view_0" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                      <span>2021</span>
+                  </a>
+                </li>
+                <li id="view_0" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>2022</span>
+                  </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="time-span-option-popup" style="width: auto;" class="conduit-popup vivacity-1">
+      <div class="conduit-selectable-menu min-1" data-header="time-span-selector">
+          <ul >
+               <li id="day" class="menu-item popup-item" data-offset="4">
+                  <a href="#" class="selectable-menu-item selected selected">
+                      <i ></i>
+                      <span >One Day</span>
+                  </a>
+              </li>
+              <li id="week" class="menu-item popup-item" data-offset="2">
+                  <a href="#" class="selectable-menu-item">
+                      <i ></i>
+                      <span>One Week</span>
+                  </a>
+              </li>
+              <li id="month" class="menu-item popup-item" data-offset="2">
+                  <a href="#" class="selectable-menu-item">
+                      <i ></i>
+                      <span>One Month</span>
+                  </a>
+              </li>
+          </ul>
+      </div>
+    </div>
+    <div id="analysis-option-popup" style="width: auto;" class="conduit-popup vivacity-1">
+      <div class="conduit-selectable-menu min-1" data-header="option-selector">
+          <ul >
+               <li id="totals" class="menu-item popup-item" data-offset="4">
+                  <a href="#" class="selectable-menu-item selected selected" onclick="setOption('totals')">
+                      <i ></i>
+                      <span >Totals</span>
+                  </a>
+              </li>
+              <li id="compare" class="menu-item popup-item" data-offset="2">
+                  <a href="#" class="selectable-menu-item" onclick="setOption('compare')">
+                      <i ></i>
+                      <span>Compare by time</span>
+                  </a>
+              </li>
+          </ul>
+      </div>
+    </div>
+    <div id="direction-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu" id="direction-selectable-menu-selection">
+            {% comment %} <ul>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                  <span>Combined</span>
+              </a>
+                </li>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Primary</span>
+              </a>
+                </li>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Secondary</span>
+              </a>
+                </li>
+            </ul> {% endcomment %}
+        </div>
+    </div>
+    <div id="period-selector-popup" style="width:265px" class="conduit-popup">
+      <div class="conduit-selectable-menu  min-1" data-header="period-selector">
+          <ul >
+               <li id="60" class="menu-item popup-item" data-offset="4">
+                  <a href="#" class="selectable-menu-item selected selected" onclick="setTime('60')">
+                      <i ></i>
+                      <span >60 Minutes</span>
+                  </a>
+              </li>
+              <li id="30" class="menu-item popup-item" data-offset="2">
+                  <a href="#" class="selectable-menu-item" onclick="setTime('30')">
+                      <i ></i>
+                      <span>30 Minutes</span>
+                  </a>
+              </li>
+              <li id="15" class="menu-item popup-item" data-offset="1">
+                  <a href="#" class="selectable-menu-item" onclick="setTime('15')">
+                      <i ></i>
+                      <span>15 Minutes</span>
+                  </a>
+              </li>
+          </ul>
+      </div>
+    </div>
+    <div id="day-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu " id="day-selectable-menu-selection">
+            <ul>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>5 Day Avg</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>7 Day Avg</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Monday</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Tuesday</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Wednesday</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Thursday</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Friday</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Saturday</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Saturday</span>
+              </a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+    <div id="atc-popup" style="width:auto;" class="conduit-popup vivacity-1">
+      <div class="conduit-selectable-menu" id="day-selectable-menu-selection">
+        <ul>
+            <li id="view_0" class="menu-item popup-item">
+                <a class="selectable-menu-item"><i></i>
+                  <span>ATC Data</span>
+                </a>
+            </li>
+            <li id="view_0" class="menu-item popup-item">
+                <a class="selectable-menu-item" onclick="location.href = '/aecon/sensor-data';"><i></i>
+                  <span>Sensor Data</span>
+                </a>
+            </li>
+            <li id="view_0" class="menu-item popup-item">
+                <a class="selectable-menu-item" onclick="modalAlert()"><i></i>
+                  <span> Air Quality</span>
+                </a>
+            </li>
+        </ul>
+      </div>
+    </div>
+    <div id="header-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu" id="day-selectable-menu-selection">
+            <ul>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('Headline');"><i></i>
+                <span>Headline Data</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('Volumes');"><i></i>
+                <span>Traffic Volumes</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('Classification');"><i></i>
+                <span>Classification Data</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('Comparsion');"><i></i>
+                <span>Comparsion</span>
+              </a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+    {% block class %}
+      <div id="classes-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu multi" id="conduit-selectable-menu-selection">
+            {{ classes | safe}}
+        </div>
+      </div>
+    {% endblock %}
+    <div id="directions-popup" style="width:auto;" class="conduit-popup" >
+      <div class="conduit-selectable-menu min-1" data-header="directions-header">
+          {{ directions | safe}}
+      </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/aecon/select2.min.css">
+    <script src="/static/aecon/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script src="/static/aecon/moment.min.js"></script>
+    <script type="text/javascript" src="/static/aecon/daterangepicker.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <div id="view-selector-popup" style="width: 250px" class="conduit-popup">
+        <div class="conduit-selectable-menu min-1" data-header="view-selector">
+            {% views_as_popup_list %}
+        </div>
+    </div>
+    <div class="header">
+      <nav class="navbar navbar-expand-lg py-4">
+        <div class="container-fluid flex-fill">
+          <a class="navbar-brand px-3" href="#">
+            <img height="50" width="150" class="h-75" src="/static/aecon/conduit_logo_color.png"
+                 alt="TCS" onclick="openNav()"></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon fa-solid fa-bars"></span>
+          </button>
+            <div class="collapse navbar-collapse align-content-center text-center" id="navbarSupportedContent">
+                <ul class="navbar-nav m-auto">
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item ">
+                            <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/map-full-view';"> <i class="pin-icon"></i>
+                            Map View </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link active" aria-current="page"> <i class="atc-icon-green"></i>
+                            Sensor Data </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/atc-data';"> <i class="ATC_Data_Icon"></i>
+                            ATC Data </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/radar-data';"> <i class="vas-icon"></i>
+                            Radar Data</a>
+                          </li>
+                          <li class="nav-item ">
+                            <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/link-data';"> <i class="link-icon"></i> 
+                              Link Data </a> 
+                          </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/jtc-data';"> <i class="jtc-icon"></i>
+                            JTC Data </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item ">
+                            <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/map-full-view';"> <i class="pin-icon"></i>
+                            Map View </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link active" aria-current="page"> <i class="atc-icon-green"></i>
+                            ATC Data </a>
+                        </li>
+                    {% endif %}
+                </ul>
+                
+              {% if request.user.is_authenticated %}
+                <a class="btn " aria-current="page" href="/aecon/logoff" style="border-radius: 5px !important; padding: 10px 15px;">
+                    Logout <i class="fas fa-chevron-down ps-1"></i></a>
+              {% else %}
+                <a class="btn " aria-current="page" href="/aecon" style="border-radius: 5px !important; padding: 10px 15px;">
+                    Login <i class="fas fa-chevron-up ps-1"></i></a>
+              {% endif %}
+            </div>
+        </div>
+      </nav>
+      <div class="subnavbar py-2">
+        {% if request.user.is_authenticated %}
+            <div class="container-fluid row flex-wrap align-items-center justify-content-between">
+                <ul class="nav col-10">
+                  <li class="nav-item">
+                    <a id="Headline" onclick="tabContent('Headline');" class="nav-link" aria-current="page">
+                      Headline Data
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a id="Volumes" onclick="tabContent('Volumes');" class="nav-link" aria-current="page">
+                      Traffic Volumes
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a id="Classification" onclick="tabContent('Classification');" class="nav-link " aria-current="page">
+                      Classification Data
+                    </a>
+                  </li>
+                    {% comment %} <li class="nav-item">
+                        <a id="Comparsion" onclick="tabContent('Comparsion');" class="nav-link " aria-current="page">
+                          Comparison
+                        </a>
+                    </li>{% endcomment %}
+
+                  {%comment%}
+                  {% if request.path != "/aecon/sensor-data/sensor-analysis" %}
+				   <li class="nav-item">
+                    <a class="nav-link " aria-current="page" onclick="observationPopup(this)">
+                      Observation
+                    </a>
+                  </li>
+                  {% endif %}
+                  {%endcomment%}
+                    <li class="nav-item">
+                    <a href="{% url 'sensor_data_download'%}" class="nav-link" aria-current="page">
+                      Download
+                    </a>
+                </li>
+                </ul>
+          </div>
+        {% else %}
+            <div class="container-fluid roww flex-wrap align-items-center justify-content-between">
+              <h5 class="text-white col-12 text-right p-3" style="margin-bottom: 0 !important">&nbsp;</h5>
+            </div>
+        {% endif %}
+      </div>
+    </div>
+    <div id="view-selector-popup" style="width:250px;" class="conduit-popup">
+        <div class="conduit-selectable-menu  min-1" data-header="view-selector">
+            <ul>
+                <li id="table_1" value="1" class="menu-item popup-item">
+                  <a href="#" class="selectable-menu-item selected ">
+                      <i></i>
+                      <span>Average Speed</span>
+                  </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                  <a href="#" class="selectable-menu-item">
+                      <i></i>
+                      <span>85th %ile Speed</span>
+                  </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="view-popup" style="width:250px;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu  min-1" data-header="view-selectable-menu-selection">
+            <ul>
+                <li id="table_1" value="1" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item selected" onClick="siteview('list');">
+                        <i></i>
+                        <span>List View</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item" onClick="siteview('dropdown');">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Dropdown View</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="sites-popup" style="width:250px;" class="conduit-popup">
+        <div class="conduit-selectable-menu  min-1" id="sites-selectable-menu-selection">
+            <ul>
+                <li id="table_1" value="1" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item selected">
+                        <i></i>
+                        <span>Aberlady, West Main Street(Site 4)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Carberry, A6124, Musselburgh to Crossgatehall (Site 39)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Cockenie,B1348 Links Road (Site 15)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Cockenie,East Lorimer Road (Site 16)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Danskine,B6335 (Site 45)</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--Nav bar for mobile view-->
+    <div id="mySidenav" class="sidenav box-shadow" style="left: 0;">
+      <a class="closebtn" onclick="closeNav()"><i class="fas fa-times"></i></a>
+      <div class="col-12 px-4">
+        <h5 class="text-muted">
+          Sensor Data
+        </h5>
+          <div class="customScroll sensorList" >
+            {% comment %} <ul class="flex-column nav">
+              <div  id="sensorList">
+                {% for location in locations %}   
+                  {% now "Y-m-d" as todays_date %}
+                  {% if location.startRecievingDate == None or todays_date <  location.startRecievingDate|date:"Y-m-d" %}<span class="radio-custom" data-toggle="tooltip" data-placement="top" title="Sorry no data available for this Sensor yet"></span> {% endif %}         
+                  <input
+                  type="radio"
+                  name="direction"
+                  id="{{location.id}}_list"
+                  class="css-checkbox {% if location.startRecievingDate == None or todays_date <  location.startRecievingDate|date:"Y-m-d" %} disable-checkbox {% endif %}"
+                  value={{location.name}} data-temp = {{location.temp}} onclick="viewSelect('{{location.id}}_list',this),viewSite('{{location.id}}',this)"/>
+                  
+                  <label for="{{location.id}}_list" class="css-label radGroup2">{{location.name}}</label>
+                  
+                {% endfor %}
+              </div>
+            </ul> {% endcomment %}
+            <ul class="flex-column nav">
+              {% for area,locations in location_data.items %}
+                <li class="nav-item submenu-item">
+                  <a class="nav-link text-muted font-width" data-target="#{{area|nameNoSpaces}}submenu1sub2" aria-expanded="true" ><span style="font-size:15px;" class="font-weight-bold">{{area|nameNoSpaces}}</span> </a>
+                  <div class="leaf-menu" id="{{area|nameNoSpaces}}submenu1sub2" aria-expanded="true">
+                    <div class="container"  id="sensorList">
+                      {% for location in locations %}   
+                          {% now "Y-m-d" as todays_date %}
+                          {% if location.startRecievingDate == None or todays_date <  location.startRecievingDate|date:"Y-m-d" %}<span class="radio-custom" data-toggle="tooltip" data-placement="top" title="Sorry no data available for this Sensor yet"></span> {% endif %}         
+                          <input
+                          type="radio"
+                          name="direction"
+                          id="{{location.id}}_list"
+                          class="css-checkbox {% if location.startRecievingDate == None or todays_date <  location.startRecievingDate|date:"Y-m-d" %} disable-checkbox {% endif %}"
+                          value="{{location.name}}"
+                          data-temp = {{location.temp}}
+                          onclick="viewSelect('{{location.id}}_list'),viewSite('{{location.id}}',this)"/>
+                          
+                          <label for="{{location.id}}_list" class="css-label radGroup2">{{location.name}}</label>
+                      
+                      {% comment %} {% endif %} {% endcomment %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+      </div>
+      <div class="horizontal my-2"></div>
+      <div class="col-12 my-4">
+         <div class="mb-3">
+           <div class="text-center areaLocation">
+             <div class="text-muted text-center my-1" >Area</div>
+             <span class="text-center my-1 col-md-12 font-weight-bold text-danger" id="sensorArea" ></span>
+             <div class="text-muted text-center my-1">Location</div>
+             <span class="text-center my-1 col-md-12 font-weight-bold text-danger" id="sensorLoc"></span>
+           </div>
+         </div>
+         <div id="" class="row align-items-center justify-content-center singleNumber" >
+           <div class="w-50">
+             <h6 class="text-center my-1">Validation Date:</h6>
+             <h6 class="text-center my-1">Installation Date:</h6>
+             <h6 class="text-center my-1">Last Date Received:</h6>
+           </div>
+           <div class="w-50">
+             <h6 class="text-center my-1 col-md-12 font-weight-bold" id="validation_date"></h6>
+             <h6 class="text-center my-1 col-md-12 font-weight-bold" id="installDate"></h6>
+             <h6 class="text-center my-1 col-md-12 font-weight-bold" id="lastDate"></h6>
+           </div>
+         </div>
+       </div>
+       <div class="horizontal my-2"></div>
+        <div  class="col-12 p-3 h-40" id="map-container2" style="padding:0 10px">
+          <div class="col-12 " id="map-wrapper" style="width:100%;height:100%;padding:0">
+              <div class = "map-panel" id = "london-map" style="height:100%">
+
+              </div>
+              <div class="topbar__item" onclick="toggleExpandMap('london','vivacity','map-container2','map-container');" style="width:30px;height:30px;line-height:25px;background-color:white;position:absolute;bottom:10px;left:10px;z-index:400;border-radius:2px;border:2px solid grey;text-align:center;font-size:16px;cursor:pointer">
+                  <span class="icon-toggle"><i class="fa fa-compress" data-alt="fa fa-expand"></i></span>
+              </div>
+          </div>
+        </div>
+    </div>
+    <!--End of nav bar for mobile view-->
+    <div id="rightNav" class="sidenav box-shadow" style="right: 0;">
+      <a class="closebtn" onclick="closerNav()"><i class="fas fa-times"></i></a>
+      <div class="col-12 mt-4 px-4">
+        <ul>
+          <li><h4 class="font-weight-bold w-25 my-1 px-2">
+            aecon Traffic Speed and Volume Dashboard
+          </h4></li>
+          <li>ATC Data
+              <ul>
+                <li>Headline Data</li>
+                <li>Hourly Volumes</li>
+                <li>Hourly Speed</li>
+                <li>Classification Data</li>
+                <li>Comparsion</li>
+              </ul>
+          </li>
+          <li>Sensor Data</li>
+          <li>Logout</li>
+        </ul>
+      </div>
+    </div>
+    <div class="section">
+      <div class="container-fluid pb-6" id="main-container">
+        <div class="row my-2">
+          <div class="sites-tab selection-header atc-popup-trigger shadow col-md-6 flex-fill" id="header"><span>ATC Sites
+          </span><i class="chevron-icon"></i>
+          </div>
+          <div class="sites-tab selection-header header-popup-trigger shadow col-md-6 flex-fill" id="header"><span>Headline Data 
+          </span><i class="chevron-icon"></i></div>
+        </div> 
+
+        <!--Nav bar for Large screen view-->
+          <div class="row mt-3 px-1"> 
+            <div class="col-md-3 lg-view">
+                  <!-- Search bar to be here -->
+                  <div class="customScroll sensorList mt-4" id="sensor-list">
+                    <label class="popup-label mt-1 ml-3">Sensor Data</label>
+                      <select class="operator d-none" id="site-selection-dropdown">
+                        {% for area,locations in location_data.items %}
+                          <optgroup label="{{area}}">
+                          {% for location in locations %}
+                              <option
+                                name="{{location.name}}"
+                                id="{{location.id}}_radio"
+                                class="css-checkbox"
+                                value="{{location.id}}"
+                                data-temp= {{location.temp}}
+                              >{{location.name}}</option>
+                          {% endfor %}
+                          </optgroup>
+                        {% endfor %}
+                      </select>
+                  </div>
+                  <!-- Search bar to stop here -->
+              <div class="col-12 mt-4 px-4">
+                <!--sensor Graph for Locations-->
+                <div class = "sensor-locgraph" id = "sensor-locgraph">
+                  <img class="sensor-graph collapsed" id="sensor_image" src="/static/aecon/sensor-locationGraph.png">
+                </div>
+                <div class="topbar__item" id="sensor-expand" onclick="toggleExpandSensorGraph();" style="width:30px;height:30px;line-height:25px;background-color:white;bottom:10px;left:10px;z-index:400;border-radius:2px;border:2px solid rgb(240, 240, 240);text-align:center;font-size:16px;cursor:pointer;margin-left: -4px;margin-top: -46px">
+                  <span class="icon-toggle ml-5 mb-2"><i class="fa fa-expand" data-alt="fa fa-compress"></i></span>
+                </div>
+              </div>
+                <div class="floating-card mt-4">
+                    <div class="sidee carddd2 card" style="height: auto">
+                      <div class="card-body px-5 my-4" id="location-info">
+                        <h5 class="cardd-title" id="sensordata-title">
+                          Sensor Data
+                        </h5>
+                        <div class="horizontal my-2"></div>
+                        <div class="mt-2 mb-2">
+                          <div class="areaLocation">
+                            {% comment %} <div class="text-muted text-center my-1" >Area</div>
+                            <span class="text-center my-1 font-weight-bold text-danger" id="sensorArea" ></span> {% endcomment %}
+                            <div class="text-left cardd-title my-1" style="color: #131e72aa;">Location</div>
+                            <span class="text-left my-1 font-weight-bold" style="color: #141b4d" id="sensorLoc"></span>
+                          </div>
+                        </div>
+                        <div id="" class="row singleNumber" >
+                          <div class="box w-50">
+                            <h6 class="text-left my-1">Validation Date:</h6>
+                            <h5 class="text-left my-1 font-weight-bold" id="validation_date"></h5>
+                            <h6 class="text-left my-1">Installation Date:</h6>
+                            <h5 class="text-left my-1 font-weight-bold" id="installDate"></h5>
+                            <h6 class="text-left my-1">Last Date Received:</h6>
+                            <h5 class="text-left my-1 font-weight-bold" id="lastDate"></h5>
+                            <h6 class="text-left my-1">Status:</h6>
+                            <h5 class="text-left my-1 font-weight-bold" id="sensorStatus"></h5>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="map-card-body mb-4" style="margin-top: 13.0rem!important">
+                          <div class="card-body my-4" id="map-container">
+                            <div class="col-12 " id="map-wrapper" style="width:100%;height:100%;padding:0">
+                                <div class = "map-panel" id = "countline-map" style="height:100%"></div>
+                                <div class="topbar__item" onclick="toggleExpandMap()" style="width:30px;height:30px;line-height:25px;background-color:white;position:absolute;bottom:10px;left:10px;z-index:400;border-radius:2px;border:2px solid grey;text-align:center;font-size:16px;cursor:pointer">
+                                    <span class="icon-toggle"><i class="fa fa-compress" data-alt="fa fa-expand"></i></span>
+                                </div>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="contentTab col-sm-12 col-md-9 mt-2">
+              <div class="content">
+                  {% block content %} {% endblock %}
+                </div>
+              </div>
+            </div>
+        </div>
+        <!--ENd nav bar-->
+      </div>
+    </div>
+  {% comment %} <footer > {% endcomment %}
+      {% comment %} <div class="footer-bottom"> {% endcomment %}
+      {% comment %} </div> {% endcomment %}
+    {% comment %} </footer> {% endcomment %}
+    {% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script> {% endcomment %}
+     <!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Observation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeObservationModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div>
+            <div class="observation-guideline">Please make sure to include the following to the observation:-</div>
+            <div class="observation-guideline">Your name, Date then Observation:</div>
+            <div class="observation-guideline">For example. (Observation; Graham H - Tracsis - 07/06/2024 - Sensor 12 been offline for 12 hours flagged to VivaCity).</div>
+            <textarea class="form-control mt-3" id="Observation-name" rows="4">
+              </textarea >
+          </div>
+        </form>
+        <div id="error_message" style="color:red;display:none;">Message is required</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary observation-close-btn" data-bs-dismiss="modal"  onclick="closeObservationModal()">Close</button>
+        <button type="button" class="btn observation-save-btn" id="add_observation_btn" onclick="addupdateObservation();">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+    </body>
+    <script src="{% staticversion 'aecon/cv2-base.js' %}"></script>
+    <script>
+      function modalAlert() {
+        alert("No Data Is Available Yet!");
+      }
+    </script>
+  <script>
+     $(document).ready(function(){
+        var locationsLength = 1;
+        if (locationsLength < 1) 
+        {
+            modalAlert()
+        }
+      var cookie  = getCookie('SensorLocation');
+      var cookie_time  =  getCookie('SensorTime');
+      var ul = document.getElementById("period-selector-popup").querySelector('ul');
+      var radioId = document.querySelectorAll('[id$=_radio]');
+      var listId = document.querySelectorAll('[id$=_list]');
+      
+      var location_data = '{{ location_data|context_to_json |safe }}';
+      location_data = JSON.parse(location_data)
+      
+      
+      if (ul && cookie_time )
+      {
+        var li = ul.querySelectorAll('li');
+        for (let i = 0 ; i< li.length ; i++)
+        {
+          if (li[i].id == cookie_time)
+          {
+            li[i].querySelector('a').click();
+            break;
+          }
+        }
+      }
+
+
+      for (let i = 0 ; i< radioId.length ; i++)
+      {
+        if (!radioId[i].classList.contains('disable-checkbox'))
+        {
+          
+          if (cookie)
+          {
+            if (radioId[i].id.split("_")[0] == cookie){
+              radioId = radioId[i];
+              listId = listId[i];
+              break;
+            }
+          }
+          else{
+            radioId = radioId[i];
+            listId = listId[i];
+            break;
+          }
+        }
+       
+      }
+      $(radioId).parent().parent().siblings('a').click();
+      $(listId).parent().parent().siblings('a').click();
+      radioId.click();
+      radioId.classList.add("selected");
+      listId.classList.add("selected");
+
+      
+  
+      
+      window.onload= enableCloseAllPopupsOnWindowClick();
+    });
+
+    function search_sensors() {
+    let input = document.getElementById('SensorsSearch').value
+    input=input.toLowerCase();
+    let x = document.getElementsByClassName('radGroup2');
+    let area_headers = document.getElementsByClassName('area-header');
+
+    for (i = 0; i< area_headers.length; i++) {
+        area_headers[i].classList.remove("collapsed");
+    }
+
+    for (i = 0; i < x.length; i++) {
+        if (!x[i].innerHTML.toLowerCase().includes(input)) {
+            x[i].style.display="none";
+        }
+        else {
+            x[i].style.display="";
+        }
+    }
+}
+    function enableCloseAllPopupsOnWindowClick(){
+      document.body.addEventListener("click",function(event) {
+        $target = $(event.target);
+        //console.log("clicked on",$target,$target.closest('.conduit-popup'), !$target.hasClass('.selection-header'))
+        //console.log("is selection header",$target.closest('.selection-header').length);
+        //console.log("is in popup?",$target.closest('.conduit-popup').length);
+        if ($target.closest('.selection-header').length){
+              //console.log("not hiding");
+              return true;
+        }
+        if(!$target.closest('.conduit-popup').length && !$target.closest('.popup-immune').length
+        ) {
+          hideAllPopups();
+          //console.log("would hide popups");
+        }
+    });
+  
+  }
+
+  function  closeObservationModal(){
+    $('#staticBackdrop').modal('hide')
+    $("#error_message").css("display", "none");
+  }
+  
+  function observationPopup(element) {
+    $('#staticBackdrop').modal('show')
+    $('#Observation-name').val("Loading...")
+    $('#Observation-name').attr('disabled', 'disabled');
+    $('#add_observation_btn').attr('disabled', 'disabled');
+    let locationId = getCookie("SensorLocation")
+    if (!locationId) return console.log("location_id is required")
+    let formData = new FormData();
+    formData.append("location_id", locationId);
+    formData.append(
+      "csrfmiddlewaretoken",
+      document.getElementsByName("csrfmiddlewaretoken")[0].value
+    );
+    fetch("/aecon/fetchObservation", {
+      method: "post",
+      body: formData,
+    }).then(res=>{
+      res.json().then(data=>{
+            $('#Observation-name').removeAttr('disabled');
+            $('#add_observation_btn').removeAttr('disabled');
+            if(data.length){
+              $('#Observation-name').val(data[0].text)
+            }else{
+              $('#Observation-name').val("")
+            }
+        console.log(data)
+      }).catch(err=>{
+        console.log(err)
+      })
+    }).catch(err=>{
+      console.log(err)
+    })
+}
+
+function addupdateObservation(siteId,projectId,Observationdata){
+  let locationId = getCookie("SensorLocation")
+  let observationtext = $('#Observation-name').val();
+  if(!observationtext.trim()){
+    $("#error_message").css("display", "block");
+    return
+  }
+  $('#Observation-name').attr('disabled', 'disabled');
+  $('#add_observation_btn').attr('disabled', 'disabled');
+  let formData = new FormData()
+  formData.append("location_id",locationId)
+  formData.append("Observation",observationtext)
+  formData.append(
+    "csrfmiddlewaretoken",
+    document.getElementsByName("csrfmiddlewaretoken")[0].value
+  );
+  fetch("/aecon/addUpdateObservation", {
+    method: "post",
+    body: formData,
+  }).then(res=>{
+    res.json().then(data=>{
+      $('#add_observation_btn').removeAttr('disabled');
+      closeObservationModal()
+    }).catch(err=>{
+      console.log(err)
+    })
+  }).catch(err=>{
+    console.log(err)
+  })
+}
+
+$('#staticBackdrop').on('hidden.bs.modal', function (e) {
+  $("#error_message").css("display", "none");
+});
+  </script>
+
+    <script>
+    
+      var chart;
+      var dataTimeout;
+      var dataRetrievalActive = false;
+      var retrievedData;
+      var locations;
+      var loc = document.getElementById("location_id").value;
+      if (loc != ""){
+          loadSite(document.getElementById("location_id").value);
+      }
+      else{
+          hideAllGreyedOut();
+
+      }
+      var id = document.getElementById("mb-id").value;
+      initMap([53.476404, -2.250621],"countline-map",id);
+      map.setZoom(17);
+      vivacity_map = map._containerId;
+      initMap2([53.476404, -2.250621],"london-map",id);
+      map2.setZoom(17);
+      london_map = map._containerId;
+      var vivacity_marker = null
+      var london_marker = null
+      var dateType = "specific day";
+      var chartDict = {};
+      var graphLabels = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00"];
+      var graphColors = ["red","green","blue","orange","black","yellow","brown","purple"];
+      var selectedSiteData = {};
+      var chartView = "line";
+      var combine = false;
+      var userChangedDate = false;
+      var response= "";
+      var location_details = "";
+
+      var start = moment()
+      start.subtract(start.isoWeekday(),"d")
+      var end =  moment()
+      end.subtract(end.isoWeekday() + 1,"d").add(7,"d");
+
+      var cookie_start_dt = getCookie("StartDate");
+      var cookie_end_dt = getCookie("EndDate");
+      if (cookie_start_dt!=null && cookie_end_dt!=null){
+        start = moment(cookie_start_dt);
+        end = moment(cookie_end_dt);
+      }
+      //document.getElementById('blur-radio').style.display = 'none';
+      //$("#blur-radio").hide();
+      var formData = new FormData();
+      var datepicker = $('#calendar').daterangepicker({
+        startDate: start,
+        locale: {
+        format: 'DD/MM/YYYY'
+      },
+        singleDatePicker: true,
+        opens: 'left',
+        drops:'down'
+      },dateChanged);
+      var datepicker2 = $('#calendar2').daterangepicker({
+        startDate: end,
+        locale: {
+        format: 'DD/MM/YYYY'
+      },
+        singleDatePicker: true,
+        opens: 'left',
+        drops:'down'
+      },dateChanged2);
+      
+      datepicker.on('apply.daterangepicker', function(ev, picker) {dateChanged(picker.startDate,"","start")});
+      datepicker2.on('apply.daterangepicker', function(ev, picker) {dateChanged2(picker.startDate,"","end")});
+      
+      function dateChanged(start1,end1,label){
+        start = start1;
+        if(start >= end)
+        {
+          alert("Start date must be before end date");
+          return;
+        }
+        displayDates(start1,end1,"start");
+        document.cookie = "StartDate=" +start.format('YYYY-MM-DD') + ";path=/aecon";
+      }
+      
+      function dateChanged2(start2,end2,label){
+        end = start2;
+        if(start >= end)
+        {
+          alert("Start date must be before end date");
+          return;
+        }
+        end2 = start2;
+        displayDates(start2,end2,"end");
+        document.cookie = "EndDate=" +start2.format('YYYY-MM-DD') + ";path=/aecon";
+      }
+      
+      var chosenOption="";
+      
+      function toggleExpandMap(){
+        console.log('mapexpanding...')
+        if (!document.getElementById("location-info").classList.contains("d-none")) {
+          document.getElementById("map-container").style.height = "60%"
+          document.getElementById("graph-line").classList.add("d-none");
+          document.getElementById("location-info").classList.add("d-none");
+        } else {
+            document.getElementById("map-container").style.height = "35%"
+            document.getElementById("graph-line").classList.remove("d-none");
+            document.getElementById("location-info").classList.remove("d-none");
+        }
+      }
+      /*****toggleExpandsensorgraph******/
+      function toggleExpandSensorGraph(){
+        console.log('imageexpanding...',!document.querySelector('img.sensor-graph').hasAttribute('height'))
+        if(document.querySelector('img.sensor-graph').classList.contains('collapsed')){
+          document.querySelector('img.sensor-graph').style.height = "230px"; 
+          document.querySelector('img.sensor-graph').style.transform = "scale(1.1)";
+          document.querySelector('div#sensor-expand').style.transform = "scale(1.1)";
+          document.querySelector('div#sensor-expand').style.backgroundColor = 'transparent';
+          document.querySelector('div#sensor-expand').style.border = '2px solid transparent';
+          document.querySelector('h5#sensordata-title').style.marginTop = '23px';
+          document.querySelector('img.sensor-graph').classList.remove('collapsed');
+        }
+        else{
+          document.querySelector('img.sensor-graph').style.height = null;
+          document.querySelector('img.sensor-graph').style.transform = null;
+          document.querySelector('h5#sensordata-title').style.marginTop = null;
+          document.querySelector('img.sensor-graph').classList.add('collapsed');
+        }
+      }
+      function incrementDate(){
+        if (dataRetrievalActive) {return;}
+        clearTimeout(dataTimeout);
+        var dates = getDates();
+        start = dates[0];
+        end = dates[1];
+        if (dateType == "specific day"){
+          start.add(1,"d");
+          end.add(1,"d");
+        }
+        if (dateType == "specific week"){
+          var start = moment(document.getElementsByClassName("date")[0].innerText.split("-")[0].trim(),"DD/MM/YYYY");
+          var end = moment(document.getElementsByClassName("date")[0].innerText.split("-")[1].trim(),"DD/MM/YYYY");
+          start.subtract(start.isoWeekday() - 1,"d").add(7,"d");
+          end.subtract(end.isoWeekday() - 1,"d").add(7,"d");
+        }
+        displayDates(start,end);
+        dataTimeout = setTimeout(function(){getData(start,end)},700);
+        return;
+      }
+
+      function setTime(id)
+      {
+        document.cookie = "SensorTime=" + id + ";path=/aecon";
+      }
+      function setOption(id){
+        if(id==chosenOption)return;
+        chosenOption=id;
+        document.cookie="SensorOption="+id+";path=/aecon";
+        if(id=="compare"){
+          elements=document.getElementsByClassName("totals");
+          for(let i=0;i<elements.length;i++){
+            elements[i].style.display="none";
+          }
+          elements=document.getElementsByClassName("compare");
+          for(let i=0;i<elements.length;i++){
+            elements[i].style.display=null;
+          }
+          sensorLists=document.getElementsByClassName('sensorList');
+          for(let i=0;i<sensorLists.length;i++){
+            sensorLists[i].classList.remove('multi');
+          }
+          radios=document.getElementsByName("direction");
+          for(let i=0;i<radios.length;i++){
+            labelElement = document.querySelector('label[for="' + radios[i].id + '"]');
+            labelElement.style.backgroundImage="url('/static/aecon/Screenshot_5.png')";
+          }
+        }else if(id=="totals"){
+          elements=document.getElementsByClassName("totals");
+          for(let i=0;i<elements.length;i++){
+            elements[i].style.display=null;
+          }
+          elements=document.getElementsByClassName("compare");
+          for(let i=0;i<elements.length;i++){
+            elements[i].style.display="none";
+          }
+          sensorLists=document.getElementsByClassName('sensorList');
+          for(let i=0;i<sensorLists.length;i++){
+            sensorLists[i].classList.add('multi');
+          }
+          radios=document.getElementsByName("direction");
+          for(let i=0;i<radios.length;i++){
+            labelElement = document.querySelector('label[for="' + radios[i].id + '"]');
+          }
+        }
+      }
+      function decrementDate(){
+        if (dataRetrievalActive) {return;}
+        clearTimeout(dataTimeout);
+        var dates = getDates();
+        start = dates[0];
+        end = dates[1];
+        if (dateType == "specific day"){
+            start.subtract(1,"d");
+            end.subtract(1,"d");
+        }
+        if (dateType == "specific week"){
+            var start = moment(document.getElementsByClassName("date")[0].innerText.split("-")[0].trim(),"DD/MM/YYYY");
+            var end = moment(document.getElementsByClassName("date")[0].innerText.split("-")[1].trim(),"DD/MM/YYYY");
+            start.subtract(start.isoWeekday() - 1,"d").subtract(7,"d");
+            end = moment(start).add(7,"d");
+      }
+
+      //displayDates(start,end);
+      dataTimeout = setTimeout(function(){getData(start,end)},700);
+
+      return;
+      }
+
+
+      function displayDates(start,end,flg){
+        if (flg == "start")
+        {
+          document.getElementsByClassName("date")[0].innerText = start.format("DD/MM/YYYY"); 
+        }
+        else if(flg == "end")
+        {
+          document.getElementsByClassName("date")[1].innerText = end.format("DD/MM/YYYY"); 
+        }
+      } 
+
+
+      /*      
+      function displayDates2(start,end,flg){
+        console.log("display 2")
+       
+        document.getElementsByClassName("date")[1].innerText = start.format("ddd DD/MM/YYYY");
+       
+      }
+      */
+      function getDates(){
+      if (document.getElementsByClassName("date")[0].innerText == ""){
+          return [moment(),moment()];
+      }
+      var start = moment(document.getElementsByClassName("date")[0].innerText.split("-")[0].trim(),"DD/MM/YYYY");
+      var arr = document.getElementsByClassName("date")[0].innerText.split("-");
+      if (arr.length == 1){arr.push(moment(start).format("DD/MM/YYYY"))};
+      if (dateType == "specific day"){
+          end = moment(arr[0].trim(),"DD/MM/YYYY").add(1,"days");
+      }
+      else if (dateType == "average day"){
+          end = moment(arr[1].trim(),"DD/MM/YYYY")
+      }
+      else if (dateType == "specific week"){
+          start.subtract(start.isoWeekday() - 1,"d");
+          end = moment(start).add(7,"days");
+      }
+      else{
+          end = moment(arr[1].trim(),"DD/MM/YYYY").add(1,"days");
+      }
+      return [start,end];
+      }
+
+      {% comment %} function siteview(value){
+        if(value=="dropdown"){
+          $(".customScroll").hide();
+          $(".dropdownView").show();
+        }
+        else if (value == "list"){
+          $(".customScroll").show();
+          $(".dropdownView").hide();
+        }
+      } {% endcomment %}
+      function toggleSidebarFunctionality(){
+        if(userGuideActive){toggleUserGuide();}
+        if (downloadActive){
+            if(!sidebarMulti){
+                document.getElementById("sidebar").classList.remove("multi");
+            }
+            downloadActive = false;
+            $('#exampleModalCenter').modal('hide');
+            //document.getElementById("main-container-greyed-out").classList.add("d-none");
+            unpinSideBar();
+            var leaves = document.getElementById("sidebar").getElementsByClassName("leaf");
+            for (var i=0;i<leaves.length;i++){
+                leaves[i].getElementsByTagName("a")[0].classList.remove("selected");
+            }
+            for (var i=0;i<selectedSites.length;i++){
+                selectedSites[i].classList.add("selected");
+            }
+            document.getElementById("sidebar").getElementsByClassName("sidebar-brand-button")[0].onclick = toggleSideBar;
+            return;}
+        else{
+            //document.getElementById("main-container-greyed-out").classList.remove("d-none");
+            $('#exampleModalCenter').modal('show');
+            pinSideBar();
+            sidebarMulti = document.getElementById("sidebar").classList.contains("multi");
+            document.getElementById("sidebar").classList.add("multi");
+            selectedSites = [];
+            var sites = document.getElementById("sidebar").getElementsByClassName("selected");
+            for (var i=0;i< sites.length;i++){
+                selectedSites.push(sites[i]);
+            }
+            var leaves = document.getElementById("sidebar").getElementsByClassName("leaf");
+            downloadActive = true;
+            document.getElementById("sidebar").getElementsByClassName("sidebar-brand-button")[0].onclick = function(){};
+        }
+    
+    
+      }
+      function toogleTopbar(){
+        if ($(".hiddenTab").hasClass('d-flex')) {
+          $(".hiddenTab").removeClass('d-flex');
+        } else {
+          $(".hiddenTab").addClass('d-none');
+        }
+      }
+      function dropdownList(){
+        $("#sensorList").hide();
+      }
+      function tabContent(type,flg=""){   
+        var id_list = {"Headline":"sensor-headata",
+                        "Volumes":"sensor-trafficvol",
+                        "Classification":"sensor-classify",
+                        "Comparsion":"sensor-download",
+                        "Analysis":"sensor-analysis",
+                      }  
+        var class_lst = ['compIcon','singleNumber']
+        var keys = Object.keys(id_list);
+        for (let i=0;i<keys.length;i++)
+        {
+          if (type == keys[i] && type !="" ){
+          // $("#"+keys[i]).show();
+            window.location.href ="/aecon/sensor-data/"+id_list[keys[i]]
+          }
+          else if (flg !="", flg == id_list[keys[i]])
+          {
+            document.getElementById(keys[i]).classList.add("active");
+          }
+        }
+      }
+      tabContent("",'{{flg}}')
+      function openNav() {
+          var e = document.getElementById("mySidenav");
+          if (e.style.width == '330px')
+          {
+              e.style.width = '0px';
+          }
+          else 
+          {
+              e.style.width = '330px';
+          }
+      }
+      function toogleTab(){
+        var elClass = document.getElementById("rightNav");
+        if (elClass.style.width == '330px')
+          {
+            elClass.style.width = '0px';
+          }
+          else 
+          {
+            elClass.style.width = '330px';
+          }
+      }
+      function closeNav() {
+          document.getElementById("mySidenav").style.width = "0";
+      }
+      function closerNav() {
+        document.getElementById("rightNav").style.width = "0";
+          }
+            function change_title(ele)
+        {
+          el = ele.getElementsByTagName('span')
+          $('#measurement').text($(el).text())
+            
+        }
+      function setCotline(elem)
+      {
+        a_element.click()
+          $(a_element).addClass('selectable-menu-item')
+          $(a_element).addClass('selected')
+      }
+      function setUpChart(tabledata , graphLabels){
+        if (chart){chart.destroy();}
+        for (let i=0; i<tabledata.length; i++){
+          var temp =[]
+          tabledata[i].forEach(function(ele) {
+            temp.push(ele == "-"?0:ele)
+          });
+          tabledata[i] = temp;
+        }
+          /*
+          for (let j = 0 ; j <graphLabels.length; j++){
+            tabledata[i][j] = randomIntFromInterval(0,10)
+          }
+        }
+        function randomIntFromInterval(min, max) { // min and max included 
+          return Math.floor(Math.random() * (max - min + 1) + min)
+        }
+        */
+        
+        var selectors = document.querySelectorAll("[data-graph-group='daily']");
+        var direction = getCurrentDirection();
+        //if (chart){chart.destroy();}
+        var days = document.getElementById("countline-daily-table").getElementsByClassName("class-selector");
+        var daysavg = document.getElementById("countline-daily-table-avg").getElementsByClassName("class-selector");
+        chartData = []
+        for(let i = 0 ; i<= 6; i++){
+          var day = days[i]
+            chartData.push({"label":day.innerText,"data":tabledata[i],"borderColor":day.getAttribute("data-bg"),"backgroundColor":day.getAttribute("data-bg"),"fill":false,"pointRadius":0,"borderWidth":1});
+        }
+        for(let i = 7 ; i<= 8; i++){
+          var day = daysavg[i-7]
+            chartData.push({"label":day.innerText,"data":tabledata[i],"borderColor":day.getAttribute("data-bg"),"backgroundColor":day.getAttribute("data-bg"),"fill":false,"pointRadius":0,"borderWidth":1});
+        }
+       
+       
+        if (chartView == "classed"){
+            chart = createStackedBarChart(document.getElementById("countline-classed-volumes"),{"labels":graphLabels,"datasets":chartData});
+            document.querySelectorAll("[data-graph-group='daily']")[0].click();
+        }
+        else{
+            chart = createLineChart(document.getElementById("countline-classed-volumes"),{"labels":graphLabels,"datasets":chartData});
+            //document.getElementById("directions-popup").getElementsByClassName("menu-item")[direction].click();
+            chart.options.scales.xAxes[0].ticks.maxTicksLimit = 12;
+
+        }
+
+      } 
+    
+      function getCurrentDirection(){
+        var direction = 0
+        var dirs = document.getElementById("directions-popup").getElementsByClassName("selectable-menu-item");
+        for (var i=0;i<dirs.length;i++){
+            if (dirs[i].classList.contains("selected")){
+                direction = i;
+            }
+        }
+        return direction;
+      }
+      function getCurrentOption(){
+        let option="totals";
+        let analysisOptions=document.getElementById('analysis-option-popup').getElementsByClassName("selectable-menu-item");
+        for(let i=0;i<analysisOptions.length;i++){
+          if(analysisOptions[i].classList.contains("selected")){
+            option=analysisOptions[i].parentNode.id;
+          }
+        }
+        return option;
+      }
+      function getCurrentTimeSpan(){
+        let option="day";
+        let timeSpanOptions=document.getElementById('time-span-option-popup').getElementsByClassName("selectable-menu-item");
+        for(let i=0;i<timeSpanOptions.length;i++){
+          if(timeSpanOptions[i].classList.contains("selected")){
+            option=timeSpanOptions[i].parentNode.id;
+          }
+        }
+        return option;
+      }
+      //dateType = "average day";
+      function setCotline(elem)
+      {
+          a_element.click()
+          $(a_element).addClass('selectable-menu-item')
+          $(a_element).addClass('selected')
+      }
+      /*
+      function setUpChart(){
+        var selectors = document.querySelectorAll("[data-graph-group='daily']");
+        var direction = getCurrentDirection();
+        //var direction = 2;
+        if (chart){chart.destroy();}
+        var days = document.getElementById("countline-daily-table").getElementsByClassName("class-selector");
+        var chartData = []
+        for(day of days){
+            chartData.push({"label":day.innerText,"data":[1,2,3],"borderColor":day.getAttribute("data-bg"),"backgroundColor":day.getAttribute("data-bg"),"fill":false,"pointRadius":0,"borderWidth":1});
+        }
+    
+        if (chartView == "classed"){
+            chart = createStackedBarChart(document.getElementById("countline-classed-volumes"),{"labels":graphLabels,"datasets":chartData});
+            document.querySelectorAll("[data-graph-group='daily']")[0].click();
+        }
+        else{
+            chart = createLineChart(document.getElementById("countline-classed-volumes"),{"labels":graphLabels,"datasets":chartData});
+            document.getElementById("directions-popup").getElementsByClassName("menu-item")[direction].click();
+            chart.options.scales.xAxes[0].ticks.maxTicksLimit = 12;
+
+        }
+
+      } 
+      */
+
+      function openNav() {
+          var e = document.getElementById("mySidenav");
+          if (e.style.width == '330px')
+          {
+              e.style.width = '0px';
+          }
+          else 
+          {
+              e.style.width = '330px';
+          }
+      }
+    
+      function closeNav() {
+          document.getElementById("mySidenav").style.width = "0";
+      }
+      function change_title(ele)
+      {
+        el = ele.getElementsByTagName('span')
+        $('#measurement').text($(el).text())
+          
+      }
+      function switchSubView(ele){
+        var dateDisplay = document.getElementsByClassName("date-display")[0];
+        var carets = dateDisplay.getElementsByClassName("topbar__item")
+        var oldDateType = dateType;
+        var dates = getDates();
+        if (dateType != ele.getAttribute("data-datetype")){
+            userChangedDate = false;
+        }
+        dateType = ele.getAttribute("data-datetype");
+        if (dateType == "specific day"){
+            var single = true;
+            document.getElementById("day-selector").classList.add("d-none");
+            for(var i=0;i<carets.length;i++){
+                carets[i].classList.remove("d-none");
+            }
+            userChangedDate = true;
+            displayDates(moment(),moment().add(1,"d"));
+            triggerGetData();
+        }
+        if (dateType == "average day"){
+            var single = false;
+            for(var i=0;i<carets.length;i++){
+                carets[i].classList.add("d-none");
+            }
+            //userChangedDate = false;
+            var day = moment(dates[0]);
+            day.subtract(1,"months");
+            day.subtract(day.date()-1,"d");
+            //displayDates(day,dates[0]);
+            //document.getElementById("day-selector-popup").getElementsByTagName("li")[dates[0].isoWeekday() - 1].click();
+            triggerGetData();
+        }
+        if (dateType == "specific week"){
+            var single = true;
+            document.getElementById("day-selector").classList.add("d-none");
+            for(var i=0;i<carets.length;i++){
+                carets[i].classList.remove("d-none");
+            }
+            userChangedDate = true;
+        }
+        if (dateType == "average week"){
+            var single = true;
+            document.getElementById("day-selector").classList.add("d-none");
+            for(var i=0;i<carets.length;i++){
+                carets[i].classList.add("d-none");
+            }
+            userChangedDate = true;
+        }
+        /*
+        datepicker = $('#calendar').daterangepicker({locale: {
+                format: 'DD/MM/YYYY'
+            },
+            singleDatePicker: single,
+            opens: 'left',
+            drops:'down'
+            });
+        datepicker.on('apply.daterangepicker', function(ev, picker) {dateChanged(picker.startDate,picker.endDate)});
+        var dates = getDates();
+
+        displayDates(dates[0],dates[1]);
+        */
+      }
+
+
+      function updateDatasets(flg = "All"){
+        //
+        // remove any limit lines
+        //
+        if (flg == "All"){
+          chart.options.scales.yAxes[0].ticks.suggestedMax = undefined;
+          selectedClasses = getSelectedPopupIndexes("classes-popup");
+          var direction = getCurrentDirection();
+        }
+        else{
+          selectedClasses = getSelectedPopupIndexes("classes-popup");
+          var direction = getCurrentDirection();
+        }
+        var data = classedData.data[document.getElementById("location_id").value].directions[direction];
+    
+        var datasets = [];
+        var tableData = [];
+        data.baseData.forEach(function(dataset,index){
+            var selectedClassVolumes = [];
+            selectedClasses.forEach(function(classIndex,i){
+                selectedClassVolumes.push(dataset[classIndex].data);
+            });
+            if (selectedClasses.length != 0){
+                tableData.push(selectedClassVolumes.reduce(sumOfDatasets));
+            }
+            else{
+                tableData.push([]);
+            }
+        });
+      
+        if(flg == "All")
+        {
+          if (chartView == "daily"){
+              chart.options.scales.yAxes[0].stacked = false;
+              chart.data.datasets.forEach(function(dataset,index){
+                  if(!dataset.limit){
+                      dataset.data = tableData[index];
+                  }
+              });
+          }
+          else{
+              var day = getSelectedDatasets("daily")[0];
+              chart.data.datasets = [...data.baseData[day]] ;
+              chart.options.scales.yAxes[0].stacked = true;
+          }
+    
+          chart.update();
+          chart.yAxesticks = yAxesticks;
+          changeGraph();
+          fillAveragesTable("countline-daily-table",tableData, classedData.graphLabels);
+        }
+        else{
+          return tableData;
+        }
+      }
+      function triggerGetData(){
+        var dates = getDates();
+        getData(dates[0],dates[1]);
+      }
+
+
+      function getData(start,end){
+
+        dataRetrievalActive = true;
+        var ids = [];
+        var selected = document.getElementById("sidebar").getElementsByClassName("selected");
+        for (var i=0;i< selected.length;i++){
+            ids.push(selected[i].id);
+        }
+        if(selected.length == 0){
+            dataRetrievalActive = false;
+            return;
+        }
+        //setTimeout(function(){dataRetrievalActive = false;hideAllGreyedOut();},1000);
+        var greyed = document.getElementsByClassName("greyed-out");
+            for (var i=0;i<greyed.length;i++){
+                showGreyedOut(greyed[i]);
+            }
+        var formData = new FormData();
+        formData.append("ids",JSON.stringify(ids));
+        if (dateType == "average day"){
+            formData.append("weekday",document.getElementById("subview-selector-popup").getElementsByClassName("selected")[0].parentNode.id.replace("weekday_",""));
+            formData.append("table",true);
+            if (userChangedDate){
+                formData.append("customRange","true");
+            }
+        }
+
+        formData.append("startDate",start.format("YYYY-MM-DD 00:00"));
+        formData.append("endDate",end.format("YYYY-MM-DD 00:00"));
+        formData.append("resultType","counts");
+        formData.append("period",document.getElementById("period-selector-popup").getElementsByClassName("selected")[0].parentNode.id);
+        fetcher(formData,"getCRTStyleData",function(response){
+            document.getElementById("classes-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = response.classes;
+            document.getElementById("events-container").innerHTML = response.data.events;
+            setPopupListeners(document.getElementById("classes-popup"));
+            var items = document.getElementById("classes-popup").getElementsByClassName("menu-item");
+            for(var i=0;i<items.length;i++){
+                items[i].addEventListener("click",function(){displayCountlineTable();updateDatasets();});
+            }
+            buildCountlineTable(response);
+            retrievedData = response.data;
+            graphLabels = response.data.graphLabels;
+            setUpChart();
+            displayCountlineTable();
+            updateDatasets();
+            updateMap();
+            hideAllGreyedOut();
+            dataRetrievalActive = false;
+            if (!userChangedDate){
+                document.getElementsByClassName("date")[0].innerText = response.dateRange;
+            }
+            }
+
+        );
+
+      }
+      function resetView(){
+        document.getElementById("countline-table").getElementsByTagName("tbody")[0].innerHTML = "";
+        if(chart){
+            chart.data.datasets = [];
+            chart.options.horizontalLine = [];
+            chart.update();
+        }
+        var selected = getSelectedSites(1);
+        for (var i=0;i<selected.length;i++){
+            var ele = document.getElementById(selected[i]);
+            ele.classList.remove("selected");
+        }
+        selectedSiteData = {};
+        saveSitesToLocalStorage(1,{});
+        updateMap();
+        document.getElementById("temp").getElementsByTagName("input")[0].classList.add("selected");
+        document.getElementById("perm").getElementsByTagName("input")[0].classList.add("selected");
+        userChangedDate = false;
+        document.getElementsByClassName("date")[0].innerText = ""
+        //document.getElementById("weekday_1").click();
+      }
+
+      {% block display_date %}
+        displayDates(start,end,"start"); //to display date
+        displayDates(start,end,"end"); //to display date
+        var multiRv = document.getElementsByClassName("sensorList");
+        for (var i=0;i<multiRv.length;i++){
+          document.getElementById("sensorList").classList.contains("multi")?document.getElementById("sensorList").classList.remove('multi'):""
+        }
+        //.classList.contains("multi")?document.getElementById("sensorList").classList.remove('multi'):"";
+        //document.getElementById("atcListnavbar").classList.contains("multi")?document.getElementById("atcListnavbar").classList.remove('multi'):"";
+      {% endblock %}
+
+      function getCookie(cookie) {
+        var cookieArr = document.cookie.split(";");
+        for(var i = 0; i < cookieArr.length; i++) {
+            var cookiePair = cookieArr[i].split("=");
+            if(cookie == cookiePair[0].trim()) {
+                return decodeURIComponent(cookiePair[1]);
+            }
+        }
+        return null;
+      }
+      
+
+      function loadLocation(id)
+      {
+        var greyed = document.getElementsByClassName("greyed-out");
+        var formData = new FormData();
+        formData.append("location_id",JSON.stringify(id));
+        document.getElementById("location_id").value = id;
+        return fetcher(formData,"getLocations",function(response){
+          document.cookie = "SensorLocation="+id+";path=/aecon";
+          location_details = response;
+          var startdate = response.startRecievingDate;
+          
+          document.getElementById('sensor_image').src = response.locations.features[0].properties.imgURL;
+          document.getElementById("classes-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = location_details.classes;
+          document.getElementById("directions-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = location_details.directions;
+          setPopupListeners(document.getElementById("directions-popup"));
+          setPopupListeners(document.getElementById("classes-popup"));
+
+          var items = document.getElementById("directions-popup").getElementsByClassName("menu-item");
+          for (var i = 0; i < items.length; i++) {
+            items[i].addEventListener("click", function() {
+              document.cookie = "SensorDirection=" + getCurrentDirection() + ";path=/aecon";
+            });
+          }
+
+          var items = document.getElementById("classes-popup").getElementsByClassName("menu-item");
+          for (var i = 0; i < items.length; i++) {
+            items[i].addEventListener("click", function() {
+              document.cookie = "SensorClasses=" + JSON.stringify(getSelectedPopupValues("classes-popup")) + ";path=/aecon";
+            });
+          }
+
+          const myMomentObject = moment(startdate, 'YYYY-MM-DD')
+          var currentDate = new Date();
+          const myMoment = moment(currentDate, 'YYYY-MM-DD')
+          $('#calendar').data('daterangepicker').minDate = myMomentObject
+          //var currentDate = new Date();
+          $('#calendar').data('daterangepicker').maxDate = myMoment;
+          
+          $('#calendar2').data('daterangepicker').minDate = myMomentObject
+          //var currentDate = new Date();
+          $('#calendar2').data('daterangepicker').maxDate = myMoment;
+
+          if($('#calendar3').length){
+            $('#calendar3').data('daterangepicker').minDate = myMomentObject
+            //var currentDate = new Date();
+            $('#calendar3').data('daterangepicker').maxDate = myMoment;
+          }
+          if($('#calendar4').length){
+            $('#calendar4').data('daterangepicker').minDate = myMomentObject
+            //var currentDate = new Date();
+            $('#calendar4').data('daterangepicker').maxDate = myMoment;
+          }
+          
+          lineLayer.eachLayer(function (layer) {
+            lineLayer.removeLayer(layer);
+          });
+          var modified_validation_date = moment(response.installDate).add('days', 7)
+
+          $(".singleNumber #validation_date").text(response.validationDate?moment(response.validationDate).format("DD/MM/YYYY"):modified_validation_date.format("DD/MM/YYYY"));
+          $(".singleNumber #installDate").text(moment(response.installDate).format("DD/MM/YYYY"));
+          $(".singleNumber #lastDate").text(moment(response.lastDataReceived).format("DD/MM/YYYY HH:mm"));
+          $(".singleNumber #sensorStatus").text(response.sensor_status);
+          $(".areaLocation #sensorLoc").text(response.name);
+          $(".areaLocation #sensorArea").text(response.area);
+          processLocationGeojson(response.locations);
+          }).then(function(response){
+          for (var i=0;i<greyed.length;i++){
+            hideGreyedOut(greyed[i]);
+          }
+          
+          var dir_cookie =  getCookie("SensorDirection");
+          var ul = document.getElementById("directions-popup").querySelector('ul');
+          
+          if (ul && dir_cookie )
+          {
+            var li = ul.querySelectorAll('li');
+            for (let i = 0 ; i< li.length ; i++)
+            {
+              if (i == dir_cookie)
+              {
+                li[i].querySelector('a').click();
+                break;
+              }
+            }
+          }
+
+
+          var class_cookie  = getCookie('SensorClasses');
+          var ul = document.getElementById("classes-popup").querySelector('ul');
+
+          if (ul && class_cookie !=null)
+          {
+              class_cookie = JSON.parse(class_cookie); 
+              var li = ul.querySelectorAll('li');
+              
+              if (class_cookie.length > 0 && class_cookie.length != li.length-1)
+            {
+
+              for (let i = 0 ; i< li.length ; i++)
+              {
+                if(class_cookie.indexOf(li[i].id) == -1)
+                {
+                  li[i].querySelector('a').classList.remove('selected');
+                }
+                
+                  
+              }
+            }
+          }
+        });
+      }
+      function loadData(start,end,id){
+        if (id == ""){return;}
+        if(chart){chart.destroy();}
+        var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+          showGreyedOut(greyed[i]);
+        }
+        var formData = new FormData();
+        ids=[];
+        if(!Array.isArray(id)){
+          ids.push(id);
+        }else ids=id;
+        formData.append("ids",JSON.stringify(ids));
+        formData.append("resultType","counts");
+        formData.append("period",document.getElementById("period-selector-popup").getElementsByClassName("selected")[0].parentNode.id);
+        formData.append("startDate",start.format("YYYY-MM-DD 00:00"));
+        formData.append("endDate",end.format("YYYY-MM-DD 00:00"));
+        formData.append("dataType", "sensor")
+        return fetcher(formData,"getATCClassedVolumes",function(result){
+          classedData = result.data;
+        }).then(function(response){
+          for (var i=0;i<greyed.length;i++){
+            hideGreyedOut(greyed[i]);
+          }
+        });
+      }
+      function checkFileReady(){
+        var formData = new FormData();
+        formData.append("file",fileToDownload);
+        fetcher(formData,"checkFileReady",function(response){
+            if(response.status == "failed"){
+                alert("Download failed " + response.message);
+                fileToDownload = undefined;
+                return;
+            }
+            if (response.status == "ready"){
+                var downloadLink = document.createElement("a");
+                downloadLink.href = "/aecon/downloadFile?file=" + fileToDownload;
+                downloadLink.download = "schoolstreets_data.csv";  //Name the file here
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                fileToDownload = undefined;
+                return;
+            }
+            setTimeout(checkFileReady,10000);
+        });
+      }
+      
+    </script>
+    
+    {% block js %}
+      <script>
+        function viewSite(id){
+          document.getElementById("location_id").value = id;
+          loadLocation(id).then(function(){loadData(start,end,id);});
+        }
+      </script>
+    {% endblock %}
+    <script>
+      function viewSelect(id,ele){
+        var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+          showGreyedOut(greyed[i]);
+        }
+        var parentClass = document.getElementsByClassName("sensorList");
+        for(let k=0; k< parentClass.length; k++){
+          if(!parentClass[k].classList.contains("multi"))
+          {
+            var clsadd = parentClass[k].getElementsByClassName("css-checkbox");
+            for (var e=0; e < clsadd.length; e++){
+              if(clsadd[e].classList.contains("selected") && clsadd[e].getAttribute('id') != id)
+              {
+                clsadd[e].classList.remove("selected");
+              }
+            }
+          }
+        }
+        var element = document.getElementsByClassName("sensorList")[0].classList.contains("multi");
+        //var elementChildren = element.querySelectorAll('.css-checkbox');
+        if(document.getElementsByClassName("sensorList")[0].classList.contains("multi"))
+        {
+          if (!document.getElementById(id).classList.contains("selected"))
+          {
+            document.getElementById(id).classList.add("selected")
+          }
+          else
+          {
+            document.getElementById(id).classList.remove("selected")
+          }
+        }
+        else {
+          if (!document.getElementById(id).classList.contains("selected"))
+          {
+            document.getElementById(id).classList.add("selected")
+          }
+        }
+      }
+        
+    </script>
+  
+    <script>
+
+    $(document).ready(function () {
+        //change selectboxes to selectize mode to be searchable
+        $('#site-selection-dropdown').select2({
+            escapeMarkup: function(m) {return m;}
+        }).on('select2:opening', function(e) {
+            $(this).data('select2').$dropdown.find(':input.select2-search__field').attr('placeholder', "Search Sensor Data")
+        }).on('select2:open', function (e){
+            document.querySelector(".select2-selection--single").style.setProperty("background-color", "#434971", "important");
+        }).on('select2:close', function (e){
+            document.querySelector(".select2-selection--single").style.setProperty("background-color", "#727694");
+        });
+
+        $('b[role="presentation"]').hide();
+        $('.select2-selection__arrow').append('<i class="chevron-icon" ></i>');
+        
+
+        var currentSelect = document.getElementById("site-selection-dropdown");
+
+        let cookie_list = document.cookie.split(";")
+        let id_to_select = ''
+        for (let i = 0; i<cookie_list.length; i++){
+            let cookie_pieces = cookie_list[i].split("=");
+            
+            // if (cookie_pieces[0].replace(/\s/g, '') === 'Sensorlocation'){
+            //     id_to_select = cookie_pieces[1];
+            //     break;
+            // }
+        }
+
+        if (id_to_select === '') {
+            viewSelect(currentSelect.options[currentSelect.selectedIndex].id)
+            viewSite(currentSelect.options[currentSelect.selectedIndex].value, this)
+        }
+        else {
+            viewSelect(id_to_select+"_radio");
+            viewSite(id_to_select, this);
+            $("#site-selection-dropdown").val(id_to_select).trigger('change');
+
+        }
+    });
+
+    document.getElementById("site-selection-dropdown").onchange = function() {
+        var currentSelect = document.getElementById( "site-selection-dropdown");
+        viewSelect(currentSelect.options[currentSelect.selectedIndex].id)
+        viewSite(currentSelect.options[currentSelect.selectedIndex].value, this)
+    }
+
+
+    $(".selection-header").click(function () {
+        $(this).toggleClass("activeDropDown");
+    });
+
+</script>
+<script>
+    var choice_calender = document.getElementById("calendar");
+    var changing_calender = document.getElementById("changing-calender-icon");
+    choice_calender.addEventListener('mouseenter', () => {
+        changing_calender.src = "/static/aecon/calendar_icon_green.svg";
+    });
+    
+    choice_calender.addEventListener('mouseleave', () => {
+        changing_calender.src = "/static/aecon/calendar_icon_white.svg";
+    });
+</script>
+
+</html>

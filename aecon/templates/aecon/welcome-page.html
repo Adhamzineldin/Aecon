@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+        .vertical {
+            border-left: 2px solid #eee;
+            height: 100%;
+            position: absolute;
+            left: 51%;
+        }
+        
+    </style>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-159283885-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-159283885-1");
+    </script>
+
+    <!-- Required meta tags -->
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    {% load staticversion %}
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{% staticversion 'aecon/generic-styles.css' %}"
+      type="text/css"
+    />
+
+    <title>Tracsis AECON </title>
+  </head>
+  <body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+      integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+      integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+      crossorigin="anonymous"
+    ></script>
+
+    <div
+      class="container-fluid"
+      id="full-image-container"
+      style="background-image: url({% staticversion background_image %})"
+    >
+      <div class="row align-items-center" style="height: 100%; width: 100%">
+        <div id="logon-box" class="container-fluid my-auto p-0 welcome-box">
+          <form
+            method="post"
+            action="/aecon/logon/{{client.nameForUrl}}{% if 'next' in request.GET %}?next={{request.GET.next}}{% endif %}"
+            id="welcomepage"
+            style="color: #c9c9d2">
+            {%csrf_token %}
+            <div class="d-flex">
+              <div class="col-md-12 px-0">
+                <div class="d-md-flex">
+                  <div class="w-100 down-tab bg-white text-center p-3 py-4">
+                      <img src="/static/aecon/slow-down.png" class="position-relative" style="height: 90%;width: 90%;" alt="">
+                  </div>
+                  <div class="w-100 data-tab text-center p-4">
+                    <div class="my-2">
+                      <img src="{% staticversion 'aecon/demo-logo.png' %}" class="text-center" style="height: 25%;width: 55%;" alt="">
+                    </div>
+                      
+                      <h4 class="text-center text-dark font-weight-bold mb-3">Traffic Speed And Volume Dashboard</h4>
+                      <!---<a href="/aecon/atc-data" class="btn bg-white mb-2 w-75" id="login-button" style="width: 100%" type="submit" form="logon-form">
+                          ATC Data
+                      </a> --->
+                      <a href="/aecon/sensor-data" class="btn bg-white mb-2 w-75" id="login-button" style="width: 100%" type="submit" form="logon-form">
+                          Sensor Data
+                      </a>
+                      <a href="/aecon/logoff" class="btn btn-primary mb-2 w-75 mb-3" id="login-button" style="width: 100%" type="submit" form="logon-form">
+                          Logout
+                      </a>
+                      <div class="my-3">
+                        <img src="/static/aecon/conduit_logo_color.png" class="my-auto position-relative" style="height: 10%; width: 50%" alt="">
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      function checkPasswordMatch() {
+        var password = $("#password").val();
+        var confirmPassword = $("#confirmpassword").val();
+        if (password != confirmPassword)
+          $("#CheckPasswordMatch").html("Passwords does not match!");
+        else $("#CheckPasswordMatch").html();
+      }
+    </script>
+  </body>
+</html>

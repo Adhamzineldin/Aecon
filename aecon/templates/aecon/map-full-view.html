@@ -1,0 +1,1282 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/static/aecon/tapIcon.png"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Bootstrap CSS -->
+
+    {% load staticversion %} {% load my_filters %} {% load client_tags %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" href="https://use.typekit.net/qhi7zfc.css">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/aecon/daterangepicker.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css" />
+    <link rel="stylesheet" href="{% staticversion 'aecon/leaflet.awesome-markers.css' %}" type="text/css" /> {% if DEBUG %}
+    <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css" /> {% else %}
+    <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css" /> {% endif %}
+    <link rel="stylesheet" href="{% staticversion 'aecon/nouislider.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% staticversion 'aecon/cv2-base.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% staticversion 'aecon/bootstrap.min.css' %}" type="text/css" />
+    {% comment %} <script src="{% staticversion 'aecon/cv2-graphs.js' %}"></script> {% endcomment %}
+    <script src="{% staticversion 'aecon/cv2-map.js' %}"></script>
+    <link rel="stylesheet" href="{% staticversion 'aecon/checkbox-style.css' %}" type="text/css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+    <script src="https://mapbox.github.io/geojson-vt/geojson-vt-dev.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
+    <script type="text/javascript" src="/static/aecon/moment.min.js"></script>
+    {% comment %} <script type="text/javascript" src="/static/aecon/daterangepicker.js"></script> {% endcomment %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <script src="https://mapbox.github.io/geojson-vt/geojson-vt-dev.js"></script>
+    
+    <script src="{% staticversion 'aecon/leaflet.polylineDecorator.js' %}"></script>
+    <script src="{% staticversion 'aecon/L.Line3.js' %}"></script>
+    <script src="{% staticversion 'aecon/nouislider.js' %}"></script>
+    <script src="{% staticversion 'aecon/leaflet.lineextremities.js' %}"></script>
+    
+    <script src="{% staticversion 'aecon/cv2-data-func.js' %}"></script>
+    {% comment %} <script src="{% staticversion 'aecon/cv2-base.js' %}"></script> {% endcomment %}
+    <script src="{% staticversion 'aecon/cv2-local-storage.js' %}"></script>
+    <script src="{% staticversion 'aecon/cv2-graphs.js' %}"></script>
+    <script src="{% staticversion 'aecon/cv2-map.js' %}"></script>
+    <script src="{% staticversion 'aecon/atc.js' %}"></script>
+    <script src="{% staticversion 'aecon/cv2-main.js' %}"></script>
+    <title>Tracsis AECON</title>
+</head>
+
+<body>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      }
+      .modal,
+      .modal-backdrop {
+          position: absolute !important;
+      }
+      
+      .modal-dialog {
+          max-width: 90% !important;
+      }
+      
+      .modal-dialog,
+      .modal-content {
+          /* 80% of window height */
+          height: 90%;
+      }
+      
+      .modal-body {
+          /* 100% = dialog height, 120px = header + footer */
+          overflow: hidden;
+      }
+      .footer-bottom div{
+        background: #2d3a91;
+      
+    }
+    .footer-bottom p{
+        float: left;
+        font-size: 14px;
+        word-spacing: 2px;
+        text-transform: capitalize;
+     }
+     .footer-bottom p img{
+       justify-content:center;
+     }
+     .footer-bottom span{
+         text-transform: uppercase;
+         opacity: .4;
+         font-weight: 200;
+     }
+     .footer-menu
+     {
+      float: right;
+    }
+    
+    .footer-menu ul{
+      display: flex;
+    }
+    
+    .footer-menu ul li{
+    padding-right: 10px;
+    display: block;
+    }
+    
+    .footer-menu ul li a{
+      color: #fff;
+      text-decoration: none;
+      background-color: #ffffff;
+    }
+    
+    .footer-menu ul li a:hover{
+      color: #fff;
+    }
+    .socials{
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0px;
+    }
+  
+      {% comment %} .socials li{
+          margin: 0 10px;
+      } {% endcomment %}
+      
+      .socials a{
+          text-decoration: none;
+
+          padding: 5px;
+          border-radius: 50%;
+      }
+      
+      .socials a i{
+          font-size: 1.1rem;
+          width: 18px;
+          transition: color .4s ease;
+          text-align: center;
+          color: #1d2fa9;
+      }
+      
+      .socials a:hover i{
+          color: #1b144d;
+      }
+      .footer {
+        height: 60px;
+        margin-top: 20px;
+    }
+    
+    .footer {
+        background-color: #1b144d;
+        height: auto;
+        width: 100%;
+        {% comment %} position: fixed; {% endcomment %}
+        bottom: 0;
+    }
+    .ht-40{
+      height: 45rem !important;
+    }
+    .ht-35{
+      height: 35rem !important;
+    }
+    .classify th:nth-child(1) {
+      width:20% !important;
+  }
+  .cond-tb tr{
+    background-color:#1b144d !important;
+    color: white !important;
+  }
+    @media (max-width:500px) {
+      .footer-menu ul{
+        display: flex;
+        margin-top: 10px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+  {% csrf_token %}
+  <div class="greyed-out justify-content-center align-items-center "> <img src ="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+  <input hidden type="text" value="{{client.mapCode}}" id="mb-id">
+    <div id="phase-popup" style="width:auto;" class="conduit-popup ">
+      <div class="conduit-selectable-menu min-1" data-header="phase-header" id="suvery1">
+          
+      </div>
+    </div>
+    <div id="phases-popup" style="width:auto;" class="conduit-popup ">
+      <div class="conduit-selectable-menu min-1" data-header="phases-header" id="survey2">
+          
+      </div>
+    </div>
+    <div id="directions-popup" style="width:auto;" class="conduit-popup" >
+      <div class="conduit-selectable-menu min-1" data-header="directions-header">
+          {{ directions | safe}}
+      </div>
+    </div>
+    <div id="classes-popup" style="width:auto;" class="conduit-popup">
+      <div class="conduit-selectable-menu multi" id="conduit-selectable-menu-selection">
+          {{ classes | safe}}
+      </div>
+    </div>
+    <div id="measure-popup" class="conduit-popup">
+      <div class="conduit-selectable-menu  min-1" data-header="measure-header">
+        <ul >
+             <li onclick="avg();" id="table_1" value="1" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item selected ">
+                    <i ></i>
+                    <span >Average Speed</span>
+                </a>
+            </li>
+            <li onclick="eighth();" id="table_2" value="2" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>85th %ile Speed</span>
+                </a>
+            </li>
+            <li onclick="nineth();" id="table_2" value="2" class="menu-item popup-item">
+              <a href="#" class="selectable-menu-item">
+                  <i ></i>
+                  <span>95th %ile Speed</span>
+              </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div id="time-popup" style="width:auto;" class="conduit-popup">
+        <div class="conduit-selectable-menu min-1" id="time-header">
+            <ul>
+                <li id="1" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>00:00 - 01:00</span></a></li>
+                <li id="2" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>01:00 - 02:00</span></a></li>
+                <li id="3" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>02:00 - 03:00</span></a></li>
+                <li id="4" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>03:00 - 04:00</span></a></li>
+                <li id="5" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>04:00 - 05:00</span></a></li>
+                <li id="6" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>05:00 - 06:00</span></a></li>
+                <li id="7" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>06:00 - 07:00</span></a></li>
+                <li id="8" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>07:00 - 08:00</span></a></li>
+                <li id="9" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>08:00 - 09:00</span></a></li>
+                <li id="10" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>09:00 - 10:00</span></a></li>
+                <li id="11" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>10:00 - 11:00</span></a></li>
+                <li id="12" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>11:00 - 12:00</span></a></li>
+                <li id="13" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>12:00 - 13:00</span></a></li>
+                <li id="14" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>13:00 - 14:00</span></a></li>
+                <li id="15" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>14:00 - 15:00</span></a></li>
+                <li id="16" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>15:00 - 16:00</span></a></li>
+                <li id="17" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>16:00 - 17:00</span></a></li>
+                <li id="18" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>17:00 - 18:00</span></a></li>
+                <li id="19" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>18:00 - 19:00</span></a></li>
+                <li id="20" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>19:00 - 20:00</span></a></li>
+                <li id="21" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>20:00 - 21:00</span></a></li>
+                <li id="22" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>21:00 - 22:00</span></a></li>
+                <li id="23" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>22:00 - 23:00</span></a></li>
+                <li id="24" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>23:00 - 24:00</span></a></li>
+                <li id="25" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>07:00 - 19:00</span></a></li>
+                <li id="26" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>06:00 - 22:00</span></a></li>
+                <li id="27" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>06:00 - 24:00</span></a></li>
+                <li id="28" class="menu-item popup-item"><a class="selectable-menu-item selected"><i></i><span>00:00 - 24:00</span></a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="day-popup" style="width:auto;" class="conduit-popup">
+        <div class="conduit-selectable-menu min-1" data-header="day-header">
+            <ul>
+              <li id="8" class="menu-item popup-item">
+                <a class="selectable-menu-item selected"><i></i>
+                  <span>5 Day Avg</span>
+                </a>
+              </li>
+              <li id="9" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>7 Day Avg</span>
+                  </a>
+              </li>
+              <li id="1" class="menu-item popup-item">
+                  <a class="selectable-menu-item "><i></i>
+                    <span>Monday</span>
+                  </a>
+              </li>
+
+              <li id="2" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>Tuesday</span>
+                  </a>
+              </li>
+
+              <li id="3" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>Wednesday</span>
+                  </a>
+              </li>
+
+              <li id="4" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>Thursday</span>
+                  </a>
+              </li>
+
+              <li id="5" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>Friday</span>
+                  </a>
+              </li>
+
+              <li id="6" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>Saturday</span>
+                  </a>
+              </li>
+
+              <li id="7" class="menu-item popup-item">
+                  <a class="selectable-menu-item"><i></i>
+                    <span>Sunday</span>
+                  </a>
+              </li>
+                
+            </ul>
+
+        </div>
+    </div> 
+    <div id="atc-popup" style="width:auto;" class="conduit-popup vivacity-1">
+      <div class="conduit-selectable-menu" id="day-selectable-menu-selection">
+        <ul>
+            <li id="view_0" class="menu-item popup-item active">
+                <a class="selectable-menu-item"><i></i>
+                  <span>ATC Data</span>
+                </a>
+            </li>
+            
+            <li id="view_0" class="menu-item popup-item">
+                <a class="selectable-menu-item" onclick="location.href = '/aecon/sensor-data';"><i></i>
+                  <span>Sensor Data</span>
+                </a>
+            </li>
+            <li id="view_0" class="menu-item popup-item">
+                <a class="selectable-menu-item" onclick="modalAlert()"><i></i>
+                  <span>Air Quality</span>
+                </a>
+            </li> 
+        </ul>
+      </div>
+    </div>
+    <div id="header-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu" id="day-selectable-menu-selection">
+            <ul>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"  onclick="tabContent('headline');"><i></i>
+                <span>Headline Data</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('volume');"><i></i>
+                <span>Hourly Volumes</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('speed');"><i></i>
+                <span>Hourly Speed</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('classify');"><i></i>
+                      <span>Classification Data</span>
+                    </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('compare');"><i></i>
+                    <span>Comparison</span>
+                  </a>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/aecon/moment.min.js"></script>
+    <script type="text/javascript" src="/static/aecon/daterangepicker.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+ <div class="header">
+      <nav class="navbar navbar-expand-lg py-4">
+        <div class="container-fluid flex-fill">
+          <a class="navbar-brand px-3" href="#"
+            ><img
+              height="50"
+              width="150"
+              class="h-75"
+              src="/static/aecon/conduit_logo_color.png"
+              alt="Brand-logo"
+              onclick="openNav()"
+          /></a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon fa-solid fa-bars"></span>
+          </button>
+          <div
+            class="collapse navbar-collapse align-content-center text-center"
+            id="navbarSupportedContent"
+          >
+            <ul class="navbar-nav m-auto">
+              {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a href="#" class="nav-link active" aria-current="page">
+                  <i class="pin-icon-green"></i> Map View
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/sensor-data';"> 
+                  <i class="atc-icon"></i> Sensor Data </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" aria-current="page" onclick="location.href = '/aecon/atc-data';">
+                  <i class="ATC_Data_Icon"></i> ATC Data
+                </a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/radar-data';"> 
+                <i class="vas-icon"></i> Radar Data</a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" aria-current="page" onclick="location.href = '/aecon/link-data';">
+                  <i class="link-icon"></i> Link Data
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" aria-current="page" onclick="location.href = '/aecon/jtc-data';">
+                  <i class="jtc-icon"></i> JTC Data
+                </a>
+              </li>
+             <!-- <li class="nav-item">
+                <a
+                  href="#"
+                  class="nav-link"
+                  aria-current="page"
+                  onclick="location.href = '/aecon/historic-data';"
+                >
+                  <i class="historic-icon"></i> Historic Data
+                </a>
+              </li> -->
+              {% else %}
+              <li class="nav-item">
+                <a href="#" class="nav-link active" aria-current="page">
+                  <i class="pin-icon-green"></i> Map View
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  href="#"
+                  class="nav-link"
+                  aria-current="page"
+                  onclick="location.href = '/aecon/atc-data';"
+                >
+                  <i class="atc-icon"></i> ATC Data
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+            
+            {% if request.user.is_authenticated %}
+            <a class="btn" aria-current="page" href="/aecon/logoff" style="border-radius: 5px !important; padding: 10px 15px;">
+              Logout <i class="fas fa-chevron-down ps-1"></i
+            ></a>
+            {% else %}
+            <a class="btn" aria-current="page" href="/aecon" style="border-radius: 5px !important; padding: 10px 15px;" style="border-radius: 5px !important; padding: 10px 15px;">
+              Login <i class="fas fa-chevron-up ps-1"></i
+            ></a>
+            {% endif %}
+          </div>
+        </div>
+      </nav>
+        <div class="subnavbar py-2">
+      <div class="container-fluid roww flex-wrap align-items-center justify-content-between">
+        <h5 class="text-white col-12 text-right p-3" style="margin-bottom: 0 !important">&nbsp;</h5>
+      </div>
+    </div>
+    </div>
+
+    <div id="sites-popup" style="width:250px;" class="conduit-popup">
+
+        <div class="conduit-selectable-menu  min-1" id="sites-selectable-menu-selection">
+            <ul>
+                <li id="table_1" value="1" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item selected">
+                        <i></i>
+                        <span>Aberlady, West Main Street(Site 4)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Carberry, A6124, Musselburgh to Crossgatehall (Site 39)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Cockenie,B1348 Links Road (Site 15)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Cockenie,East Lorimer Road (Site 16)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Danskine,B6335 (Site 45)</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="rightNav" class="sidenav box-shadow" style="right: 0;">
+      <a class="closebtn" onclick="closerNav()"><i class="fas fa-times"></i></a>
+      <div class="col-12 mt-4 px-4">
+        <ul>
+          <li><h4 class="font-weight-bold w-25 my-1 px-2">
+            AECON Traffic Speed and Volume Dashboard
+          </h4></li>
+          <li>ATC Data
+              <ul>
+                <li>Headline Data</li>
+                <li>Hourly Volumes</li>
+                <li> Hourly Speed</li>
+                <li>Classification Data</li>
+                <li>Comparison</li>
+              </ul>
+          </li>
+          <li>Sensor Data</li> 
+          <li>Logout</li>
+        </ul>
+      </div>
+    </div>
+    <div class="section">
+      <div class="container-fluid" id="main-container">
+        <div class="row my-2">
+          <div class="sites-tab selection-header atc-popup-trigger shadow col-md-6 flex-fill" id="header"><span>ATC Data
+          </span><i class="chevron-icon"></i>
+          </div>
+          <div class="sites-tab selection-header header-popup-trigger shadow col-md-6 flex-fill" id="header"><span>Headline Data 
+          </span><i class="chevron-icon"></i></div>
+        </div> 
+      </div>
+    </div>
+    <div class="row" style="height:calc(100% - 160px); width: 100%; margin-top: -7px;margin-left: -0.5px;">
+      
+          <div class="col-12 px-2 py-2" id="map-wrapper" style="width:100%;height:100%;padding:0;">
+              <div class = "map-panel" id = "dashboard-base-map" style="width:100%;height:100%;border-radius: 5px !important;
+    outline: none;">
+
+              </div>
+
+
+         </div>
+        {% if request.user.is_authenticated %}
+            <div class="floating-card">
+          <div id="map-legend" class="px-3 py-3">
+            <div class="overlay-card-body">
+              <!-- <h5 class="cardd-title" style="margin-left: 3px; margin-top: 3px; width: 123%">
+                Select a site from the map markers to view data
+              </h5> -->
+              <h6 class="cardd-text ml-1 mt-2">Key</h6>
+              <div class="key-wrapper">
+              <i class="map-icon-red pe-4"></i>
+                <h6 class="cardd-text mt-0 py-2">
+                  ATC Data
+                </h6>
+              </div>
+              <!-- <div class="key-wrapper">
+                <i class="map-icon-lblue pe-4"></i>
+                <h6 class="cardd-text mt-1 py-2">
+                  Radar Data
+                </h6>
+              </div> -->
+              <!-- <div class="key-wrapper">
+                <i class="map-icon-grey pe-4"></i>
+                <h6 class="cardd-text py-2">
+                  Sensor Data
+                </h6>
+              </div> -->
+              <div class="key-wrapper">
+                <i class="map-icon-blue pe-4"></i>
+                <h6 class="cardd-text mt-2 py-1">
+                  JTC Data
+                </h6>
+              </div>
+              <!-- <div class="key-wrapper">
+                <i class="map-icon-historic pe-4"></i>
+                <h6 class="cardd-text mt-2 py-2">
+                  LINK data
+                </h6>
+              </div> -->
+            </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </body>
+<script>
+    $(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+  <script>
+    function modalAlert() {
+      alert("No Service is Available!");
+    }
+  </script>
+  <script>
+    var location_details = "";
+    var chart;
+    var timeoutVar;
+    var id = document.getElementById("mb-id").value
+    //console.log("id",id)
+    initMap([53.476404, -2.250621],"dashboard-base-map",id);
+    //console.log("id",id)
+      function dealWithLocationFeatureCollection(feature,layer){
+
+        if(feature.geometry.coordinates.length == 0){return;}
+        if (feature.geometry.type == "LineString" && feature.properties.type == "countline"){
+            //console.log("found countline1",feature);
+            layer.setStyle({color:"#2483ec",weight:3,lineCap:"butt"});
+            lineLayer.addLayer(layer);
+            var popup = L.popup({maxWidth:350,minWidth:350});
+
+            popup.setContent(createMetaDataPopup2(feature));
+            layer.bindPopup('A pretty CSS3 popup.<br> Easily customizable.');
+
+
+        }
+        if (feature.geometry.type == "LineString" && feature.properties.type == "virtual"){
+            //console.log("found countline2",feature);
+            layer.setStyle({color:"#2483ec",weight:3,lineCap:"butt"});
+            //layer.addTo(map);
+            //layer.setStyle(locationStyleOptions);
+            lineLayer.addLayer(layer);
+            //var popup = L.popup({maxWidth:350,minWidth:350});
+            //popup.setContent(createMetaDataPopup2(feature));
+            //layer.bindPopup(popup);
+
+            //console.log("line layer is",lineLayer);
+            //setupLocationLineWithArrowhead(layer);
+            //layer.options.direction = feature.properties.direction_id;
+            //layer.options.order = feature.properties.order;
+
+        }
+
+        if (feature.geometry.type == "LineString" && feature.properties.type == "direction"){
+            //console.log("found countline3",feature);
+            if (feature.properties.name == "Outbound"){
+                layer.setStyle({color:"red",weight:3,lineCap:"butt"});
+                setupDirectionLineWithArrowhead(layer,"red");
+
+            }
+            else if (feature.properties.name == "Inbound"){
+                layer.setStyle({color:"#45f775",weight:3,lineCap:"butt"});
+                setupDirectionLineWithArrowhead(layer,"#45f775");
+
+            }
+            else{
+
+                if (feature.properties.order == 0){
+                layer.setStyle({color:"red",weight:3,lineCap:"butt"});
+                setupDirectionLineWithArrowhead(layer,"red");
+
+                }
+                else if (feature.properties.order == 1){
+                    layer.setStyle({color:"#45f775",weight:3,lineCap:"butt"});
+                    setupDirectionLineWithArrowhead(layer,"#45f775");
+
+                }
+
+
+            }
+
+            var p = layer.getLatLngs()[1];
+            var p2 = map.project(feature.geometry.coordinates[0],map.getZoom());
+            var p1 = map.project(feature.geometry.coordinates[feature.geometry.coordinates.length-1],map.getZoom());
+            var angle = Math.atan2(p2.y -p1.y , p2.x - p1.x)* 180 / Math.PI;
+            if(angle<0){angle=angle+360;}
+            feature.properties.angle = angle;
+            var icon = createIcon(angle,"-");
+            lineLayer.addLayer(layer);
+            layer.marker = L.marker(p, {icon: icon});
+
+
+
+            //console.log("angle is",angle);
+            //drawArrow(p1,20,angle,arrowCol)
+
+
+
+        }
+
+        //console.log("project is",location_details.data[feature.properties.id].projects.length);
+        if (feature.geometry.type == "Point" && !feature.properties.temp && layer.feature.properties.obsType.id == 1){
+          //console.log("found countline4",layer.feature.properties.obsType.id);
+          
+            var marker = addPlainMarker(feature,"sensor");
+            //console.log("marker is",marker);
+            layer.marker = marker;
+            {#console.log("setting marker of",layer,"to",marker);#}
+            {#console.log("marker is now",layer.marker);#}
+            var popup = L.popup({maxWidth:200,minWidth:200});
+
+            content = "<div class='floating_card d-flex flex-column justify-content-center'><div class='cardd px-4 py-3 mt-3'><div class='cardd-body px-2 py-3'><h5 class='cardd-title'>" + feature.properties.name + "</h5><p class='cardd-text'>" + feature.geometry.coordinates.reverse() + "</p>"
+              for (var i = 0; i < location_details.data[feature.properties.id].projects.length; i++) {
+              content = content + "<p class='cardd-text'>" + location_details.data[feature.properties.id].projects[i].name +", "+ moment(location_details.data[feature.properties.id].projects[i].start_date).format("DD, MMM, YYYY") + "</p>";
+
+            }
+            content = content + "<button class='btn py-2 fw-bold text-white mt-3' style='width: 100%;background-color: #209022;border-radius: 5px !important; font-size: 16px' onclick=\x22viewSite('" + feature.properties.id  + "')\x22>View Data</div></div></div>"
+            {#console.log("onclick event",feature.properties.id)#}
+            popup.setContent(content);
+            {#console.log("setcontent",popup.setContent(content))#}
+            //console.log("setcontent",content)
+            marker.bindPopup(popup);
+            //console.log("bindpopup",marker.bindPopup(popup))
+            //console.log(popup)
+        }
+        else if (feature.geometry.type == "Point" && !feature.properties.temp && layer.feature.properties.obsType.id == 9){
+          //console.log("found countline44",layer.feature.properties.obsType.id);
+          
+            var marker = addPlainMarker(feature,"perm");
+            //console.log("marker is",marker);
+            layer.marker = marker;
+            //console.log("setting marker of",layer,"to",marker);
+            //console.log("marker is now",layer.marker);
+            var popup = L.popup({maxWidth:200,minWidth:200});
+            content = "<div class='floating_card d-flex flex-column justify-content-center'><div class='cardd px-4 py-3 mt-3'><div class='cardd-body px-2 py-3'><h5 class='cardd-title'>" + feature.properties.name + "</h5><p class='cardd-text'>" + feature.geometry.coordinates.reverse() + "</p>"
+            for (var i = 0; i < location_details.data[feature.properties.id].projects.length; i++) {
+              content = content + "<p class='cardd-text'>" + location_details.data[feature.properties.id].projects[i].name + ", "+ moment(location_details.data[feature.properties.id].projects[i].start_date).format("DD, MMM, YYYY") +  "</p>";
+              
+            }
+            content = content + "<button class='btn py-2 fw-bold text-white mt-3' style='width: 100%;background-color: #209022;border-radius: 5px !important; font-size: 16px' onclick=\x22viewSite('" + feature.properties.id  + "')\x22>View Data</div></div></div>"
+            {#console.log("onclick event",feature.properties.id)#}
+            popup.setContent(content);
+            {#console.log("setcontent",popup.setContent(content))#}
+            //console.log("setcontent",content)
+            marker.bindPopup(popup);
+            //console.log("bindpopup",marker.bindPopup(popup))
+            //console.log(popup)
+        }
+        else if (feature.geometry.type == "Point" && !feature.properties.temp && layer.feature.properties.obsType.id == 10){
+          //console.log("found countline44",layer.feature.properties.obsType.id);
+
+            var marker = addPlainMarker(feature,"hist");
+            //console.log("marker is",marker);
+            layer.marker = marker;
+            //console.log("setting marker of",layer,"to",marker);
+            //console.log("marker is now",layer.marker);
+            var popup = L.popup({maxWidth:200,minWidth:200});
+            content = "<div class='floating_card d-flex flex-column justify-content-center'><div class='cardd px-4 py-3 mt-3'><div class='cardd-body px-2 py-3'><h5 class='cardd-title'>" + feature.properties.name + "</h5><p class='cardd-text'>" + feature.geometry.coordinates.reverse() + "</p>"
+            for (var i = 0; i < location_details.data[feature.properties.id].projects.length; i++) {
+              content = content + "<p class='cardd-text'>" + location_details.data[feature.properties.id].projects[i].name + ", "+ moment(location_details.data[feature.properties.id].projects[i].start_date).format("DD, MMM, YYYY") +  "</p>";
+
+            }
+            content = content + "<button class='btn py-2 fw-bold text-white mt-3' style='width: 100%;background-color: #209022;border-radius: 5px !important; font-size: 16px' onclick=\x22viewSite('" + feature.properties.id  + "')\x22>View Data</div></div></div>"
+            {#console.log("onclick event",feature.properties.id)#}
+            popup.setContent(content);
+            {#console.log("setcontent",popup.setContent(content))#}
+            //console.log("setcontent",content)
+            marker.bindPopup(popup);
+            //console.log("bindpopup",marker.bindPopup(popup))
+            //console.log(popup)
+        } else if (feature.geometry.type == "Point" && !feature.properties.temp && layer.feature.properties.obsType.id == 11){
+          //console.log("found countline44",layer.feature.properties.obsType.id);
+            var marker = addPlainMarker(feature,"temp");
+            //console.log("marker is",marker);
+            layer.marker = marker;
+            //console.log("setting marker of",layer,"to",marker);
+            //console.log("marker is now",layer.marker);
+            var popup = L.popup({maxWidth:200,minWidth:200});
+            content = "<div class='floating_card d-flex flex-column justify-content-center'><div class='cardd px-4 py-3 mt-3'><div class='cardd-body px-2 py-3'><h5 class='cardd-title'>" + feature.properties.name + "</h5><p class='cardd-text'>" + feature.geometry.coordinates.reverse() + "</p>"
+              for (var i = 0; i < location_details.data[feature.properties.id].projects.length; i++) {
+              content = content + "<p class='cardd-text lat_long'>" + location_details.data[feature.properties.id].projects[i].name + ", "+ moment(location_details.data[feature.properties.id].projects[i].start_date).format("DD, MMM, YYYY") +  "</p>";
+              
+            }
+            content = content + "<button class='btn py-2 fw-bold text-white mt-3' style='width: 100%;background-color: #209022;border-radius: 5px !important; font-size: 16px' onclick=\x22viewSite('" + feature.properties.id  + "')\x22>View Data</div></div></div>"
+            {#console.log("onclick event",feature.properties.id)#}
+            popup.setContent(content);
+            {#console.log("setcontent",popup.setContent(content))#}
+            marker.bindPopup(popup);
+        } else if (feature.geometry.type == "Point" && !feature.properties.temp && layer.feature.properties.obsType.id == 12){
+          //console.log("found countline44",layer.feature.properties.obsType.id);
+            var marker = addPlainMarker(feature,"radar");
+            //console.log("marker is",marker);
+            layer.marker = marker;
+            //console.log("setting marker of",layer,"to",marker);
+            //console.log("marker is now",layer.marker);
+            var popup = L.popup({maxWidth:200,minWidth:200});
+            content = "<div class='floating_card d-flex flex-column justify-content-center'><div class='cardd px-4 py-3 mt-3'><div class='cardd-body px-2 py-3'><h5 class='cardd-title'>" + feature.properties.name + "</h5><p class='cardd-text'>" + feature.geometry.coordinates.reverse() + "</p>"
+            for (var i = 0; i < location_details.data[feature.properties.id].projects.length; i++) {
+              content = content + "<p class='cardd-text lat_long'>" + location_details.data[feature.properties.id].projects[i].name + ", "+ moment(location_details.data[feature.properties.id].projects[i].start_date).format("DD, MMM, YYYY") +  "</p>";
+              
+            }
+            content = content + "<button class='btn py-2 fw-bold text-white mt-3' style='width: 100%;background-color: #209022;border-radius: 5px !important; font-size: 16px' onclick=\x22viewSite('" + feature.properties.id  + "')\x22>View Data</div></div></div>"
+            {#console.log("onclick event",feature.properties.id)#}
+            popup.setContent(content);
+            {#console.log("setcontent",popup.setContent(content))#}
+            marker.bindPopup(popup);
+        }
+        
+      }
+
+    function createIcon(angle,val){
+      //console.log("creating icon",angle,val);
+  
+      if (angle >=180 && angle < 270){
+          var offset = [25,25];
+          //val="poo"
+      }
+      else{
+          var offset = [0,0];
+      }
+      //var newLatLng = map.containerPointToLatLng(newPoint);
+      var icon = L.divIcon({
+        className: 'n',
+          html: "<div class='map-direction-icon animate d-flex justify-content-center align-items-center'><span>" + val + "</span></div>",
+          iconAnchor:offset,
+          iconSize:[50,50]
+      });
+      return icon;
+  }
+
+function redirectToAQ(){
+    var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+            showGreyedOut(greyed[i]);
+        }
+    var sites = getSelectedSites(2);
+    var dataToSave = {}
+    for(var i=0;i<sites.length;i++){
+
+        dataToSave[sites[i]]={"direction":0,"selected":false};
+    }
+    saveSitesToLocalStorage(2,dataToSave);
+    window.location.href="/aecon/redirect?view=10";
+}
+
+
+function viewSite(loc_id){
+  if (location_details=="")
+  { return; }
+  let obs_ty_id = location_details.data[loc_id].obs_type_id;
+
+  if(obs_ty_id === 1){
+      document.cookie = "MPHlocation="+loc_id+";path=/aecon";
+      window.location.href="/aecon/mph-data";
+  }
+  else if (obs_ty_id === 9){
+      document.cookie = "ATClocation="+loc_id+";path=/aecon";
+      window.location.href="/aecon/atc-data";
+  }
+  else if (obs_ty_id === 10){
+      document.cookie = "LINKlocation="+loc_id+";path=/aecon";
+      window.location.href="/aecon/link-data";
+  }
+  else if (obs_ty_id === 11){
+    var parentDiv = event.target.closest('.cardd-body');
+    var cardTitleElement = parentDiv.querySelector('.cardd-title');
+    var lat_longElement = parentDiv.querySelector('.cardd-text');
+    var cardTitleText = cardTitleElement.textContent.trim();
+    var latlongddetails = lat_longElement.textContent.trim().split(',');
+    console.log('latlongddetails',latlongddetails)
+      let selectedSiteValue = {
+          id: loc_id,
+          name:cardTitleText,
+          lat: latlongddetails[1],
+          lon: latlongddetails[0]
+
+      }
+      localStorage.setItem("selectedSiteValue",JSON.stringify(selectedSiteValue))
+      window.location.href="/aecon/jtc-data";
+  }
+  else if (obs_ty_id === 12){
+      document.cookie = "Radarlocation="+loc_id+";path=/aecon";
+      window.location.href="/aecon/radar-data";
+  }
+
+}
+
+function getIdList(){
+    var ids = [];
+    lineLayer.eachLayer(function(layer){
+        if(layer.feature && layer.feature.properties && (layer.feature.properties.type=="countline" || layer.feature.properties.type=="virtual")){
+
+            ids.push(layer.feature.properties.id);
+        }
+
+    });
+    return ids;
+}
+
+
+
+function viewProject(ele){
+
+    var formData = new FormData();
+    formData.append("project",ele.id);
+    fetcher(formData,"getClientLocations",function(result){
+        console.log("received results1",result);
+        map.eachLayer(function (layer) {
+            console.log("removing",layer,typeof layer,layer instanceof L.Marker);
+            if (layer instanceof L.Marker){
+
+                map.removeLayer(layer);
+            }
+        });
+        processLocationGeojsonmap(result.locations);
+        map.fitBounds(lineLayer.getBounds());
+
+    });
+
+
+
+
+}
+
+function updateDatasets(){
+  var selectedClasses = getSelectedPopupIndexes("classes-popup");
+  var day = moment().isoWeekday() -1;
+  for (var key in classedData.data){
+      var total = 0;
+      for (var dir=0;dir < 2;dir++){
+          var data = classedData.data[key].directions[dir].baseData[0];
+         // console.log("data for",key,data);
+          var selectedClassVolumes = [];
+          selectedClasses.forEach(function(classIndex,i){
+             // console.log("looking for class index",classIndex,"for dataset",index);
+             // console.log("pushing data",data[classIndex].data);
+              if(data[classIndex]){
+                  selectedClassVolumes.push(data[classIndex].data);
+              }
+
+          });
+         // console.log("looking for",key + "_direction_" + dir);
+          layer = findLayer(key + "_direction_" + dir);
+          // console.log("found layer",layer);
+          if(selectedClassVolumes.length != 0){
+              var val = selectedClassVolumes.reduce(sumOfDatasets).reduce(sumOfArray);
+          }
+          else{
+              var val = 0;
+          }
+          if (typeof val === 'string' || val instanceof String){
+              val = 0;
+          }
+          total = total + val;
+          if(layer && layer.feature.properties.angle){
+              // salford style arrows and countlines
+              var icon = createIcon(layer.feature.properties.angle,val);
+              layer.marker.setIcon(icon);
+          }
+      }
+      layer = findLayer(key);
+     // console.log("looking for",key,"found",layer);
+      if(layer && layer.feature.geometry.type == "Point" && layer.feature.properties.obsType.id == 1){
+          var icon = L.divIcon({
+              html: "<div class='donut-text ' id='" + layer.feature.properties.id + "_total'>" + total +  "</div>",
+              iconSize: [60, 60],
+              className: 'countIcon'
+          });
+          layer.setIcon(icon);
+          void layer._icon.offsetWidth;
+          layer._icon.classList.add("animate");
+
+      }
+  }
+}
+
+function getDates(){
+    var start = moment(document.getElementById("time").innerText.split(",")[0].trim());
+    console.log("start is",start);
+
+    return [start,moment(start).add(1,"d")];
+}
+
+function loadData(start,end){
+
+    console.log(start.format("YYYY-MM-DD HH:mm"),end.format("YYYY-MM-DD HH:mm"));
+    var greyed = document.getElementsByClassName("greyed-out");
+    var ids = getIdList();
+    if (ids.length==0){return;}
+    if (timeoutVar){
+        clearTimeout(timeoutVar);
+    }
+    for (var i=0;i<greyed.length;i++){
+        showGreyedOut(greyed[i]);
+    }
+    if(chart){chart.destroy();}
+    var live = document.getElementById("time-selector-popup").getElementsByClassName("selected")[0].parentNode.id.replace("time_","");
+    var formData = new FormData();
+    formData.append("ids",JSON.stringify(ids));
+    formData.append("resultType","counts");
+    formData.append("live",live);
+    formData.append("period",60);
+    formData.append("startDate",start.format("YYYY-MM-DD HH:mm"));
+    formData.append("endDate",end.format("YYYY-MM-DD HH:mm"));
+    fetcher(formData,"getATCClassedVolumes",function(result){
+        console.log("received results2",result);
+        classedData = result.data;
+        document.getElementById("events-container").innerHTML = result.data.events;
+        var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+            hideGreyedOut(greyed[i]);
+        }
+        //document.getElementById("classes-popup").getElementsByClassName("aecon-selectable-menu")[0].innerHTML = classedData.classes;
+        //setPopupListeners(document.getElementById("classes-popup"));
+        updateDatasets();
+        document.getElementById("time").innerHTML = result.data.time;
+        document.getElementById("time-display").classList.remove("d-none");
+        timeoutVar = setTimeout(triggerLoadData,30000);
+
+    });
+}
+
+//loadData(moment().subtract(1,"h"),moment());
+
+function addLineLayer(){
+    //console.log("wee");
+    map.addLayer(lineLayer);
+    map.off("moveend");
+    map.on("zoomend",function(){console.log("zoom ended");map.invalidateSize();checkZoomLevel()});
+    map.on("moveend", function(){console.log("move ended");map.invalidateSize();});
+    //triggerLoadData();
+    //document.getElementById("time_ALL").click();
+    checkZoomLevel();
+
+}
+
+
+function checkZoomLevel(){
+
+    var z = map.getZoom();
+
+    lineLayer.eachLayer(function(layer){
+        if(layer.marker){
+            if (z < 19){
+                map.removeLayer(layer.marker);
+            }
+            else{
+                map.addLayer(layer.marker);
+            }
+        }
+    });
+
+}
+
+
+function drawArrow(centre,length,bearing,col){
+    var pointList = [];
+    var arrowWidth = 10;
+    perpendicular = bearing + 90;
+    bearing = toRadians(bearing);
+    // scale length by zoom factor
+    length = length * map.getZoom()/5
+    if(perpendicular >360){perpendicular=perpendicular-360;}
+    //console.log("perp is",perpendicular);
+    perpendicular = toRadians(perpendicular);
+
+
+
+    //move perpendicular to centre
+    var x2 = centre.x -  (arrowWidth * Math.cos(perpendicular))
+    var y2 = centre.y - (arrowWidth * Math.sin(perpendicular))
+    p1 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // move along arrow shaft
+
+    var x2 = x2 +  (length * Math.cos(bearing))
+    var y2 = y2 + (length * Math.sin(bearing))
+    p2 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // draw arrow head
+
+    var x2 = x2 -  (arrowWidth * Math.cos(perpendicular))
+    var y2 = y2 - (arrowWidth * Math.sin(perpendicular))
+    p3 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // draw to tip of arrow, which is in line with centre
+    var x2 = centre.x +  ((length+arrowWidth) * Math.cos(bearing))
+    var y2 = centre.y + ((length+arrowWidth) * Math.sin(bearing))
+    //console.log("in draw arrow, tip is",x2,y2);
+    p4 = map.unproject(L.point(x2,y2),map.getZoom());
+
+
+    //draw other side of arrow
+    var x2 = centre.x +  (arrowWidth * Math.cos(perpendicular))
+    var y2 = centre.y + (arrowWidth * Math.sin(perpendicular))
+    p7 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // move along arrow shaft
+
+    var x2 = x2 +  (length * Math.cos(bearing))
+    var y2 = y2 + (length * Math.sin(bearing))
+    p6 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    // draw arrow head
+
+    var x2 = x2 +  (arrowWidth * Math.cos(perpendicular))
+    var y2 = y2 + (arrowWidth * Math.sin(perpendicular))
+    p5 = map.unproject(L.point(x2,y2),map.getZoom());
+
+    pointList = [p1,p2,p3,p4,p5,p6,p7];
+    //console.log("pointlist is",pointList);
+    if (col=="red"){
+        if(inArrow){lineLayer.removeLayer(inArrow)};
+       inArrow =  L.polygon(pointList,{
+            color:col,
+            interactive:true
+
+       }).addTo(lineLayer);
+    }
+    else{
+        if(outArrow){lineLayer.removeLayer(outArrow)};
+        outArrow =  L.polygon(pointList,{
+            color:col,
+            interactive:true
+
+       }).addTo(lineLayer);
+    }
+
+    //console.log("polygo is",p);
+
+
+
+    //p.on("mousedown",poly_clicked);
+   // p.on("touchstart",poly_clicked);
+    //p.on("click",testclick);
+   // p.on("ontouchstart",poly_clicked);
+    //p.bindPopup("<div><button id='arrow_" + col + "' onclick='deleteArrow(event);'>Delete</button></div>");
+    return p4;
+
+}
+
+
+function incrementDate(){
+    var start = moment(document.getElementById("time").innerText.split(",")[0].trim(),"dddd MMM DD, YYYY");
+    start.add(1,"d").set({hour:0,minute:0,second:0,millisecond:0});
+    var end = moment(start).add(1,"d")
+    loadData(start,end);
+}
+
+
+function decrementDate(){
+    var start = moment(document.getElementById("time").innerText.split(",")[0].trim(),"dddd MMM DD, YYYY");
+    start.subtract(1,"d").set({hour:0,minute:0,second:0,millisecond:0});
+    var end = moment(start).add(1,"d")
+    loadData(start,end);
+}
+function showGreyedOut(greyedOut) {
+  greyedOut.classList.add("show");
+  return;
+  console.log("func is", func);
+  var greyed = document.getElementsByClassName("greyed-out");
+  for (var i = 0; i < greyed.length; i++) {
+      if (index) {
+          if (index == i) {
+              greyed[i].style.display = "flex";
+          }
+
+      } else {
+          greyed[i].style.display = "flex";
+      }
+
+  }
+  setTimeout(func, 10);
+}
+
+
+function hideGreyedOut(greyedOut) {
+  greyedOut.classList.remove("show");
+  return
+  console.log("hiding greyed out");
+  var greyed = document.getElementsByClassName("greyed-out");
+  for (var i = 0; i < greyed.length; i++) {
+      greyed[i].classList.add("d-none");
+  }
+}
+
+
+
+function triggerLoadData(){
+    var live = document.getElementById("time-selector-popup").getElementsByClassName("selected")[0].parentNode.id.replace("time_","");
+    var carets = document.getElementById("time-display").getElementsByClassName("caret");
+    console.log("inner text is",document.getElementById("time").innerText,document.getElementById("time").innerText == "",document.getElementById("time"))
+    console.log(document.getElementById("time").textContent , document.getElementById("time").textContent == "")
+    if(live == "ALL"){
+        if(document.getElementById("time").innerText == ""){
+            var s = moment();
+        }
+        else{
+            var s = moment(document.getElementById("time").innerText.trim().slice(0, -14),"dddd MMM DD, YYYY");
+        }
+        console.log("in trigger, s is",s);
+        s.set({hour:0,minute:0,second:0,millisecond:0});
+        e = moment(s).add(1,"d");
+        for (var i=0;i<carets.length;i++){
+            carets[i].classList.remove("d-none");
+        }
+    }
+    else{
+        s = moment(new Date());
+        e = moment(new Date());
+        s.subtract(30,"m")
+        for (var i=0;i<carets.length;i++){
+            carets[i].classList.add("d-none");
+        }
+    }
+    loadData(s,e);
+}
+var greyed = document.getElementsByClassName("greyed-out");
+for (var i=0;i<greyed.length;i++){
+  showGreyedOut(greyed[i]);
+}
+
+var formData = new FormData();
+formData.append("exclude associated",true);
+fetcher(formData,"getClientLocations",function(result){
+    location_details = result;
+    console.log("received results",result);
+    document.getElementById("classes-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = result.classes;
+    setPopupListeners(document.getElementById("classes-popup"));
+    var items = document.getElementById("classes-popup").getElementsByClassName("menu-item");
+    for(var i=0;i<items.length;i++){
+        items[i].addEventListener("click",function(){updateDatasets()});
+    }
+    processLocationGeojsonmap(result.locations);
+    map.removeLayer(lineLayer);
+    if(lineLayer.getBounds().isValid()){
+        map.on("moveend", addLineLayer);
+        map.flyToBounds(lineLayer.getBounds(),{duration:1.5});
+    }
+    for (var i=0;i<greyed.length;i++){
+      hideGreyedOut(greyed[i]);
+    }
+});
+
+function getTracks(){
+    var formData = new FormData();
+    formData.append("location_id","test3");
+    fetcher(formData,"getTracks",function(result){
+        console.log("received results4",result);
+        L.geoJSON(result.tracks,{style:"red"}).addTo(map);
+    });
+}
+
+
+</script>
+  <script
+    type="text/javascript"
+    src="/static/aecon/moment.min.js"
+  ></script>
+  <script src="{% staticversion 'aecon/cv2-base.js' %}"></script>
+  
+</html>

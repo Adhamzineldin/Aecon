@@ -1,0 +1,152 @@
+{% extends "aecon/jtc-data.html" %}
+{% block content %}
+{% load staticversion %} {% load my_filters %} {% load client_tags %}
+<style>
+    .small-table-tr th,
+    td {
+        padding: 0.4rem 0.9rem !important;
+        text-align: center;
+    }
+
+    .small-table-tr td {
+        cursor: pointer;
+    }
+
+    .lg-table-top {
+        margin-bottom: -3px;
+        padding: 0.5rem 1rem;
+        background-color: #141b4d;
+        border-radius: 5px 5px 0px 0px;
+        width:97%;
+    }
+
+    .lg-table-top-text {
+        color: #ffffff;
+        padding-left: 4.6rem;
+    }
+
+    .lg-table-top-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .lg-table-top-border {
+        height: 2px;
+        background-color: #ffff;
+        width: 88%;
+    }
+
+    .lg-table-top-border-text {
+        color: #ffff;
+    }
+
+    #lg-table {
+        display: none;
+    }
+
+    .chart-heading {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #141b4d;
+        margin-bottom: 1rem;
+    }
+    
+    #countline-daily-table-avg {
+        border-spacing: 0;
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        table-layout: fixed;
+    }
+    
+    
+    #countline-daily-table-avg-data {
+      max-height: 185px;
+      overflow: auto;
+      display: table-caption;
+    }
+    .div1 tbody td {
+      width: 55px;
+    }
+    .div1 tfoot td {
+      width: 55px;
+    }
+    .div1 thead th{
+      width: 55px;
+      border-top:0;
+    }
+    .div1 thead{
+      width: 97%;
+      display: block;
+    
+    }
+    
+</style>
+<script src="{% staticversion 'aecon/cv2-graphs.js' %}"></script>
+
+<div class="px-3 py-1 mt-4 bg-white" style="box-shadow: 0px 0px 10px #0000001A; border-radius: 5px;">
+    <div class="row p-3">
+        <div class="col-md-7 col-sm-12">
+            <div class="chart-heading">Percentage Of Classed Vehicles</div>
+            <div>
+                <canvas id="classedVehicleChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-5 col-sm-12 calender-content" id="calender-content">
+            <div class="d-flex justify-content-center">
+                <div class="table-left-header">
+                   
+                </div>
+                <table class="small-table-tr">
+                    <thead>
+                      <tr class="small-table-tr" id="jtc-table-header">
+                     
+                      </tr>
+                    </thead>
+                    <tbody id="sm-t-body" style="text-align:center;">
+                     
+                    </tbody>
+                  </table>
+            </div>
+            <div class="mt-5" id="lg-table">
+               
+                <div class="table-responsive table-wrapper  div1 col-md-12 col-sm-12 " style="padding:0PX">
+                    <table class="table text-center show-data" rules="cols" id="countline-daily-table-avg">
+                        <thead id="countline-daily-table-avg-head">
+                            
+                        </thead>
+                        <tbody id="countline-daily-table-avg-data">
+                        
+                        </tbody>
+                        <tfoot style="display: table-caption;background: #f0f0f0;    width: 97%; font-weight: 800;" id="countline-daily-table-avg-foot">
+                        </tfoot>
+                    </table>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+    <div class="row p-3">
+        <div class="chart-heading">Total Number of Vehicles per Interval</div>
+        <div style="overflow-x: scroll; width: 100%;">
+            <canvas id="numberOfVehicleChart"></canvas>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"
+    integrity="sha512-JPcRR8yFa8mmCsfrw4TNte1ZvF1e3+1SdGMslZvmrzDYxS69J7J49vkFL8u6u8PlPJK+H3voElBtUCzaXj+6ig=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/static/aecon/jtc/filters.js"></script>
+<script src="/static/aecon/jtc/jtcTable.js"></script>
+<script src="/static/aecon/jtc/jtcVolume.js"></script>
+<script>
+    
+    
+
+
+
+</script>
+
+{% endblock %}

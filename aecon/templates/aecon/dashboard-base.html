@@ -1,0 +1,886 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Bootstrap CSS -->
+
+    {% load staticversion %} {% load my_filters %} {% load client_tags %}
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/aecon/daterangepicker.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css" />
+    <link rel="stylesheet" href="{% staticversion 'aecon/leaflet.awesome-markers.css' %}" type="text/css" /> {% if DEBUG %}
+    <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css" /> {% else %}
+    <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css" /> {% endif %}
+    <link rel="stylesheet" href="{% staticversion 'aecon/nouislider.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% staticversion 'aecon/cv2-base.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% staticversion 'aecon/checkbox-style.css' %}" type="text/css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
+
+    <title>Tracsis AECON</title>
+</head>
+
+<body>
+    <style>
+      *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        }
+        .modal,
+        .modal-backdrop {
+            position: absolute !important;
+        }
+        
+        .modal-dialog {
+            max-width: 90% !important;
+        }
+        
+        .modal-dialog,
+        .modal-content {
+            /* 80% of window height */
+            height: 90%;
+        }
+        
+        .modal-body {
+            /* 100% = dialog height, 120px = header + footer */
+            overflow: hidden;
+        }
+        .footer-bottom div{
+          background: #2d3a91;
+        
+          }
+          .footer-bottom p{
+              float: left;
+              font-size: 14px;
+              word-spacing: 2px;
+              text-transform: capitalize;
+          }
+          .footer-bottom p img{
+            justify-content:center;
+          }
+          .footer-bottom span{
+              text-transform: uppercase;
+              opacity: .4;
+              font-weight: 200;
+          }
+          .footer-menu
+          {
+            float: right;
+          }
+          
+          .footer-menu ul{
+            display: flex;
+          }
+          
+          .footer-menu ul li{
+          padding-right: 10px;
+          display: block;
+          }
+          
+          .footer-menu ul li a{
+            color: #fff;
+            text-decoration: none;
+            background-color: #ffffff;
+          }
+          
+          .footer-menu ul li a:hover{
+            color: #fff;
+          }
+          .socials{
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0px;
+        }
+        
+        {% comment %} .socials li{
+            margin: 0 10px;
+        } {% endcomment %}
+        
+        .socials a{
+            text-decoration: none;
+            color: #fff;
+            border: 1.1px solid white;
+            padding: 5px;
+            border-radius: 50%;
+        }
+        
+        .socials a i{
+            font-size: 1.1rem;
+            width: 18px;
+            transition: color .4s ease;
+            text-align: center;
+            color: #1d2fa9;
+        }
+        
+        .socials a:hover i{
+            color: aqua;
+        }
+      @media (max-width:500px) {
+        .footer-menu ul{
+          display: flex;
+          margin-top: 10px;
+          margin-bottom: 20px;
+        }
+      }
+    </style>
+    <div id="phase-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu" id="phase-selectable-menu-selection">
+            <ul>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                  <span>2021</span>
+              </a>
+                </li>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>2022</span>
+              </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="direction-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu" id="direction-selectable-menu-selection">
+            <ul>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                  <span>Combined</span>
+              </a>
+                </li>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Primary</span>
+              </a>
+                </li>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Secondary</span>
+              </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="time-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu " id="time-selectable-menu-selection">
+            <ul>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>00:00-01:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>01:00:-02:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>02:00:-03:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>03:00:-04:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>04:00:-05:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>05:00:-06:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>06:00:-07:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>07:00:-08:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>08:00:-09:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>09:00:-10:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>10:00:-11:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>11:00:-12:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>12:00:-13:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>13:00:-14:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>14:00:-15:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>15:00:-16:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>16:00:-17:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>17:00:-18:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>18:00:-19:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>19:00:-20:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>20:00:-21:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>21:00:-22:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>22:00:-23:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>23:00:-24:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>24:00:-00:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>07:00:-19:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>06:00:-22:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>06:00:-24:00</span></a></li>
+                <li id="view_0" class="menu-item popup-item"><a class="selectable-menu-item"><i></i><span>00:00:-24:00</span></a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="day-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu " id="day-selectable-menu-selection">
+            <ul>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>5 Day Avg</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>7 Day Avg</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Monday</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Tuesday</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Wednesday</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Thursday</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Friday</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Saturday</span>
+              </a>
+                </li>
+
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item"><i></i>
+                <span>Saturday</span>
+              </a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+    <div id="atc-popup" style="width:auto;" class="conduit-popup vivacity-1">
+      <div class="conduit-selectable-menu" id="day-selectable-menu-selection">
+        <ul>
+            <li id="view_0" class="menu-item popup-item">
+                <a class="selectable-menu-item" onclick="tabContent();"><i></i>
+                  <span>ATC Data</span>
+                </a>
+            </li>
+            <li id="view_0" class="menu-item popup-item">
+                <a class="selectable-menu-item" onclick="location.href = '/aecon/sensor-data';"><i></i>
+                  <span>Sensor Data</span>
+                </a>
+            </li>
+            <li id="view_0" class="menu-item popup-item">
+                <a class="selectable-menu-item" onclick="location.href = '/aecon/welcome-page';"><i></i>
+                  <span>Air Quality</span>
+                </a>
+            </li>
+        </ul>
+      </div>
+    </div>
+    <div id="header-popup" style="width:auto;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu" id="day-selectable-menu-selection">
+            <ul>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('headline');"><i></i>
+                      <span>Headline Data</span>
+                    </a>
+                </li>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('volume');"><i></i>
+                      <span>Hourly Volumes</span>
+                    </a>
+                </li>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('speed');"><i></i>
+                      <span>Hourly Speed</span>
+                    </a>
+                </li>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('classify');"><i></i>
+                      <span>Classification Data</span>
+                    </a>
+                </li>
+                <li id="view_0" class="menu-item popup-item">
+                    <a class="selectable-menu-item" onclick="tabContent('compare');"><i></i>
+                      <span>Comparsion</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/aecon/moment.min.js"></script>
+    <script type="text/javascript" src="/static/aecon/daterangepicker.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <div id="view-selector-popup" style="width: 250px" class="conduit-popup">
+        <div class="conduit-selectable-menu min-1" data-header="view-selector">
+            {% views_as_popup_list %}
+        </div>
+    </div>
+    <header class="header">
+      <nav class="navbar navbar-default px-2 py-1" role="navigation">
+        <div class="container-fluid flex-fill">
+          <a class="w-25 px-3 logo-width">
+            <img height="50" width="150" class="h-75" src="/static/aecon/conduit_logo_color.png" alt="TCS" onclick="openNav()">
+          </a>
+          <div class="row mr-auto px-2 first-fixed">
+            <button class=" btn shadow bg-white my-auto mr-1 ml-4 active" onclick="tabContent();">
+            ATC Data
+            </button>
+            <button class="btn  shadow bg-white my-auto mx-1" onclick="location.href = '/aecon/sensor-data';">
+            Sensor data
+            </button>
+            <button class="btn  shadow bg-white my-auto mx-1" onclick="location.href = '/aecon/welcome-page';">
+              Air Quality
+              </button>
+        </div> 
+          <span onClick="toogleTab();"><img height="45" width="90" class="" src="/static/aecon/EL_Logo.png" alt="TCS"></span>
+        </div>
+      </nav>
+      <nav class="navbar navbar-default px-2 py-1" role="navigation">
+        <div class="container-fluid" id="contTab">
+          <h4 class="font-weight-bold w-25 my-1 px-3">
+            Traffic Speed and Volume Dashboard
+          </h4>
+          <div class="scroll-tab selection-header header-popup-trigger shadow mr-auto" id="header" style="width: 25%"><span>Headline Data 
+          </span><i class="chevron-icon"></i></div>
+          <div class="row flex-fill width-fixed px-2">
+            <button class=" btn shadow bg-white my-auto mr-1 ml-4" onclick="tabContent('headline');">
+            Headline Data
+            </button>
+                <button class="btn  shadow bg-white my-auto mx-1" onclick="tabContent('volume');">
+              Hourly Volumes
+            </button>
+                <button class="btn  shadow bg-white my-auto mx-1" onclick="tabContent('speed');">
+              Hourly Speed
+            </button>
+                <button class="btn  shadow bg-white my-auto mx-1" onclick="tabContent('classify');">
+              Classification Data
+            </button>
+                <button class="btn  shadow bg-white my-auto mx-1" onclick="tabContent('compare');">
+              Comparsion
+            </button>
+          </div>
+          <a href="/aecon/welcome-page"
+          class=" btn shadow bg-white my-auto mr-1 ml-4 active font-weight-bold my-auto mx-1"><i class="fas fa-power-off  mr-2 text-white"></i>Logout
+        </a>
+        </div>
+      </nav>
+      
+    </header>
+    <div id="view-selector-popup" style="width:250px;" class="conduit-popup">
+        <div class="conduit-selectable-menu  min-1" data-header="view-selector">
+            <ul>
+                <li id="table_1" value="1" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item selected ">
+                        <i></i>
+                        <span>Average Speed</span>
+                    </a>
+                </li>
+                <liid="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>85th %ile Speed</span>
+                    </a>
+                    </liid=>
+            </ul>
+        </div>
+    </div>
+    <div id="view-popup" style="width:250px;" class="conduit-popup vivacity-1">
+        <div class="conduit-selectable-menu  min-1" data-header="view-selectable-menu-selection">
+            <ul>
+                <li id="table_1" value="1" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item selected" onClick="siteview('list');">
+                        <i></i>
+                        <span>List View</span>
+                    </a>
+                </li>
+                <liid="table_2" value="2" class="menu-item popup-item" onClick="siteview('dropdown');">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Dropdown View</span>
+                    </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+    <div id="sites-popup" style="width:250px;" class="conduit-popup">
+        <div class="conduit-selectable-menu  min-1" id="sites-selectable-menu-selection">
+            <ul>
+                <li id="table_1" value="1" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item selected">
+                        <i></i>
+                        <span>Aberlady, West Main Street(Site 4)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Carberry, A6124, Musselburgh to Crossgatehall (Site 39)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Cockenie,B1348 Links Road (Site 15)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Cockenie,East Lorimer Road (Site 16)</span>
+                    </a>
+                </li>
+                <li id="table_2" value="2" class="menu-item popup-item">
+                    <a href="#" class="selectable-menu-item">
+                        <i></i>
+                        <span>Danskine,B6335 (Site 45)</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="mySidenav" class="sidenav box-shadow" style="left: 0;">
+      <a class="closebtn" onclick="closeNav()"><i class="fas fa-times"></i></a>
+        {% include "aecon/atc-navbar.html" %}
+    </div>
+    <div id="rightNav" class="sidenav box-shadow" style="right: 0;">
+      <a class="closebtn" onclick="closerNav()"><i class="fas fa-times"></i></a>
+      <div class="col-12 mt-4 px-4">
+        <ul>
+          <li><h4 class="font-weight-bold w-25 my-1 px-2">
+            Traffic Speed and Volume Dashboard
+          </h4></li>
+          <li>ATC Data
+              <ul>
+                <li>Headline Data</li>
+                <li>Hourly Volumes</li>
+                <li> Hourly Speed</li>
+                <li>Classification Data</li>
+                <li>Comparsion</li>
+              </ul>
+          </li>
+          <li>Sensor data</li>
+          <li>Logout</li>
+        </ul>
+      </div>
+    </div>
+    <section>
+      <div class="container-fluid" id="main-container">
+        <div class="row my-2">
+          <div class="sites-tab selection-header atc-popup-trigger shadow col-md-6 flex-fill" id="header"><span>ATC Data
+          </span><i class="chevron-icon"></i>
+          </div>
+          <div class="sites-tab selection-header header-popup-trigger shadow col-md-6 flex-fill" id="header"><span>Headline Data 
+          </span><i class="chevron-icon"></i></div>
+        </div> 
+          <div class="row mt-3 px-1">
+              {% comment %} <span style="font-size:30px;cursor:pointer" onclick="openNav()" class="show-navbar"><i class="icon-menu"></i></span> {% endcomment %}
+  
+                <div class="col-md-3 lg-view">
+                  {% include "aecon/atc-navbar.html" %}
+                </div>
+                <div class="contentTab col-sm-12 col-md-9 mt-2">
+                
+                  <div class="row main">
+                    <div class="col-md-8 position-relative left mb-3">  
+                        <div class="row">
+                            <div class="selection-header phase-popup-trigger col-md-3 shadow" id="phase"><span>Phase </span><i class="chevron-icon"></i></div>
+                            <div class="selection-header time-popup-trigger col-md-3 shadow" id="time"><span>Time </span><i class="chevron-icon"></i></div>
+                            <div class="selection-header direction-popup-trigger col-md-3 shadow" id="direction"><span>Direction </span><i class="chevron-icon"></i></div>
+                            <div class="selection-header day-popup-trigger col-md-3 shadow" id="day"><span>Day </span><i class="chevron-icon"></i></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-right position-relative right mb-3">  
+                        <h6 class="font-weight-bold">ATC data provided by Tracsis Plc</h6>
+                        <h6 class="mb-0 text-danger font-weight-bold">
+                        Pedal Cycle & Motorcycle data was not available for surveys undertaken in 2020
+                        </h6>
+                    </div>
+                  </div>
+                  <div class="content">
+                    {% block content %} {% endblock %}
+                  </div>
+                </div>
+          </div>
+      </div>
+    </section>
+    
+    <footer >
+      <div class="footer-bottom">
+        {% comment %} <a class="px-3 float-left">
+          <img height="50" width="150" class="h-75" src="/static/aecon/conduit_logo_color.png" alt="TCS" onclick="openNav()">
+        </a>
+          <div class="footer-menu">
+            <ul class="socials">
+              <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+              <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+              <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+            </ul>
+           </div> {% endcomment %}
+           <div class="navbar navbar-default px-0 py-2">
+            <div class="container-fluid flex-fill">
+              <a class="w-25 px-3 logo-width">
+                <img height="100" width="200" class="h-25" src="/static/aecon/TCS_Mono_White.png" alt="TCS">
+              </a>
+              <span class="footer-menu">
+                <ul class="socials">
+                  <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                  <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                  <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                </ul>
+              </span>
+            </div>
+          </div>
+     </div>
+     
+    </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+  </body>
+  <script>
+    function siteview(value){
+      if(value=="dropdown"){
+        $(".customScroll").hide();
+        $(".dropdownView").show();
+      }
+      else if (value == "list"){
+        $(".customScroll").show();
+        $(".dropdownView").hide();
+      }
+    }
+  </script>
+  <script>
+    function toggleSidebarFunctionality(){
+      if(userGuideActive){toggleUserGuide();}
+      if (downloadActive){
+          if(!sidebarMulti){
+              document.getElementById("sidebar").classList.remove("multi");
+          }
+          downloadActive = false;
+          $('#exampleModalCenter').modal('hide');
+          //document.getElementById("main-container-greyed-out").classList.add("d-none");
+          unpinSideBar();
+          var leaves = document.getElementById("sidebar").getElementsByClassName("leaf");
+          for (var i=0;i<leaves.length;i++){
+              leaves[i].getElementsByTagName("a")[0].classList.remove("selected");
+          }
+          for (var i=0;i<selectedSites.length;i++){
+              selectedSites[i].classList.add("selected");
+          }
+          document.getElementById("sidebar").getElementsByClassName("sidebar-brand-button")[0].onclick = toggleSideBar;
+          return;}
+      else{
+          //document.getElementById("main-container-greyed-out").classList.remove("d-none");
+          $('#exampleModalCenter').modal('show');
+          pinSideBar();
+          sidebarMulti = document.getElementById("sidebar").classList.contains("multi");
+          document.getElementById("sidebar").classList.add("multi");
+          selectedSites = [];
+          var sites = document.getElementById("sidebar").getElementsByClassName("selected");
+          for (var i=0;i< sites.length;i++){
+              selectedSites.push(sites[i]);
+          }
+          console.log("selected sites are",selectedSites);
+          var leaves = document.getElementById("sidebar").getElementsByClassName("leaf");
+          downloadActive = true;
+          document.getElementById("sidebar").getElementsByClassName("sidebar-brand-button")[0].onclick = function(){};
+      }
+  
+  
+    }
+  </script>
+  
+  <script>
+    function openNav() {
+        var e = document.getElementById("mySidenav");
+        if (e.style.width == '330px')
+        {
+            e.style.width = '0px';
+        }
+        else 
+        {
+            e.style.width = '330px';
+        }
+    }
+    function toogleTab(){
+      var elClass = document.getElementById("rightNav");
+      if (elClass.style.width == '330px')
+        {
+          elClass.style.width = '0px';
+        }
+        else 
+        {
+          elClass.style.width = '330px';
+        }
+    }
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+    function closerNav() {
+      document.getElementById("rightNav").style.width = "0";
+        }
+          function change_title(ele)
+      {
+        el = ele.getElementsByTagName('span')
+        $('#measurement').text($(el).text())
+          
+      }
+    </script>
+  <script>
+    var data = {
+      labels: [],
+
+      datasets: [
+        {
+          data: [300, 10, 160],
+          backgroundColor: ["#414fb1", "#000"],
+        },
+      ],
+    };
+
+
+    var ctx = document.getElementById("myChart");
+    var myDoughnutChart = new Chart(ctx, {
+      type: "doughnut",
+      data: data,
+      options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 65,
+      },
+    });
+  
+    var ctx = document.getElementById("myChart2");
+
+    var myDoughnutChart = new Chart(ctx, {
+      type: "doughnut",
+      data: data,
+      options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 65,
+      },
+    });
+   var ctx = document.getElementById("myChart3");
+
+    // And for a doughnut chart
+    var myDoughnutChart = new Chart(ctx, {
+      type: "doughnut",
+      data: data,
+      options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 65,
+      },
+    });
+    var ctx = document.getElementById("myChart4");
+
+    // And for a doughnut chart
+    var myDoughnutChart = new Chart(ctx, {
+      type: "doughnut",
+      data: data,
+      options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 65,
+      },
+    });
+    var ctx = document.getElementById("myChart5");
+
+    // And for a doughnut chart
+    var myDoughnutChart = new Chart(ctx, {
+      type: "doughnut",
+      data: data,
+      options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 65,
+      },
+    });
+    var ctx = document.getElementById("myChart6");
+
+    // And for a doughnut chart
+    var myDoughnutChart = new Chart(ctx, {
+      type: "doughnut",
+      data: data,
+      options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 65,
+      },
+    });
+    var ctx = document.getElementById("myChart7");
+
+    // And for a doughnut chart
+    var myDoughnutChart = new Chart(ctx, {
+      type: "doughnut",
+      data: data,
+      options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 65,
+      },
+    });
+    var ctx = document.getElementById("myChart8");
+
+    // And for a doughnut chart
+    var myDoughnutChart = new Chart(ctx, {
+      type: "doughnut",
+      data: data,
+      options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 65,
+      },
+    });
+    var ctx = document.getElementById("myChart9");
+
+    // And for a doughnut chart
+    var myDoughnutChart = new Chart(ctx, {
+      type: "doughnut",
+      data: data,
+      options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 65,
+      },
+    });
+    var ctx = document.getElementById("myChart10");
+
+    // And for a doughnut chart
+    var myDoughnutChart = new Chart(ctx, {
+      type: "doughnut",
+      data: data,
+      options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 65,
+      },
+    });
+    var ctx = document.getElementById("myChart11");
+
+    // And for a doughnut chart
+    var myDoughnutChart = new Chart(ctx, {
+      type: "doughnut",
+      data: data,
+      options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 65,
+      },
+    });
+    var ctx = document.getElementById("myChart12");
+
+    // And for a doughnut chart
+    var myDoughnutChart = new Chart(ctx, {
+      type: "doughnut",
+      data: data,
+      options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 65,
+      },
+    });
+  </script>
+  
+  <script>
+    
+    function setCotline(elem)
+    {
+       a_element.click()
+        $(a_element).addClass('selectable-menu-item')
+        $(a_element).addClass('selected')
+    }
+    function setUpChart(){
+      console.log("setting up  chart view labels are now ",graphLabels);
+      var selectors = document.querySelectorAll("[data-graph-group='daily']");
+      var direction = getCurrentDirection();
+      if (chart){chart.destroy();}
+      var days = document.getElementById("countline-daily-table").getElementsByClassName("class-selector");
+
+      var chartData = []
+      for(day of days){
+          chartData.push({"label":day.innerText,"data":[1,2,3],"borderColor":day.getAttribute("data-bg"),"backgroundColor":day.getAttribute("data-bg"),"fill":false,"pointRadius":0,"borderWidth":1});
+      }
+      console.log("length of graph labels is",graphLabels.length);
+
+      //console.log("weeeee chart data is",chartData);
+      if (chartView == "classed"){
+          chart = createStackedBarChart(document.getElementById("countline-classed-volumes"),{"labels":graphLabels,"datasets":chartData});
+          document.querySelectorAll("[data-graph-group='daily']")[0].click();
+      }
+      else{
+          chart = createLineChart(document.getElementById("countline-classed-volumes"),{"labels":graphLabels,"datasets":chartData});
+          document.getElementById("directions-popup").getElementsByClassName("menu-item")[direction].click();
+          chart.options.scales.xAxes[0].ticks.maxTicksLimit = 12;
+
+      }
+
+    } 
+  </script>
+  <script>
+    {% comment %} function toogleTopbar(){
+      if ($(".hiddenTab").hasClass('d-flex')) {
+        $(".hiddenTab").removeClass('d-flex');
+      } else {
+        $(".hiddenTab").addClass('d-none');
+      }
+    } {% endcomment %}
+    function viewSite(id){
+
+      console.log("id is",id);
+      var formData = new FormData();
+      formData.append("location_id",id);
+      //fetcher(formData,"dashboard",function(response){console.log("received response",response);});
+      window.location.href = "/conduit/{{client}}?location_id=" + id;
+    }
+    function dropdownList(){
+      $("#atcList").hide();
+    }
+    function tabContent(type,flg=""){     
+      var tab_content ={ 
+        "headline"  : "atc-headline",
+        "volume"    : "atc-volume",
+        "speed"     : "atc-speed",
+        "classify"  : "atc-classify",
+        "compare"   : "atc-compare",
+      }
+      var keys = Object.keys(tab_content);
+      for (let i=0;i<keys.length;i++)
+      {
+        if (type == keys[i] && type !="" ){
+         // $("#"+keys[i]).show();
+          window.location.href ="/aecon/dashboard/"+tab_content[keys[i]]
+        }
+        else if (flg !="", flg == tab_content[keys[i]])
+        {
+          document.getElementById(keys[i]).classList.add("active");
+        }
+      
+      }
+    }
+    tabContent("",'{{flg}}')
+  </script>
+  <script
+    type="text/javascript"
+    src="/static/aecon/moment.min.js"
+  ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+  <script src="{% staticversion 'aecon/cv2-base.js' %}"></script>
+  <script></script>
+</html>

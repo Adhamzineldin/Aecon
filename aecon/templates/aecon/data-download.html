@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- Bootstrap CSS -->
+
+  {% load staticversion %} {% load my_filters %} {% load client_tags %}
+  <link rel="stylesheet" href="https://use.typekit.net/qhi7zfc.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
+  <link rel="stylesheet" type="text/css"
+    href="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.css" />
+  <link rel="stylesheet" type="text/css" href="/static/aecon/daterangepicker.css" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+    integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css" />
+  <link rel="stylesheet" href="{% staticversion 'aecon/leaflet.awesome-markers.css' %}" type="text/css" />
+
+  {% if DEBUG %}
+  <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css" />
+  {% else %}
+  <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css" />
+  {% endif %}
+  <link rel="stylesheet" href="{% staticversion 'aecon/nouislider.css' %}" type="text/css" />
+  <link rel="stylesheet" href="{% staticversion 'aecon/cv2-base.css' %}" type="text/css" />
+  <link rel="stylesheet" href="{% staticversion 'aecon/bootstrap.min.css' %}" type="text/css" />
+  {% comment %}
+  <script src="{% staticversion 'aecon/cv2-graphs.js' %}"></script>
+  {% endcomment %} {% comment %}
+  <script src="{% staticversion 'aecon/cv2-map.js' %}"></script>
+  {% endcomment %}
+  <link rel="stylesheet" href="{% staticversion 'aecon/checkbox-style.css' %}" type="text/css" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+  <script src="https://mapbox.github.io/geojson-vt/geojson-vt-dev.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
+  <script type="text/javascript" src="/static/aecon/moment.min.js"></script>
+  {% comment %}
+  <script type="text/javascript" src="/static/aecon/daterangepicker.js"></script>
+  {% endcomment %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+  <script src="https://d3js.org/d3.v3.js"></script>
+  <script src="https://mapbox.github.io/geojson-vt/geojson-vt-dev.js"></script>
+
+  <script src="{% staticversion 'aecon/leaflet.polylineDecorator.js' %}"></script>
+  <script src="{% staticversion 'aecon/L.Line3.js' %}"></script>
+  <script src="{% staticversion 'aecon/nouislider.js' %}"></script>
+  <script src="{% staticversion 'aecon/leaflet.lineextremities.js' %}"></script>
+
+  <script src="{% staticversion 'aecon/cv2-data-func.js' %}"></script>
+  {% comment %}
+  <script src="{% staticversion 'aecon/cv2-base.js' %}"></script>
+  {% endcomment %}
+  <script src="{% staticversion 'aecon/cv2-local-storage.js' %}"></script>
+  <script src="{% staticversion 'aecon/cv2-graphs.js' %}"></script>
+  <script src="{% staticversion 'aecon/cv2-map.js' %}"></script>
+  <script src="{% staticversion 'aecon/atc.js' %}"></script>
+  <script src="{% staticversion 'aecon/cv2-main.js' %}"></script>
+  <title>Tracsis AECON</title>
+</head>
+
+<body onload="checkActiveNav('{{survey_type}}')">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #efefef;
+      overflow-x: hidden;
+    }
+
+    .modal,
+    .modal-backdrop {
+      position: absolute !important;
+    }
+
+    .modal-dialog {
+      max-width: 90% !important;
+    }
+
+    .modal-dialog,
+    .modal-content {
+      /* 80% of window height */
+      height: 90%;
+    }
+
+    .modal-body {
+      /* 100% = dialog height, 120px = header + footer */
+      overflow: hidden;
+    }
+
+    .footer-bottom div {
+      background: #141b4d;
+    }
+
+    .footer-bottom p {
+      float: left;
+      font-size: 14px;
+      word-spacing: 2px;
+      text-transform: capitalize;
+    }
+
+    .footer-bottom p img {
+      justify-content: center;
+    }
+
+    .footer-bottom span {
+      text-transform: uppercase;
+      opacity: 0.4;
+      font-weight: 200;
+    }
+
+    .footer-menu {
+      float: right;
+    }
+
+    .footer-menu ul {
+      display: flex;
+    }
+
+    .footer-menu ul li {
+      padding-right: 10px;
+      display: block;
+    }
+
+    .footer-menu ul li a {
+      color: #fff;
+      text-decoration: none;
+      background-color: #ffffff;
+    }
+
+    .footer-menu ul li a:hover {
+      color: #fff;
+    }
+
+    .socials {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0px;
+    }
+
+    .socials a {
+      text-decoration: none;
+      color: #fff;
+      border: 1.1px solid white;
+      padding: 5px;
+      border-radius: 50%;
+    }
+
+    .socials a i {
+      font-size: 1.1rem;
+      width: 18px;
+      transition: color 0.4s ease;
+      text-align: center;
+      color: #141b4d;
+    }
+
+    .socials a:hover i {
+      color: #141b4d;
+    }
+
+    .footer {
+      height: 60px;
+      margin-top: 20px;
+    }
+
+    .ht-40 {
+      height: 45rem !important;
+    }
+
+    .canvass .mt-5 {
+      margin-top: 4rem !important;
+    }
+
+    .ht-35 {
+      height: 35rem !important;
+    }
+
+    .classify th:nth-child(1) {
+      width: 20% !important;
+    }
+
+    .cond-tb tr {
+      background-color: #141b4d !important;
+      color: white !important;
+    }
+
+    .customScroll2 {
+      height: 24rem;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+
+    .checkbox {
+      background-color: #fff;
+      width: 100%;
+      border-radius: 5px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      font-weight: bold;
+      padding: 2px 5px;
+      accent-color: var(--main-color);
+    }
+
+    .project_label {
+      color: #141b4d;
+    }
+
+    .location_label {
+      color: var(--secondary);
+    }
+
+    @media (max-width: 500px) {
+      .footer-menu ul {
+        display: flex;
+        margin-top: 10px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+  {% csrf_token %}
+  <div class="greyed-out justify-content-center align-items-center">
+    <img src="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img"
+      data-greyed-out="atc-basic-overview" />
+  </div>
+  <input hidden value="{{location.id}}" id="location_id" />
+  <input hidden type="text" value="{{client.mapCode}}" id="mb-id" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/static/aecon/moment.min.js"></script>
+  <script type="text/javascript" src="/static/aecon/daterangepicker.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+  <div class="header">
+
+    <nav class="navbar navbar-expand-lg py-4">
+      <div class="container-fluid flex-fill">
+        <a class="navbar-brand px-3" href="#"><img height="50" width="150" class="h-75"
+            src="/static/aecon/conduit_logo_color.png" alt="Brand-logo" onclick="openNav()"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon fa-solid fa-bars"></span>
+        </button>
+        <div class="collapse navbar-collapse align-content-center text-center" id="navbarSupportedContent">
+          <ul class="navbar-nav m-auto">
+            {% if request.user.is_authenticated %}
+            <li class="nav-item ">
+                  <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/map-full-view';"> <i class="pin-icon"></i>
+                  Map View </a>
+                </li>
+                <li class="nav-item ">
+                  <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/sensor-data';"> <i class="atc-icon"></i>
+                    Sensor Data </a>
+                  </li>
+              <li class="nav-item ">
+              <a href="#" class="nav-link active" name="atc" onclick="location.href = '/aecon/atc-data';" aria-current="page"> <i class="ATC_Data_Icon"></i>
+                  ATC Data </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/radar-data';"> <i class="vas-icon"></i>
+                      Radar Data</a>
+                    </li>
+                      <li class="nav-item ">
+                        <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/link-data';"> <i class="link-icon"></i>
+                        Link Data</a>
+                      </li>
+              <li class="nav-item ">
+                  <a class="nav-link" aria-current="page" onclick="location.href = '/aecon/jtc-data';"> <i class="jtc-icon"></i>
+                  JTC Data </a>
+              </li>
+            {% else %}
+            <li class="nav-item ">
+              <a href="#" class="nav-link " aria-current="page"
+                onclick="location.href = '/aecon/map-full-view';"> <i class="pin-icon"></i>
+                Map View </a>
+            </li>
+            <li class="nav-item ">
+              <a href="#" class="nav-link  active" aria-current="page"> <i class="atc-icon-green"></i>
+                ATC Data </a>
+            </li>
+            {% endif %}
+          </ul>
+          
+          {% if request.user.is_authenticated %}
+          <a class="btn " aria-current="page" href="/aecon/logoff"
+            style="border-radius: 5px !important; padding: 10px 15px;">
+            Logout <i class="fas fa-chevron-down ps-1"></i></a>
+          {% else %}
+          <a class="btn " aria-current="page" href="/aecon">
+            Login <i class="fas fa-chevron-up ps-1"></i></a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+
+    <div class="subnavbar py-2">
+      <div class="container-fluid row flex-wrap align-items-center justify-content-between">
+        {% if request.user.is_authenticated %}
+        <ul class="nav col-10">
+          <li class="nav-item">
+            <a href="#" id="headline" onclick="tabContent('headline');" class="nav-link" aria-current="page">
+              Headline Data
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" id="volume" onclick="tabContent('volume');" class="nav-link" aria-current="page">
+              Hourly Volumes
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" id="speed" onclick="tabContent('speed');" class="nav-link " aria-current="page">
+              Hourly Speed
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" id="classify" onclick="tabContent('classify');" class="nav-link " aria-current="page">
+              Classification Data
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" id="compare" onclick="tabContent('compare');" class="nav-link " aria-current="page">
+              Comparison
+            </a>
+          </li>
+          {% if request.user.is_superuser %}
+          <li class="nav-item">
+            <a href="#" onclick="location.href = '/aecon/atc-upload';" class="nav-link" aria-current="page">
+              Upload
+            </a>
+          </li>
+          {% endif %}
+          <li class="nav-item">
+            <a href="{% url 'data_download' survey_type=survey_type %}" id="download" class="nav-link active"
+              aria-current="page">
+              Download
+            </a>
+          </li>
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="row main">
+    <div class="col-md-8">
+      <label class="text-left mt-5 mb-4" style="font-size: medium;margin-top: 8px;">
+          <strong>Downloading Instructions:</strong>
+          <br>1) Select <strong>projects</strong> from the <strong>projects list</strong> to show their associated locations.
+          <br>2) Select <strong>locations</strong> associated with a project from the <strong>locations list</strong> to download.
+          <br><strong>Please Note: The more files you select the more time it will take to download</strong>
+      </label>
+    </div>
+  </div>
+  <div class="row main" style="margin-top: 8px">
+    <div class="col-md-4">
+      <label for="project_list"><strong>Projects List</strong></label>
+      <input type="checkbox" id="project-select-all-check" onchange="toggleSelectAll('project-select-all-check','projects_list')">
+      <div class="customScroll2" id="projects_list">
+        {% for project in projects %}
+        <div class="checkbox">
+          <input
+            type="checkbox"
+            name="project"
+            id="{{project.project_no}}_check"
+            value="{{project}}"
+            onchange="viewLocations('{{project.project_no}}'); checkToggleSelectAll('project-select-all-check','projects_list','project-counter');checkToggleSelectAll('location-select-all-check','locations_list','location-counter')"
+          />
+          <label style="position: relative; top: 4px" for="{{project.project_no}}_check" class="project_label p-2"
+            >{{project.name}}</label>
+        </div>
+        {% endfor %}
+      </div>
+      <div style="text-align: end; font-size: 14px; font-weight: bold; position: relative; right: 22px"><span id="project-counter">0</span> projects selected</div>
+    </div>
+    <div class="col-md-4">
+      <label for="project_list"><strong>Locations List</strong></label>
+      <input type="checkbox" id="location-select-all-check" onchange="toggleSelectAll('location-select-all-check','locations_list')">
+    <form onsubmit="setTimeout(function() { alert('Your download Process has started, An email with a link to your download will be sent shortly!'); }, 1);" action={% url 'data_download' survey_type=survey_type %} method="post" enctype="multipart/form-data" id="download-form">
+      <div class="customScroll2" id="locations_list">
+        {% for project, locations in project_locations.items %}
+        {% for location in locations %}
+        <div name="{{project.project_no}}_location_check" style="display:none" class="checkbox">
+          <input style="position: relative; top: 5px" type="checkbox" name="project_location" id="{{project.id}}_{{location.id}}_check" class="{{project.project_no}}" value="{{project.id}}_{{location.id}}" onchange="checkToggleSelectAll('location-select-all-check','locations_list','location-counter'); "/>
+          <label style="position: relative; top: 4px" for="{{project.project_no}}_{{location.id}}_check" class="location_label p-2"><span class="project_label">{{project.name}}</span> {{location.name}}</label>
+        </div>
+        {% endfor %}
+        {% endfor %}
+      </div>
+      <div style="text-align: end;font-size: 14px; font-weight: bold; position: relative; right: 22px"><span id="location-counter">0</span> locations selected</div>
+    </div>
+  </div>
+    <div class="row main">
+      <div class="col text-center">
+        {% csrf_token %}
+        <input for="download-form" type="submit" class="mt-3 btn shadow my-auto" value="ATC Data Download" id="download-btn"/>
+      </div>
+    </div>
+    </form>
+</body>
+<script>
+  $(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
+<script>
+  function uploadLink(survey_type){
+    prefix=""
+    if(survey_type=="atc")prefix="atc";
+    else if(survey_type=="vas")prefix="mph";
+    else if(survey_type=="hist")prefix="historic";
+
+    window.location.href = "/aecon/"+prefix+"-upload";
+  }
+  function checkActiveNav(survey_type){
+    nav_links=document.getElementById('navbarSupportedContent').querySelectorAll('.nav-link')
+    for(let i=0;i<nav_links.length;i++){
+      if(nav_links[i].name==survey_type){
+        nav_links[i].classList.add('active')
+        icon_name=nav_links[i].getElementsByTagName('i')[0].classList[0]
+        nav_links[i].getElementsByTagName('i')[0].classList.remove(icon_name)
+        icon_name+='-green'
+        nav_links[i].getElementsByTagName('i')[0].classList.add(icon_name)
+      }
+    }
+  }
+  function viewLocations(project_no) {
+    checkbox=document.getElementById(project_no+"_check");
+    locations_checks=document.getElementsByName(project_no+"_location_check");
+    if(!checkbox.checked){
+      for(let i=0;i<locations_checks.length;i++){
+        locations_checks[i].style.display="none";
+        location_box=locations_checks[i].getElementsByTagName("input")[0];
+        if(location_box.checked){
+          location_box.click();
+        }
+      }
+    }else{
+      for(let i=0;i<locations_checks.length;i++){
+        locations_checks[i].style.display="block";
+      }
+    }
+  }
+  function toggleSelectAll(toggleCheckBoxID,listID){
+    checkboxesList=document.getElementById(listID).children;
+    toggleCheckBox=document.getElementById(toggleCheckBoxID);
+    if(toggleCheckBox.checked){
+      for(let i=0; i<checkboxesList.length;i++){
+        style=window.getComputedStyle(checkboxesList[i]);
+        box=checkboxesList[i].getElementsByTagName('input')[0];
+        if(!box.checked && style.display!='none'){
+          box.click();
+        }
+      }
+    }else{
+      for(let i=0; i<checkboxesList.length;i++){
+        box=checkboxesList[i].getElementsByTagName('input')[0];
+        if(box.checked){
+          box.click();
+        }
+      }
+    }
+  }
+  function checkToggleSelectAll(toggleCheckBoxID,listID,counterID){
+    toggleCheckBox=document.getElementById(toggleCheckBoxID);
+    checkboxes=document.getElementById(listID).children;
+    visibleCnt=0;
+    checkCnt=0;
+    for(let i=0;i<checkboxes.length;i++){
+      style=window.getComputedStyle(checkboxes[i]);
+      box=checkboxes[i].getElementsByTagName('input')[0];
+      if(style.display!='none'){
+        visibleCnt++;
+        if(box.checked)checkCnt++;
+      }
+    }
+    if(checkCnt==visibleCnt && visibleCnt!=0)toggleCheckBox.checked=true;
+    else toggleCheckBox.checked=false;
+    counter=document.getElementById(counterID);
+    counter.innerText=checkCnt;
+  }
+</script>
+<script>
+  function tabContent(type,survey_type="atc", flg = "") {
+    prefix=""
+    if(survey_type=="atc")prefix="atc";
+    else if(survey_type=="vas")prefix="mph";
+    else if(survey_type=="hist")prefix="historic";
+
+    var tab_content = {
+      headline: prefix+"-headline",
+      volume: prefix+"-volume",
+      speed: prefix+"-speed",
+      classify: prefix+"-classify",
+      compare: prefix+"-compare",
+      upload: prefix+"-upload",
+      download: prefix+"-download",
+    };
+    var keys = Object.keys(tab_content);
+    for (let i = 0; i < keys.length; i++) {
+      if (type == keys[i] && type != "") {
+        // $("#"+keys[i]).show();
+        //window.location.href ="/aecon/atc-data/"+tab_content[keys[i]]
+        window.location.href =
+          "/aecon/"+prefix+"-data/" + tab_content[keys[i]];
+      } else if ((flg != "", flg == tab_content[keys[i]])) {
+        document.getElementById(keys[i]).classList.add("active");
+      }
+    }
+  }
+</script>
+
+</html>

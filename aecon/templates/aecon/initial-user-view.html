@@ -1,0 +1,45 @@
+
+
+
+
+
+
+<div class="row align-items-center"  style="height:50px">
+    <div class="col-12 my-auto d-flex align-items-center" >
+        <div><h3 class="text-muted" style="margin:0">{{project.id}} {{project.name}}</h3></div>
+        <div class="fn"><i class="flaticon-cloud-computing"></i>
+
+
+        </div>
+    </div>
+</div>
+
+{% for obsType,locs in locations.items %}
+
+    <div class="row" style="border-bottom:1px solid #c7c7de">
+        <div class="col-12 d-flex align-items-center" style="height:50px;background-color:#F2F3F8">
+            <div><h6 class="text-muted" style="margin:0">{{obsType.name}}</h6></div>
+            <div class="fn"><i class="flaticon-cloud-computing"></i></div>
+        </div>
+        <div class="col-12">
+            <div class="row">
+                {% for loc in locs %}
+                    <div class="col-lg-4 col-xl-3 col-sm-6 conduit-header-box">
+                        <div class="conduit-header-box-title">{{loc.name}}</div>
+                        <div class="d-flex" style="margin-left:auto">
+                            <div class="fn"><i class="flaticon-cloud-computing"></i></div>
+                            <div class="fn"><i class="flaticon-picture"></i></div>
+                            <div class="fn" onclick="location.href='viewLocation?id={{loc.id}}';"><i class="flaticon-search-1"></i></div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+
+{% endfor %}
+
+
+

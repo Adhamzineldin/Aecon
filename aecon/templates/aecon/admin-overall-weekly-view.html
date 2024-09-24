@@ -1,0 +1,235 @@
+{% extends "aecon/admin-base.html" %}
+{% load staticversion %}
+{% load client_tags %}
+{% load my_filters %}
+
+{% block content %}
+
+<style>
+
+    th { font-size: 12px; padding-right:20px !important}
+    td { font-size: 12px;white-space: nowrap;overflow: hidden }
+
+    select.form-control:not([size]):not([multiple]) {
+        height: calc(2.25rem + 2px);
+    }
+
+</style>
+
+
+<div class="row" style="width:100%;height:100%">
+    <div class="col-12 d-flex align-items-center" style="height:50px">
+        <div>
+            <select class="form-control" id="project-select" onchange="table.draw();">
+                <option>All Projects</option>
+                {% for client in clients %}
+                    <option value="{{client.id}}">{{client.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button class="btn btn-primary btn-light-primary d-none" id="todays-checks-tab" href="#" style="position:relative">
+            No Data
+            <span class="badge badge-danger badge-pill" id="check-notification">52</span>
+        </button>
+        <button class="btn btn-primary btn-light-primary d-none" id="todays-checks-tab" href="#"  style="position:relative;margin-left:10px">
+            Potential Issues
+            <span class="badge badge-danger badge-pill" id="check-notification">3</span>
+        </button>
+    </div>
+    <div class="col-12 pb-3" style="height:calc(100% - 50px)">
+        <div class="card header-shadow" style="max-height:100%">
+            <div class="card-header  bg-transparent d-none">
+                <h5>Location Details</h5>
+                <div class="topbar__item-holder">
+                    <div class="topbar__item text-muted toggle-between" data-target="location-group" ><span><i class="flaticon-calendar"></i></span></div>
+                    {% comment %} <div class="topbar__item text-muted events-popup-trigger" ><span><i class="flaticon-internet"></i></span></div> {% endcomment %}
+
+                    <div class=" d-none dropdown-header classes-popup-trigger" style="margin-left:auto" id="class-selector">
+                        <span>Classes</span><i class="chevron-icon"></i>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <div class="card-body" style="overflow:auto;max-height:100%">
+                <table class="table table-striped" id="sensor-table">
+                    <thead>
+                    <tr>
+                        <th colspan="6" style="border:none"></th>
+                        <th colspan="15" style="text-align:center;border-bottom:none;border-left:1px solid #dee2e6;border-right:1px solid #dee2e6"> Data for week commencing {{d1}} compared to week commencing {{d2}}</th>
+                    </tr>
+                    <tr>
+                        <th style="max-width:50px;width:50px">Project</th>
+                        <th class="d-none">Supervisor</th>
+                        <th style="max-width:50px;width:50px">Tracsis Unique ID</th>
+                        <th style="max-width:50px;width:50px">Vivacity API ID</th>
+
+                        <th >Readable Name</th>
+                        <th style="max-width:50px;width:50px">Area</th>
+                        <th class="d-none" style="max-width:50px;width:50px">Conf. Lvl</th>
+                        <th class="d-none" style="max-width:100px;width:100px">Last Data Received</th>
+                        <th style="max-width:100px;width:100px">Last Non Zero Data</th>
+                        <th style="max-width:50px;width:50px">Mon</th>
+                        <th style="max-width:50px;width:50px">%</th>
+                        <th style="max-width:50px;width:50px">Tue</th>
+                        <th style="max-width:50px;width:50px">%</th>
+                        <th style="max-width:50px;width:50px">Wed</th>
+                        <th style="max-width:50px;width:50px">%</th>
+                        <th style="max-width:50px;width:50px">Thu</th>
+                        <th style="max-width:50px;width:50px">%</th>
+                        <th style="max-width:50px;width:50px">Fri</th>
+                        <th style="max-width:50px;width:50px">%</th>
+                        <th style="max-width:50px;width:50px">Sat</th>
+                        <th style="max-width:50px;width:50px">%</th>
+                        <th style="max-width:50px;width:50px">Sun</th>
+                        <th style="max-width:50px;width:50px">%</th>
+                        <th style="max-width:50px;width:50px;padding:.5rem"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for loc in locations %}
+                            <tr>
+                                <td>{{loc.project_name}}</td>
+                                <td class="d-none">supervisor</td>
+                                <td style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden">{{loc.id}}</td>
+
+
+                                <td>{{loc.api_identifier}}</td>
+                                <td>{{loc.name}}</td>
+                                <td >{{loc.area_name}}</td>
+                                <td class="d-none" >0</td>
+                                <td class="d-none">{{loc.lastDataReceived|date:"d/m/Y H:i"}}</td>
+                                <td>{{loc.lastNonZeroDataReceived|date:"d/m/Y H:i"}}</td>
+                                <td>{{loc.mon_1}}</td>
+                                <td>{{loc.mon_1|percentage:loc.mon_0}}</td>
+                                <td>{{loc.tue_1}}</td>
+                                <td>{{loc.tue_1|percentage:loc.tue_0}}</td>
+                                <td>{{loc.wed_1}}</td>
+                                <td>{{loc.wed_1|percentage:loc.wed_0}}</td>
+                                <td>{{loc.thu_1}}</td>
+                                <td>{{loc.thu_1|percentage:loc.thu_0}}</td>
+                                <td>{{loc.fri_1}}</td>
+                                <td>{{loc.fri_1|percentage:loc.fri_0}}</td>
+                                <td>{{loc.sat_1}}</td>
+                                <td>{{loc.sat_1|percentage:loc.sat_0}}</td>
+                                <td>{{loc.sun_1}}</td>
+                                <td>{{loc.sun_1|percentage:loc.sun_0}}</td>
+
+                                <td style="max-width:50px;width:50px;cursor:pointer" class="text-center" onclick="window.location.href='/aecon/admin/location?id={{loc.id}}'"><i class="far fa-eye text-muted" style="font-size:20px"></i></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+    var table;
+    var issueCount = 0;
+    table = $('#sensor-table').DataTable( {
+            drawCallback: function () {
+                console.log("aqoeriaeh ");
+                $('[data-toggle="popover"]').popover({
+                    trigger: 'hover',
+                    container:"body",
+                    placement: 'right',
+
+                })
+            },
+            "createdRow": function(row, data, dataIndex){
+                    //console.log(row.cells);
+                    indexes = [ 10, 12, 14, 16, 18, 20, 22];
+                    indexes.forEach(function(i){
+                        var val = parseInt(row.cells[i].innerText)
+                        console.log("value", val, getThresholdClass(val));
+                        row.cells[i].classList.add(getThresholdClass(val))
+                        row.cells[i].classList.add("variance");
+                    })
+                    indexes = [7,8];
+                    indexes.forEach(function(i){
+                        //console.log("parsing", row.cells[6]);
+                        if (row.cells[i].innerText == ""){
+                            var d= moment("2000-01-01")
+                        }
+                        else{
+                            var d = moment(row.cells[i].innerText,"DD/MM/YYYY HH:mm")
+                        }
+
+                        //console.log("d is", d)
+                        var diff = d.diff(moment(), "minutes");
+                        if(Math.abs(diff) <= 60){
+                            row.cells[i].classList.add("acceptable")
+                        }
+                        else if(Math.abs(diff) > 60 && Math.abs(diff) < 1440){
+                            row.cells[i].classList.add("medium")
+                        }
+                        else{
+                            row.cells[i].classList.add("unacceptable")
+                            if (i==8){
+                                issueCount = issueCount + 1;
+                            }
+
+                            console.log("adding an issue!!!");
+                        }
+                        //row.cells[7].setAttribute("data-order", Math.abs(diff));
+                    });
+
+                },
+            "paging":   false,
+            "searching": true,
+            "info":     false,
+            'autoWidth': false,
+            aoColumns:[
+            {"bSortable": true},
+            {"bSortable": true, "sWidth":"120px" },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true},
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true},
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": true },
+            {"bSortable": false },
+            ],
+        } );
+
+    $.fn.dataTable.ext.search.push(
+          function( settings, data, dataIndex ) {
+            var sel = document.getElementById("project-select");
+            var text = sel.options[sel.selectedIndex].text;
+            if (text == "All Projects"){
+                return true;
+            }
+            else{
+                return text == data[0];
+            }
+          });
+
+    function viewSite(id){
+        document.getElementsByClassName("greyed-out")[1].classList.add("show");
+        window.location.href = "/aecon/admin/location?id=" + id;
+    }
+
+</script>
+{% endblock %}

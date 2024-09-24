@@ -1,0 +1,185 @@
+{% extends "aecon/jtc-data.html" %}
+{% block content %}
+{% load staticversion %} {% load my_filters %} {% load client_tags %}
+<style>
+    .overview-site-container,
+    .overview-location-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .overview-site-heading,
+    .overview-location-heading {
+        font-size: 2rem;
+        font-weight: bold;
+        font-style: italic;
+    }
+
+    .overview-site-list,
+    .overview-location-list {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .overview-site {
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .overview-site-bottom {
+        color: #24d541;
+        margin-top: 1rem;
+    }
+
+    .overview-location {
+        text-align: center;
+        color: #24d541;
+    }
+
+    .overview-location-unit {
+        font-weight: 600;
+    }
+
+    .overview-location-unit span {
+        color: black;
+    }
+   
+    .map-card-body .card-body{
+        height:550px !important;
+    }
+    /* Marker box styles */
+    .marker-circle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        border: 2px solid #141b4d; /* Border color */
+        border-radius: 50%; /* Make it round */
+        background-color: #fff; /* Background color */
+        color: #141b4d; /* Text color */
+      }
+
+    .custom-marker {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .custom-tooltip {
+        background-color: #fff;
+        color: #141b4d;
+        border: 1px solid #141b4d;
+    }
+
+    .arm-container {
+        position: relative;
+        width: 140px; /* Set the total width of both images */
+    }
+    
+   
+
+    .rotate90 {
+        transform: rotate(90deg);
+      }
+     .rotate-91deg {
+        transform: rotate(-91deg);
+      }
+
+      .image1 img{
+        width: 50px;
+    }
+   .image2 img{
+        width: 45px;
+    }
+    .text1{
+        transform: rotate(-90deg);
+        position: absolute;
+        top: 35px;
+        left: -10px;
+        font-weight: 700;
+    }
+    .text2{
+        transform: rotate(90deg);
+        position: absolute;
+        top: 16px;
+        right: -5px;
+        font-weight: 700;
+    }
+    .overview-site{
+        color: #141b4d;
+    }
+    .classification-option{
+        gap: 5px;
+        display: flex;
+      }
+    .calender-content {
+        margin-top: 5% !important;
+    }
+    #location-info h5{
+        background: #141b4d;
+        color: #fff;
+        text-align: center;
+        padding: 12px 0;
+        border-radius: 5px;
+    }
+    #accordion .card{
+        width:auto !important;
+        height:auto !important;
+
+    }
+    #accordion .card .card-header {
+        background-color: #141b4d;
+        border-bottom: 1px solid rgb(20 27 77);
+        border-radius: 5px;
+    }
+    #accordion .card .card-link{
+        color: #fff;
+        text-decoration: none;
+    }
+    .carddd{
+        min-height: 645px !important;
+    }
+    .side-location-loc-key{
+        text-align: center;
+        padding-right:0px !important;
+    }
+    .side-location-lat-value {
+        text-align: center;
+    }
+    .card-body {
+        height: 100% !important;
+    }
+    .dd-Observation-btn{
+        display:none;
+    }
+    #site-select-wrapper{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+<div class="px-3 py-1 mt-4 bg-white" style="box-shadow: 0px 0px 10px #0000001A; border-radius: 5px;">
+    <div class="row p-3">
+        <div class="col-md-12 col-sm-12 ">
+             <div class="map-card-body mb-4">
+                <div class="card-body my-4" id="map-container">
+                    <div class="col-12 " id="map-wrapper" style="width:100%;height:100%;padding:0">
+                    <div class = "map-panel" id = "countline-map" style="height:100%"></div>
+                    <div class="topbar__item" onclick="toggleExpandMap();" style="width:30px;height:30px;line-height:25px;background-color:white;position:absolute;bottom:10px;left:10px;z-index:400;border-radius:2px;border:2px solid grey;text-align:center;font-size:16px;cursor:pointer">
+                        <span class="icon-toggle"><i class="fa fa-expand" data-alt="fa fa-compress"></i></span>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let projectsdata = {{projectsList}}
+    console.log('projectsdata',projectsdata)
+</script>
+<script src="/static/aecon/jtc/jtcOverview.js"></script>
+{% endblock %}

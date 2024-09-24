@@ -1,0 +1,584 @@
+{% extends "aecon/atc-data.html" %} {% block content %}
+<div class="row main">
+    <div class="col-md-12 mb-3">
+        <div class="row">
+            <div
+                class="selection-header phase-popup-trigger me-3 col-md-2 shadow"
+                id="phase-header"
+            >
+                <label class="popup-label">Survey</label><span>Survey </span
+                ><i class="chevron-icon"></i>
+            </div>
+            <div
+                class="selection-header directions-popup-trigger col-md-2 me-3 shadow"
+                id="directions-header"
+            >
+                <label class="popup-label">Direction</label
+                ><span id="directionText">Combined</span
+                ><i class="chevron-icon"></i>
+            </div>
+            <div
+                class="selection-header classes-popup-trigger col-md-2 shadow"
+            >
+                <label class="popup-label">Classifications</label
+                ><span>Classifications</span><i class="chevron-icon"></i>
+            </div>
+            <div
+                class="selection-header time-popup-trigger col-md-2 shadow"
+            >
+                <label class="popup-label">Time Period</label
+                ><span class="timePText">Time Period</span
+                ><i class="chevron-icon"></i>
+            </div>
+            <div class="selection-header col-md-2 shadow" onclick="observationPopup(this)">
+                <label class="popup-label">Observation</label>
+                <span>Observation</span>
+            </div>
+        </div>
+    </div>
+    <div
+        class="px-3 py-1 mt-4 bg-white"
+        style="box-shadow: 0px 0px 10px #0000001a; border-radius: 5px"
+    >
+        <div class="row p-3" style="position: relative">
+            <div
+                style="
+                    display: flex;
+                    justify-content: space-around;
+                    margin-bottom: 50px;
+                "
+            >
+                <div class="totalCount">
+                    <div class="text">
+                        <h1 style="margin-bottom: 15px">Total Count</h1>
+                        <h2 id="totalCount" style="text-align: center"></h2>
+                    </div>
+                </div>
+                <div class="inboundCount">
+                    <div class="text">
+                        <h1 style="margin-bottom: 15px">Inbound Count</h1>
+                        <h2 id="inboundCount" style="text-align: center"></h2>
+                    </div>
+                </div>
+                <div class="outBoundCount">
+                    <div class="text">
+                        <h1 style="margin-bottom: 15px">Outbound Count</h1>
+                        <h2 id="outboundCount" style="text-align: center"></h2>
+                    </div>
+                </div>
+            </div>
+            <!-- <p class="text-danger">*please, Hover over the bars</p> -->
+            <div class="d-flex">
+                <div class="chartContainer">
+                    <canvas
+                        id="myChart"
+                        style="left: -25px; position: relative"
+                    ></canvas>
+                </div>
+                <div class="numbers d-flex flex-column justify-content-evenly ">
+                  
+                </div>
+            </div>
+         
+        </div>
+    </div>
+    {% endblock %} {% block js%}
+    <script>
+        $(".table-wrapper").on("scroll", function () {
+            $(".table-wrapper:not(this)").scrollTop($(this).scrollTop());
+        });
+    </script>
+    <script>
+        let chartData = [];
+        function setdata(id) {
+            var classes_lst = [];
+            location_details.classes.split("<span>").forEach(function (item) {
+                item.includes("</span>")
+                    ? classes_lst.push(item.split("</span>")[0])
+                    : "";
+            });
+            classes_lst = classes_lst.filter((item) => item !== "All");
+            if (classes_lst.length == 0) {
+                return;
+            }
+            var table_data =
+                classedData.data[id].directions[getCurrentDirection()].baseData[
+                    getCurrentDay() - 1
+                ];
+            var graphLabels = classedData.graphLabels;
+            for (let j = 0; j < classes_lst.length; j++) {
+                var items = document
+                    .getElementById("time-popup")
+                    .querySelectorAll(
+                        ".menu-item .selectable-menu-item.selected span"
+                    );
+                for (var x = 0; x < items.length; x++) {
+                    let startTime = items[x].getAttribute("data-start-time");
+                    let endTime = items[x].getAttribute("data-end-time");
+                    var data = table_data[j].data.slice(
+                        graphLabels.indexOf(startTime),
+                        graphLabels.indexOf(endTime)
+                    );
+                }
+
+                classes_lst[j] = data
+                    .reduce(function (a, b) {
+                        return myReduce(a, b);
+                    }, 0)
+                    .toFixed(0);
+            }
+            classes_lst = classes_lst.map(Number);
+            var total = classes_lst.reduce(function (a, b) {
+                return a + b;
+            }, 0);
+            for (let i = 0; i < classes_lst.length; i++) {
+                var per = percentage(classes_lst[i], total);
+                per = per != "NaN" ? per : 0.0;
+            }
+            let labels = [];
+            const validLabels = [
+                "Very Short-Bicycle or Motorcycle",
+                "Short-Car 4WD or LightVan",
+                "Short Towing-Trailer Caravan etc",
+                "2-Axle Truck or Bus",
+                "3-Axle Truck or Bus",
+                "4-Axle Truck",
+                "3-Axle Articulated ",
+                "4-Axle Articulated",
+                "5-Axle Articulated",
+                "6+ Axle Articulated",
+                "B-Double or Heavy Truck & Trailer",
+                "Double or Triple Heavy Truck & 2(or more) Trailers",
+            ];
+            let chartBackgrounds = [];
+            let chartData = [];
+            let notSelectedData = [];
+            var items = document
+                .getElementById("classes-popup")
+                .getElementsByClassName("menu-item");
+            let con = true;
+            for (let index = 0; index < items.length; index++) {
+                const isSelected = items[index]
+                    .querySelector(".selectable-menu-item")
+                    .classList.contains("selected");
+                const itemText = items[index].querySelector("span").textContent;
+                chartData.push(classes_lst[index]);
+                if (validLabels.includes(itemText.trim())) {
+                    if (isSelected) {
+                        labels.push(itemText.trim());
+                        chartBackgrounds.push(
+                            items[index].querySelector(".fa").style.color
+                        );
+                        notSelectedData.push(classes_lst[index - 1]);
+                        console.log("notSelectedData", notSelectedData);
+                        con = false;
+                    }
+                }
+            }
+
+            const canvas = document.getElementById("myChart");
+            const ctx = canvas.getContext("2d");
+            const chartConfig = {
+                type: "horizontalBar",
+                options: {
+                    title: {
+                        display: true,
+                        text: "Analysis Distribution Of Vehicles",
+                    },
+                    responsive: true,
+                    legend: {
+                        display: false,
+                    },
+                    scales: {
+                        xAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true,
+                                },
+                            },
+                        ],
+                        yAxes: [
+                            {
+                                stacked: true,
+                                categoryPercentage: 0.8,
+                            },
+                        ],
+                    },
+                },
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            data: [],
+                            fill: false,
+                            backgroundColor: chartBackgrounds,
+                            borderColor: chartBackgrounds,
+                            borderWidth: 1,
+                            categoryPercentage: 0.8,
+                        },
+                    ],
+                },
+            };
+            const chart = new Chart(ctx, chartConfig);
+            let divs=document.querySelectorAll(".numbers div");
+            for(let el of divs){
+                el.remove();
+            }
+            for(let el of notSelectedData){
+                    let numberContainer=document.querySelector(".numbers");
+                let div=document.createElement("div");
+                let number=document.createTextNode(el);
+                div.appendChild(number);
+                numberContainer.appendChild(div);
+            }
+            for (let index = 0; index < items.length; index++) {
+                const isSelected = items[index].querySelectorAll(
+                    ".selectable-menu-item.selected"
+                );
+                if (isSelected.length == 0) {
+                    console.log("notSelectedData", notSelectedData);
+                    chart.data.datasets[0].data = notSelectedData;
+                    document.getElementById("totalCount").textContent = " ";
+                    document.getElementById("inboundCount").textContent = "0";
+                    document.getElementById("outboundCount").textContent = "0";
+                } else {
+                    chart.data.datasets[0].data = con
+                        ? chartData
+                        : notSelectedData;
+                }
+            }
+            // Your existing code...
+            var ClassificationItems = document
+                .getElementById("classes-popup")
+                .getElementsByClassName("menu-item");
+            for (var j = 0; j < ClassificationItems.length; j++) {
+                ClassificationItems[j].addEventListener("click", function () {
+                    let para = document.querySelectorAll(".numbers div");
+                    for (let item of para) {
+                        item.remove();
+                    }
+                    chart.destroy();
+                });
+            }
+            var PhaseItems = document
+                .getElementById("phase-popup")
+                .getElementsByClassName("menu-item");
+            for (var j = 0; j < PhaseItems.length; j++) {
+                PhaseItems[j].addEventListener("click", function () {
+                    let para = document.querySelectorAll(".numbers div");
+                    for (let item of para) {
+                        item.remove();
+                    }
+                    chart.destroy();
+                });
+            }
+            // Other menu items and event listeners...
+            var DirectionItems = document
+                .getElementById("directions-popup")
+                .getElementsByClassName("menu-item");
+            for (var j = 0; j < DirectionItems.length; j++) {
+                DirectionItems[j].addEventListener("click", function () {
+                    let para = document.querySelectorAll(".numbers div");
+                    for (let item of para) {
+                        item.remove();
+                    }
+                    if (typeof chart !== "undefined" && chart !== null) {
+                        chart.destroy();
+                    }
+                    let inboundContainer =
+                        document.querySelector(".inboundCount");
+                    let outboundContainer =
+                        document.querySelector(".outBoundCount");
+                    let totalContainer = document.querySelector(".totalCount");
+                    let directionContainer =
+                        document.getElementById("directionText");
+                    console.log(
+                        "directionContainer",
+                        directionContainer.textContent
+                    );
+                    console.log("totalContainer", totalContainer);
+                    console.log("inboundContainer", inboundContainer);
+                    console.log("outboundContainer", outboundContainer);
+
+                    if (directionContainer.textContent == "Inbound") {
+                        console.log(
+                            "directionContainer.textContent",
+                            directionContainer.textContent
+                        );
+                        outboundContainer.style.display = "none";
+                        totalContainer.style.display = "none";
+                        inboundContainer.style.display = "block";
+                    }
+                    if (directionContainer.textContent == "Outbound") {
+                        inboundContainer.style.display = "none";
+                        totalContainer.style.display = "none";
+                        outboundContainer.style.display = "block";
+                    }
+                    if (directionContainer.textContent == "Combined") {
+                        inboundContainer.style.display = "block";
+                        totalContainer.style.display = "block";
+                        outboundContainer.style.display = "block";
+                    }
+                });
+            }
+            var TimeItems = document
+                .getElementById("time-popup")
+                .getElementsByClassName("menu-item");
+            for (var j = 0; j < TimeItems.length; j++) {
+                TimeItems[j].addEventListener("click", function () {
+                    let para = document.querySelectorAll(".numbers div");
+                    for (let item of para) {
+                        item.remove();
+                    }
+                    chart.destroy();
+                    document.getElementById("timeP-popup").style.display =
+                        "none";
+                });
+            }
+            function sumArray(arr) {
+                let sum = 0;
+                for (const num of arr) {
+                    sum += num;
+                }
+                return sum;
+            }
+            // Update the chart after processing data
+            chart.update();
+            var totalCount = sumArray(notSelectedData);
+            document.getElementById("totalCount").innerHTML = totalCount;
+            let inboudData =
+                classedData.data[id].directions[0].baseData[
+                    getCurrentDay() - 1
+                ];
+            for (let j = 0; j < classes_lst.length; j++) {
+                var items = document
+                    .getElementById("time-popup")
+                    .querySelectorAll(
+                        ".menu-item .selectable-menu-item.selected span"
+                    );
+                for (var x = 0; x < items.length; x++) {
+                    let startTime = items[x].getAttribute("data-start-time");
+                    let endTime = items[x].getAttribute("data-end-time");
+                    var data = inboudData[j].data.slice(
+                        graphLabels.indexOf(startTime),
+                        graphLabels.indexOf(endTime)
+                    );
+                }
+                classes_lst[j] = data
+                    .reduce(function (a, b) {
+                        return myReduce(a, b);
+                    }, 0)
+                    .toFixed(0);
+            }
+            var items = document
+                    .getElementById("classes-popup")
+                    .getElementsByClassName("menu-item");
+            let v1 = [];
+            classes_lst = classes_lst.map(Number);
+            const elementsArray = Array.from(items);
+            elementsArray.shift();
+            console.log("elementsArray",elementsArray)
+            for (let index = 0; index < elementsArray.length; index++) {
+                const isSelected = elementsArray[index]
+                    .querySelector(".selectable-menu-item")
+                    .classList.contains("selected");
+                if (isSelected) {
+                    v1.push(classes_lst[index]);
+                }
+            }
+            console.log("v1", v1);
+            var inboundTotal = sumArray(v1);
+            document.getElementById("inboundCount").innerHTML = inboundTotal;
+
+            let outboudData =
+                classedData.data[id].directions[1].baseData[
+                    getCurrentDay() - 1
+                ];
+            for (let j = 0; j < classes_lst.length; j++) {
+                var items = document
+                    .getElementById("time-popup")
+                    .querySelectorAll(
+                        ".menu-item .selectable-menu-item.selected span"
+                    );
+                for (var x = 0; x < items.length; x++) {
+                    let startTime = items[x].getAttribute("data-start-time");
+                    let endTime = items[x].getAttribute("data-end-time");
+                    var data = outboudData[j].data.slice(
+                        graphLabels.indexOf(startTime),
+                        graphLabels.indexOf(endTime)
+                    );
+                }
+                classes_lst[j] = data
+                    .reduce(function (a, b) {
+                        return myReduce(a, b);
+                    }, 0)
+                    .toFixed(0);
+            }
+            var items = document
+                    .getElementById("classes-popup")
+                    .getElementsByClassName("menu-item");
+            let v2 = [];
+            classes_lst = classes_lst.map(Number);
+            const elementsArray1 = Array.from(items);
+            elementsArray1.shift();
+            console.log("classes_lst", classes_lst);
+
+            for (let index = 0; index < elementsArray1.length; index++) {
+                const isSelected = elementsArray1[index]
+                    .querySelector(".selectable-menu-item")
+                    .classList.contains("selected");
+                    console.log("elementsArray1.length",index)
+                if (isSelected) {
+                    console.log("index",index)
+                    v2.push(classes_lst[index]);
+                }
+            }
+            console.log("v2",v2);
+            var outboundTotal = sumArray(v2)
+            document.getElementById("outboundCount").innerHTML = outboundTotal;
+        }
+
+        function viewSite(id) {
+            document.getElementById("location_id").value = id;
+            loadLocation(id).then(function () {
+                var project = location_details.project;
+                var projectDt = moment(project[0].start_date).format(
+                    "MMM, YYYY"
+                );
+                var html = setProject_popup(project); //Survey HTML Selection
+
+                document
+                    .getElementById("phase-popup")
+                    .getElementsByClassName(
+                        "conduit-selectable-menu"
+                    )[0].innerHTML = html;
+                setPopupListeners(document.getElementById("phase-popup"));
+                var items = document
+                    .getElementById("phase-popup")
+                    .getElementsByClassName("menu-item");
+                for (var i = 0; i < items.length; i++) {
+                    items[i].addEventListener("click", function () {
+                        loadData(id).then(function () {
+                            setdata(id);
+                        });
+                    });
+                }
+                document
+                    .getElementById("directions-popup")
+                    .getElementsByClassName(
+                        "conduit-selectable-menu"
+                    )[0].innerHTML = location_details.directions;
+                setPopupListeners(document.getElementById("directions-popup"));
+                var items = document
+                    .getElementById("directions-popup")
+                    .getElementsByClassName("menu-item");
+                for (var i = 0; i < items.length; i++) {
+                    items[i].addEventListener("click", function () {
+                        loadData(id).then(function () {
+                            setdata(id);
+                        });
+                        $(".selection-header").removeClass("activeDropDown");
+                    });
+                }
+                document
+                    .getElementById("phase-header")
+                    .getElementsByTagName("span")[0].innerHTML =
+                    project[0].name + ", " + projectDt;
+                var cookieProject = getCookie("ATCProject");
+                var projectid = location_details.project;
+                if (cookieProject) {
+                    projectresult = project.filter(
+                        (project) => project.id == cookieProject
+                    )[0];
+                    var projectDT = projectresult.start_date;
+                    var projectdate = moment(projectDT).format("MMM, YYYY");
+                    document
+                        .getElementById("phase-header")
+                        .getElementsByTagName("span")[0].innerHTML =
+                        projectresult.name + ", " + projectdate;
+                }
+                //console.log("project name",project[0].name)
+                //document.cookie = "ATCProject=" + project[0].id + ";path=/aecon";
+                loadData(id).then(function () {
+                    setdata(id);
+                });
+
+                let classificationItems = document
+                        .getElementById("classes-popup")
+                        .getElementsByClassName("menu-item");
+                for (let i = 0; i < classificationItems.length; i++) {
+                    classificationItems[i].addEventListener(
+                        "click",
+                        function () {
+                            loadData(id).then(function () {
+                                setdata(id);
+                            });
+                        }
+                    );
+                }
+
+                setPopupListeners(document.getElementById("time-popup"));
+                let text = document.querySelector(".timePText");
+                var items = document
+                    .getElementById("time-popup")
+                    .getElementsByClassName("menu-item");
+
+                for (var i = 0; i < items.length; i++) {
+                    const isSelected = items[i]
+                        .querySelector(".selectable-menu-item")
+                        .classList.contains("selected");
+                    if (isSelected) {
+                        text.textContent = items[i].textContent;
+                    }
+                    items[i].addEventListener("click", function (event) {
+                        text.textContent = event.target.textContent;
+                        loadData(id).then(function () {
+                            setdata(id);
+                        });
+
+                        $(".selection-header").removeClass("activeDropDown");
+                    });
+                }
+                // document.getElementById("timeP-popup").classList.add("adv");
+                // document.getElementById("timeP-popup").classList.add("di-none");
+                //setPopupListeners(document.getElementById("classes-popup"));
+            });
+            // if (!localStorage.getItem("hasRun")) {
+            //     // Your code here
+            //     document
+            //         .querySelector(".time-popup-trigger")
+            //         .addEventListener("click", function () {
+            //             // document
+            //             // .getElementById("timeP-popup")
+            //             // .classList.toggle("di-none");
+            //             // if (
+            //             //     document.getElementById("time-popup").style
+            //             //         .display === "none"
+            //             // ) {
+            //             //     document.getElementById(
+            //             //         "time-popup"
+            //             //     ).style.display = "block";
+            //             // } else {
+            //             //     document.getElementById(
+            //             //         "time-popup"
+            //             //     ).style.display = "none";
+            //             // }
+            //             // document.getElementById("timeP-popup").style.display =
+            //             // "block";
+            //         });
+            //     localStorage.setItem("hasRun", true);
+            // }
+        }
+    </script>
+    <script>
+        window.addEventListener("DOMContentLoaded", function () {
+            localStorage.removeItem("hasRun");
+        });
+        let span = document.querySelector(".menu-item span");
+        let menuItem = document.querySelector(".menu-item");
+        menuItem.addEventListener("click", function () {
+            span.classList.toggle("selected");
+        });
+    </script>
+    {%endblock%}
+</div>

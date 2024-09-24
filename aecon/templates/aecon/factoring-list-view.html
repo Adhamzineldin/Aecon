@@ -1,0 +1,405 @@
+{% extends "aecon/dashboard-base.html" %}
+{% load staticversion %}
+{% load client_tags %}
+{% block content %}
+
+<style>
+    table{
+        font-size:1rem;
+    }
+
+    table tr{
+        line-height:30px;
+    }
+
+    table td{
+        text-align:center;
+        cursor:pointer;
+    }
+
+    table td.unmatched{
+        background-color: rgba(255,0,0,0.3);
+        color:red;
+    }
+
+    table td.matched{
+        background-color: rgba(0,255,0,0.3);
+        color:green;
+    }
+
+    #temp-table tr.selected{
+        background-color:rgba(255,255,0,0.2);
+        color:black;
+    }
+
+    #temp-table tbody tr:not(.selected){
+
+        opacity:0.3;
+    }
+
+
+    .animate{
+        -o-animation: fadeIt 2s ease-in-out;
+        animation: fadeIt 2s ease-in-out;
+    }
+
+
+    @-o-keyframes fadeIt {
+      0%   { background-color: #e8e9ed; }
+      20%  { background-color: #8fb78d; }
+      100% { background-color: #e8e9ed; }
+    }
+    @keyframes fadeIt {
+      0%   { background-color: #e8e9ed; }
+      20%  { background-color: #8fb78d; }
+      100% { background-color: #e8e9ed; }
+    }
+
+    .edited{
+        color:red;
+        width:20px;
+        font-size:20px;
+    }
+
+    .processing{
+        color:blue;
+        width:20px;
+        font-size:20px;
+    }
+
+</style>
+
+
+<input hidden value="{{location.id}}" id="location_id">
+
+<div id="graph-limit-popup" style="width:240px" class="conduit-popup">
+    <div class="conduit-selectable-menu  multi">
+        <ul >
+             <li data-limit="600" data-text-low="Low Flow" data-text-high="Active Flow" data-col="rgba(44, 168, 54, .4)" data-col-low="rgba(44, 168, 54, .4)" data-col-high="rgba(214, 162, 17, .5)" class="menu-item popup-item" >
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span >Low Flow</span>
+                </a>
+            </li>
+
+            <li data-limit="1200" data-text-low="Active Flow" data-text-high="High Flow" data-col="rgba(255, 0, 0, .4)" data-col-high="rgba(255, 0, 0, .4)" data-col-low="rgba(214, 162, 17, .5)" class="menu-item popup-item">
+                <a href="#"  class="selectable-menu-item">
+                    <i ></i>
+                    <span>High Flow</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<div id="classes-popup" style="width:auto;" class="conduit-popup">
+    <div class="conduit-selectable-menu multi">
+        {{ classes | safe}}
+    </div>
+</div>
+
+
+
+<div id="directions-popup" style="width:auto;" class="conduit-popup" >
+    <div class="conduit-selectable-menu min-1" data-header="directions-header">
+        {{ directions | safe}}
+    </div>
+</div>
+
+
+
+<div id="subview-selector-popup" style="width:180px" class="conduit-popup">
+    <div class="conduit-selectable-menu  min-1" data-header="subview-selector">
+        <ul >
+             <li id="graph" class="menu-item popup-item">
+                <a href="/aecon/redirect?view=19" class="selectable-menu-item  ">
+                    <i ></i>
+                    <span >Graph View</span>
+                </a>
+            </li>
+
+            <li id="7day" class="menu-item popup-item">
+                <a href="/aecon/redirect?view=17" class="selectable-menu-item selected">
+                    <i ></i>
+                    <span>List View</span>
+                </a>
+            </li>
+
+
+        </ul>
+    </div>
+</div>
+
+
+<div id="period-selector-popup" style="width:180px" class="conduit-popup">
+    <div class="conduit-selectable-menu  min-1" data-header="period-selector">
+        <ul >
+             <li id="60" class="menu-item popup-item" data-offset="4">
+                <a href="#" class="selectable-menu-item selected ">
+                    <i ></i>
+                    <span >60 Minutes</span>
+                </a>
+            </li>
+            <li id="30" class="menu-item popup-item" data-offset="2">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>30 Minutes</span>
+                </a>
+            </li>
+            <li id="15" class="menu-item popup-item" data-offset="1">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>15 Minutes</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
+
+<div class="row align-items-center"  style="height:50px">
+    <div class="col-12 my-auto d-flex align-items-center">
+        <div class="selection-header subview-selector-popup-trigger"><span>List View</span><i class="chevron-icon"></i></div>
+
+        <div class="topbar__item" data-toggle="tooltip" onclick="startFactoringProcess();" data-placement="left" title = "{% factoring_status %}" id="" style="margin-left:auto"><span><i class="icon-cloud-computing-3"></i></span></div>
+        {% comment %} <div class="topbar__item events-popup-trigger opens-left" id="events" style=""><span><i class="icon-internet"></i></span></div> {% endcomment %}
+
+
+    </div>
+</div>
+
+<div class="row" style="height:calc(100% - 65px)">
+    <div  id="main-container-greyed-out" class="d-none" style="position:absolute;width:calc(100% - 300px);height:calc(100% - 105px);z-index:401;opacity:0.9;background-color:#fcfcfc;"></div>
+    <div class="col-5 h-100">
+
+        <div class=" d-flex flex-column align-items-center justify-content-center w-100" style="height:40px;font-size:1.2rem">
+            <div>Temporary Sensors</div>
+
+        </div>
+
+        <div class="row" style="height:calc(100% - 40px)">
+            <div class="col-12 h-100" >
+                <div class="card header-shadow h-100 w-60"  data-group="atc-volumes-daily">
+                    <div class="card-body h-100 p-0 table-responsive">
+                        <table class="table table-bordered table-sm data-table" id="temp-table">
+                            <thead class="data-table-header">
+                            <th >Area</th>
+                            <th >Sensor</th>
+                            <th>Weekday</th>
+                            <th>Saturday</th>
+                            <th>Sunday</th>
+
+
+                            </thead>
+                            <tbody>
+                            {% clustering_as_table True %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="col-7 h-100">
+        <div class=" d-flex flex-column align-items-center justify-content-center w-100" style="height:40px;font-size:1.2rem">
+            <div>Permanent Sensors</div>
+        </div>
+
+        <div class="row" style="height:calc(100% - 40px)">
+            <div class="col-12 h-100" >
+                <div class="card header-shadow h-100 w-60"  data-group="atc-volumes-daily">
+                    <div class="greyed-out justify-content-center align-items-center show"> <img src ="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+
+                    <div class="card-body h-100 p-0 table-responsive">
+                        <table class="table table-striped table-bordered table-sm data-table" id="perm-table">
+                            <thead class="data-table-header">
+                            <th >Area</th>
+                            <th >Sensor</th>
+                            <th>Weekday</th>
+                            <th>Saturday</th>
+                            <th>Sunday</th>
+
+
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+{% block js %}
+<script>
+var graphLabels = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00"];
+var permTable;
+
+
+function selectTempSite(ele){
+    console.log("clicked",ele.parentNode.id);
+    selected = document.getElementById("temp-table").getElementsByClassName("selected");
+    while(selected.length){
+        selected[0].classList.remove("selected");
+    }
+    ele.parentNode.classList.add("selected");
+    getClustering(ele.parentNode.getAttribute("data-site"));
+
+}
+
+
+function viewSite(id){
+    ele = document.querySelector("[data-site='"+ id +  "']");
+    console.log("ele is",ele);
+    ele.cells[0].click();
+    ele.scrollIntoView();
+    ele.classList.remove("animate");
+    void ele.offsetWidth;
+    ele.classList.add("animate");
+
+}
+
+
+function getClusteringFromPage(ele){
+    clustering = [];
+    var tempVals = document.getElementById("temp-table").getElementsByClassName("selected")[0].cells;
+    var permVals = ele.parentNode.cells;
+    for(var i=2;i<tempVals.length;i++){
+            clustering.push(tempVals[i].innerText);
+            clustering.push(permVals[i].classList.contains("matched"));
+            clustering.push(permVals[i].innerText);
+
+
+
+    }
+    return clustering;
+}
+
+
+function toggleCluster(ele){
+    console.log("clicked",ele.parentNode.id,"column",ele.cellIndex);
+    if (ele.innerText == "-"){
+        alert("Cannot match this site as it currently has no cluster value");
+        ele.classList.add("unmatched");
+        ele.classList.remove("matched");
+        return;
+    }
+    if (ele.classList.contains("matched")){
+        ele.classList.add("unmatched");
+        ele.classList.remove("matched");
+    }
+    else{
+        ele.classList.remove("unmatched");
+        ele.classList.add("matched");
+    }
+    saveClustering(ele);
+
+
+}
+
+
+function saveClustering(ele){
+    clustering = getClusteringFromPage(ele);
+    console.log("clustering is",clustering);
+    if((clustering[0] == "-") || (clustering[2] == "-")){
+        alert("Cannot match this site as it or the temporary site you are matching to, currently has no cluster value");
+        ele.classList.add("unmatched");
+        ele.classList.remove("matched");
+        return;
+    }
+
+    var temp = document.getElementById("temp-table").getElementsByClassName("selected")[0];
+    var perm = ele.parentNode;
+    var ids = [temp.getAttribute("data-site"),perm.getAttribute("data-site")];
+    var greyed = document.getElementsByClassName("greyed-out");
+    for (var i=0;i<greyed.length;i++){
+        showGreyedOut(greyed[i]);
+    }
+    var formData = new FormData();
+    formData.append("ids",JSON.stringify(ids));
+    formData.append("clustering",JSON.stringify(clustering));
+    fetcher(formData,"saveClustering",function(response){
+        console.log("received response",response);
+        console.log(temp.getElementsByTagName("div"));
+        temp.getElementsByTagName("div")[1].innerText = "*";
+        hideAllGreyedOut();
+        return;
+    }).catch(function(err){
+        console.log("ok good catch");
+        alert(err.message);
+        window.location.href = "/aecon/dashboard";
+    });
+}
+
+
+function getClustering(id){
+    document.getElementById("perm-table").getElementsByTagName("tbody")[0].innerHTML = "";
+    var greyed = document.getElementsByClassName("greyed-out");
+    for (var i=0;i<greyed.length;i++){
+        showGreyedOut(greyed[i]);
+    }
+    permTable.destroy();
+    console.log("getting clustering",id);
+    var formData = new FormData();
+    formData.append("id",id.replace("temp_table_",""));
+    fetcher(formData,"getPermClusteringForTempSite",function(response){
+        console.log("received response",response);
+        document.getElementById("perm-table").getElementsByTagName("tbody")[0].innerHTML = response.data;
+        permTable = $('#perm-table').DataTable( {
+            "paging":   false,
+            "searching": false,
+            "info":     false
+        } );
+        hideAllGreyedOut();
+        });
+}
+
+
+function startFactoringProcess(){
+    var formData = new FormData();
+    fetcher(formData,"startFactoringProcess",function(response){
+        console.log(response);
+        alert("Factoring process successfully started");
+        window.location.href = "/aecon/redirect?view=17"
+
+    }).catch(function(err){
+        alert(err.message);
+    });
+
+}
+$(document).ready( function () {
+    $('#temp-table').DataTable( {
+        "paging":   false,
+        "searching": false,
+        "info":     false
+    } );
+
+permTable = $('#perm-table').DataTable( {
+            "paging":   false,
+            "searching": false,
+            "info":     false
+        } );
+
+    document.getElementById("temp-table").rows[1].cells[0].click();
+} );
+
+
+</script>
+
+
+
+{% endblock %}

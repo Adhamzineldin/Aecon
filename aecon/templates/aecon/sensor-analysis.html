@@ -1,0 +1,960 @@
+ {% extends "aecon/sensor-data.html" %} {% block content %} {% load staticversion %} {% load my_filters %} {% load client_tags %} 
+<div class="row main">
+    <div class="col-md-12 position-relative mt-4 mb-3">
+        <div class="row">
+            <div class="font-weight-bold my-auto pl-2">
+                Date Range
+            </div>
+            <div class="calendar_green selection-header col-sm-auto shadow px-3" id="calendar">
+                <div id="date-button" class="date-text"><span>+</span></div>
+                <span><img id="changing-calender-icon" class="icon-calendar"
+                           src="/static/aecon/calendar_icon_white.svg"
+                          ></img></span>
+            </div>
+
+            <div class="d-none d-flex align-items-center bg-white justify-content-center date-display col-md-1 shadow my-2">
+                <div id="date_from" class="d-none date"></div>
+            </div>
+
+            <div class="topbar__item d-none" id="calendar2"><span><i class="calendar-icon"></i></span></div>
+            <div class="d-none d-flex align-items-center bg-white justify-content-center date-display col-md-1 shadow my-2">
+                <div id="date_to" class="d-none date"></div>
+            </div>
+            
+            <div class="selection-header analysis-option-popup-trigger col-md-2 me-3 shadow" id="option-selector"><label class="popup-label">Options</label><span>Totals</span><i class="chevron-icon"></i></div>
+            <div class="selection-header period-selector-popup-trigger col-md-2 me-3 shadow" id="period-selector"><label class="popup-label">Time Frequency</label><span>60 Minutes</span><i class="chevron-icon"></i></div>
+            <div class="selection-header directions-popup-trigger col-md-2 shadow" id="directions-header"><label class="popup-label">Directions</label><span>Combined</span><i class="chevron-icon"></i></div>
+            
+            <div class="selection-header totals col-md-2 shadow" onclick="observationPopup(this)">
+                <label class="popup-label">Observation</label>
+                <span>Observation</span>
+            </div>
+        </div>
+        <div class="row compare">
+            <div class="font-weight-bold my-auto pl-3" style="width: 9%">
+                Select First Date
+            </div>
+            <div class="topbar__item" id="calendar3"><span><i class="calendar-icon"></i></span></div>
+            <div class="d-flex align-items-center bg-white justify-content-center date-display shadow col-md-1 my-2">
+                <div class="date"></div>
+            </div>
+            
+            <div class="font-weight-bold my-auto pl-4" style="width: 11%">
+                Select Second Date
+            </div>
+            <div class="topbar__item" id="calendar4"><span><i class="calendar-icon"></i></span></div>
+            <div class="d-flex align-items-center bg-white justify-content-center date-display shadow col-md-1 my-2">
+                <div class="date"></div>
+            </div>
+            <div class="selection-header analysis-option-popup-trigger col-md-2 me-3 ml-5 shadow" id="option-selector"><label class="popup-label">Options</label><span>Compare by Time</span><i class="chevron-icon"></i></div>
+            <div class="selection-header time-span-option-popup-trigger compare col-md-2 shadow" id="time-span-selector"><label class="popup-label">Time Span</label><span>One Day</span><i class="chevron-icon"></i></div>
+            
+        </div>
+    </div>
+</div>
+<div class="px-5 py-3 bg-white mt-4" style="box-shadow: 0px 0px 10px #0000001A; border-radius: 5px;">
+    <div class="row px-3 totals">
+        <div class="table-wrapper ht-40  div1 sen-traff col-md-6 px-0 my-3">
+            {% comment %}
+            <div class="greyed-out justify-content-center align-items-center "> <img src="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img" data-greyed-out="atc-basic-overview"></div> {% endcomment %}
+            <table class="table table-sm text-center show-data" rules="cols" id="countline_table">
+                <thead>
+                    <tr>
+                        <th>Time Period</th>
+                        <th>Pedestrian</th>
+                        <th>Cyclist</th>
+                        <th>Motorised</th>
+                    </tr>
+                </thead>
+                <tbody class="text-muted">
+                    <tr>
+                        <td>00:00-01:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>01:00-02:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>02:00-03:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>03:00-04:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>04:00-05:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>05:00-06:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>06:00-07:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>07:00-08:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>08:00-09:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>09:00-10:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>10:00-11:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>11:00-12:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>12:00-13:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>13:00-14:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>14:00-15:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>15:00-16:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>16:00-17:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>17:00-18:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>18:00-19:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>19:00-20:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>20:00-21:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>21:00-22:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>22:00-23:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>23:00-24:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>07:00:-19:00</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>06:00:-22:00</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>06:00:-24:00</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>00:00:-24:00</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <canvas id="totals-chart"></canvas>
+        </div>
+        {% comment %}
+        <div class="row justify-content-center flex-grow-1 col-md-7 h-30" id="graph-container">
+            <div class="col-12 h-100  pt-3 ">
+                <div class="card header-shadow" style="width:100%;height:100%" data-group="atc-volumes-daily">
+                    <div class="greyed-out justify-content-center align-items-center"> <img src="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+                    <div class="canvaswrapper">
+                        <canvas id="countline-classed-volumes" style="height:100%">
+
+                    </canvas>
+
+                    </div>
+                    <div class="button-overlay d-flex" data-target="atc-volumes-daily" style="right:25px" id="graph-overlay">
+
+                        <div class="topbar__item" onclick="saveGraphImage();" style="background-color:#f2f3f7;margin-right:5px">
+                            <span class="icon-toggle"><i class="icon-picture"></i></span>
+                        </div>
+
+                        <div class="topbar__item" onclick="expandGraph();" style="background-color:#f2f3f7;margin-right:5px">
+                            <span class="icon-toggle"><i class="icon-zoom-in" data-alt="icon-zoom-out"></i></span>
+                        </div>
+                        <div class="topbar__item graph-limit-popup-trigger opens-left" style="background-color:#f2f3f7;margin-right:5px">
+                            <span class="icon-toggle"><i class="icon-controls-1" ></i></span>
+                        </div>
+                        <div class="topbar__item" onclick="toggleGraphDisplay();" style="background-color:#f2f3f7;margin-right:5px">
+                            <span class="icon-toggle"><i class="icon-car" data-alt="calendar-icon-1"></i></span>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div> {% endcomment %}
+    </div>
+    <div class="row px-3 compare" style="height: 300px;">
+        <canvas id="total-dates-chart"></canvas>
+    </div>
+    <div class="row px-3 compare" style="height: 300px;">
+        <canvas id="average-dates-chart"></canvas>
+    </div>
+    </div>
+    {% comment %}
+    <div class="col-md-12">
+
+        <div class="row ">
+            <div class="col-md-2 text-center mb-4">
+                <div class="position-relative mb-1">
+                    <img src="/static/aecon/cycle.png" width="100" height="40" />
+                </div>
+                <h6 class="font-weight-bold ">
+                    Pedal Cycle / Motorcycle
+                </h6>
+                <h1>0</h1>
+                <h5 class="text-danger">0.0%</h5>
+            </div>
+            <div class="col-md-2 text-center mb-4">
+                <div class="position-relative mb-1">
+                    <img src="/static/aecon/car.png" width="100" height="40" />
+                </div>
+                <h6 class="font-weight-bold">Car & LGV</h6>
+                <h1>5596</h1>
+                <h5 class="text-danger">90.5%</h5>
+            </div>
+            <div class="col-md-2 text-center mb-4">
+                <div class="position-relative mb-1">
+                    <img src="/static/aecon/track.png" width="100" height="40" />
+                </div>
+                <h6 class="font-weight-bold">OGV1 & PSV</h5>
+                    <h1>552</h1>
+                    <h5 class="text-danger">8.9%</h5>
+            </div>
+            <div class="col-md-2 text-center mb-4">
+                <div class="position-relative mb-1">
+                    <img src="/static/aecon/bigtrack.png" width="100" height="40" />
+                </div>
+                <h6 class="font-weight-bold">OGV2</h6>
+                <h1>33</h1>
+                <h5 class="text-danger">0.5%</h5>
+            </div>
+            <div class="col-md-2 text-center mb-3">
+                <h1 class="font-weight-bold text-center text-blue">6181</h1>
+                <h3 class="font-weight-bold">Total Vehicles</h3>
+                <h5 class="text-blue text-center font-weight-bold">(00:00 - 24:00)</h5>
+            </div>
+        </div>
+    </div> {% endcomment %}
+</div>
+{% endblock %} {% block js %}
+<script>
+    $(".table-wrapper").on("scroll", function() {
+        $(".table-wrapper:not(this)").scrollTop($(this).scrollTop());
+    });
+</script>
+<script>
+    setOption(getCurrentOption());
+    
+    locations_data={}
+    current_graph_labels=[];
+    first_date_data=[]
+    second_date_data=[]
+    let totals_chart;
+    let total_dates_chart;
+    let average_dates_chart;
+
+    const COLORS = [
+    '#1b144d',
+    '#FF0000',
+    '#12D231',
+    '#5B9BD6',
+    '#63666A',
+    '#FF4E00',
+    '#166a8f',
+    '#00a950',
+    '#8549ba'
+    ];
+    function color(index) {
+        return COLORS[index % COLORS.length];
+    }
+    var first_date = moment()
+    first_date.subtract(start.isoWeekday() - 1,"d")
+    var second_date=  moment()
+    second_date.subtract(end.isoWeekday() - 1,"d").add(7,"d");
+
+    var cookie_start_dt = getCookie("FirstDate");
+    var cookie_end_dt = getCookie("SecondDate");
+    if (cookie_start_dt!=null && cookie_end_dt!=null){
+        first_date = moment(cookie_start_dt);
+        second_date = moment(cookie_end_dt);
+    }
+
+    var datepicker3 = $('#calendar3').daterangepicker({
+        startDate: first_date,
+        locale: {
+        format: 'DD/MM/YYYY'
+    },
+        singleDatePicker: true,
+        opens: 'left',
+        drops:'down'
+    },dateChanged3);
+
+    var datepicker4 = $('#calendar4').daterangepicker({
+        startDate: second_date,
+        locale: {
+        format: 'DD/MM/YYYY'
+    },
+        singleDatePicker: true,
+        opens: 'left',
+        drops:'down'
+    },dateChanged4);
+
+    datepicker3.on('apply.daterangepicker', function(ev, picker) {dateChanged3(picker.startDate,"","start")});
+    datepicker4.on('apply.daterangepicker', function(ev, picker) {dateChanged4(picker.startDate,"","end")});
+
+    function dateChanged3(start1,end1,label){
+        first_date = start1;
+        displayDates1(start1,end1,"start");
+        document.cookie = "FirstDate=" +start1.format('YYYY-MM-DD') + ";path=/aecon";
+    }
+
+    function dateChanged4(start2,end2,label){
+        second_date = start2;
+        end2=second_date
+        displayDates1(start2,end2,"end");
+        document.cookie = "SecondDate=" +start2.format('YYYY-MM-DD') + ";path=/aecon";
+    }
+
+    function displayDates1(start,end,flg){
+        if (flg == "start")
+        {
+          document.getElementsByClassName("date")[2].innerText = start.format("DD/MM/YYYY"); 
+        }
+        else if(flg == "end")
+        {
+          document.getElementsByClassName("date")[3].innerText = end.format("DD/MM/YYYY"); 
+        }
+    }
+    
+    displayDates1(first_date,second_date,"start");
+    displayDates1(first_date,second_date,"end");
+    
+    
+     var datepicker = $('#calendar').daterangepicker({
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+            singleDatePicker: false,
+            opens: 'right',
+            drops: 'down'
+        });
+
+    datepicker.on('apply.daterangepicker', function (ev, picker) {
+
+        console.log("in apply func");
+        console.log(picker);
+
+        document.getElementById("date-button").innerText = picker.startDate.format('DD/MM/YYYY');
+        document.getElementById("date_from").innerText = picker.startDate.format('DD/MM/YYYY');
+        document.getElementById("date_to").innerText = picker.endDate.format('DD/MM/YYYY');
+        userChangedDate = true;
+         period_selector()
+    });
+    
+
+  
+
+    datepicker3.on('apply.daterangepicker', function(ev, picker) {
+        time_span_selector()
+    });
+    datepicker4.on('apply.daterangepicker', function(ev, picker) {
+        time_span_selector()
+    });
+
+    function prepareAllLocationsData(ids){
+        for(const id of ids){
+            prepareLocationData(id);
+        }
+    }
+    function prepareLocationData(id,currentDirection=null){
+        /* if(id in locations_data)return; */
+        if(currentDirection==null)currentDirection=getCurrentDirection();
+        var table_data = classedData.data[id].directions[currentDirection].baseData;
+        var graphLabels = classedData.graphLabels;
+        current_graph_labels=graphLabels;
+
+        var classes_lst = [];
+        location_details.classes.split("<span>").forEach(function(item) {
+            item.includes("</span>") ? classes_lst.push(item.split("</span>")[0]) : "";
+        });
+
+        classes_lst = classes_lst.filter(item => item !== 'All');
+        if(classes_lst.length==0)return;
+
+        for(let i =0; i<classes_lst.length;i++){
+            var temp = [];
+            for (let j = 0; j < 7; j++) {
+                table_data[j].forEach(function(item, index) {
+                    if (index == i) {
+                        if (temp.length) {
+                            temp.forEach(function(item2, index2) {
+                                item2 = item2 == "-" ? 0 : item2;
+                                item.data[index2] = item.data[index2] == "-" ? 0 : item.data[index2];
+                                temp[index2] = parseInt(item2) + parseInt(item.data[index2]);
+                                temp[index2] = temp[index2] == 0 ? "-" : temp[index2];
+                            });
+                        } else {
+                            temp = item.data;
+                        }
+                    }
+                });
+            }
+            classes_lst[i]=temp;
+        }
+
+        //adding all motorised vehicles together
+        for(let j=0;j<classes_lst[0].length;j++){
+            if(classes_lst[2][j]=="-")classes_lst[2][j]=0;
+            for(let i=3;i<classes_lst.length;i++){
+                classes_lst[2][j]=parseInt(classes_lst[2][j]) + parseInt(classes_lst[i][j]=="-"?0:classes_lst[i][j]);
+            }
+            if(classes_lst[2][j]==0)classes_lst[2][j]="-";
+        }
+        locations_data[id]=classes_lst;
+    }
+
+    function refreshLocations(){
+        classes_lst=[]
+        allSelected=getAllSelectedLocations();
+        for(const id of allSelected){
+            cur_data=locations_data[id];
+            if(classes_lst.length==0){
+                classes_lst = cur_data.map(subArray => subArray.slice());
+            }else{
+                for(let i=0;i<classes_lst.length;i++){
+                    for(let j=0;j<classes_lst[0].length;j++){
+                        if(classes_lst[i][j]=="-")classes_lst[i][j]=0;
+                        classes_lst[i][j]=parseInt(classes_lst[i][j]) + parseInt(cur_data[i][j]=="-"?0:cur_data[i][j]);
+                        if(classes_lst[i][j]==0)classes_lst[i][j]="-";
+                    }
+                }
+            }
+        }
+        let items = document.getElementById('directions-popup').getElementsByClassName('menu-item');
+        for (var i = 0; i < items.length; i++) {
+            items[i].addEventListener("click", function() {
+                direction_selector()
+            });
+        }
+        totalsTable(classes_lst,current_graph_labels);
+        totalsChart();
+    }
+    function refreshComparisonGraphs(){
+        first_date_tot=[];
+        second_date_tot=[];
+        for(let i=0;i<Math.min(3,first_date_data.length);i++){
+            tot1=0;
+            tot2=0;
+            for(let j=0;j<first_date_data[0].length;j++){
+                tot1+=parseInt(first_date_data[i][j]=="-"?0:first_date_data[i][j]);
+                tot2+=parseInt(second_date_data[i][j]=="-"?0:second_date_data[i][j]);
+            }
+            first_date_tot.push(tot1);
+            second_date_tot.push(tot2);
+        }
+        first_date_avg=first_date_tot.reduce((a,b)=>a+b);
+        first_date_avg/=first_date_tot.length;
+        second_date_avg=second_date_tot.reduce((a,b)=>a+b);
+        second_date_avg/=second_date_tot.length;
+        
+        totalDatesChart(first_date_tot,second_date_tot);
+        averageDatesChart(parseInt(first_date_avg),parseInt(second_date_avg));
+    }
+    
+    function totalsTable(classes_lst,graphLabels){
+        var avg_lst = ["07:00-19:00", "06:00-22:00", "06:00-24:00", "00:00-24:00"];
+
+        var table = document.getElementById('countline_table');
+        var thead = table.querySelector('thead');
+        var tbody = table.querySelector('tbody');
+        //thead.innerHTML = '';
+        tbody.innerHTML = '';
+        var tr = document.createElement('tr');
+        var th = document.createElement('th');
+        th.innerHTML = 'Time Period';
+        var flg = 0;
+
+        for (let i = 0; i < (graphLabels.length) - 1; i++) {
+            var tr = document.createElement('tr');
+            var td = document.createElement('td');
+            if (i < (graphLabels.length) - 2) {
+                td.innerHTML = graphLabels[i] + '-' + graphLabels[i + 1];
+            } else {
+                td.innerHTML = graphLabels[i] + '-' + "24:00";
+            }
+            tr.appendChild(td);
+            flg = 0;
+            for (let j = 0; j < 3; j++) {
+                var td = document.createElement('td');
+                if (j < classes_lst.length - 3) {
+                    td.innerHTML = classes_lst[j][i];
+                    tr.appendChild(td);
+                } else if (flg == 0) {
+                    let data = [classes_lst[j][i], classes_lst[j + 1][i], classes_lst[j + 2][i]].reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0)
+                    td.innerHTML = (data != 0 ? data : "-");
+                    tr.appendChild(td);
+                    flg = 1;
+                }
+
+            }
+
+            tbody.appendChild(tr);
+        }
+
+        for (let i = 0; i < avg_lst.length; i++) {
+            var row = document.createElement('tr');
+            var cell1 = document.createElement('td');
+            cell1.innerHTML = avg_lst[i];
+            row.appendChild(cell1);
+            flg = 0;
+            for (let j = 0; j < 3; j++) {
+                if (j < classes_lst.length - 3) {
+                    if (i == 0) {
+                        var cell = document.createElement('td');
+                        var data = classes_lst[j].slice(graphLabels.indexOf('07:00'), graphLabels.indexOf('20:00'));
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 1) {
+                        var cell = document.createElement('td');
+                        var data = classes_lst[j].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00'));
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 2) {
+                        var cell = document.createElement('td');
+                        var data = classes_lst[j].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00')+1);
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 3) {
+                        var cell = document.createElement('td');
+                        var data = classes_lst[j].slice(graphLabels.indexOf('00:00'), graphLabels.indexOf('23:00')+1);
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    }
+                } else if (flg == 0) {
+
+                    if (i == 0) {
+                        var cell = document.createElement('td');
+                        var array1 = classes_lst[j].slice(graphLabels.indexOf('07:00'), graphLabels.indexOf('20:00'));
+                        var array2 = classes_lst[j + 1].slice(graphLabels.indexOf('07:00'), graphLabels.indexOf('20:00'));
+                        var array3 = classes_lst[j + 2].slice(graphLabels.indexOf('07:00'), graphLabels.indexOf('20:00'));
+
+                        var data = array1.map(function(num, idx) {
+                            return num + array2[idx] + array3[idx];
+                        });
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 1) {
+                        var cell = document.createElement('td');
+                        var array1 = classes_lst[j].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00'));
+                        var array2 = classes_lst[j + 1].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00'));
+                        var array3 = classes_lst[j + 2].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00'));
+
+                        var data = array1.map(function(num, idx) {
+                            return num + array2[idx] + array3[idx];
+                        });
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 2) {
+                        var cell = document.createElement('td');
+                        var array1 = classes_lst[j].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00') + 1);
+                        var array2 = classes_lst[j + 1].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00') + 1);
+                        var array3 = classes_lst[j + 2].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00') + 1);
+
+                        var data = array1.map(function(num, idx) {
+                            return num + array2[idx] + array3[idx];
+                        });
+                        //var data  = classes_lst[j].slice(graphLabels.indexOf('06:00'),graphLabels.indexOf('23:00')+1);
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 3) {
+                        var cell = document.createElement('td');
+                        var array1 = classes_lst[j].slice(graphLabels.indexOf('00:00'), graphLabels.indexOf('23:00') + 1);
+                        var array2 = classes_lst[j + 1].slice(graphLabels.indexOf('00:00'), graphLabels.indexOf('23:00') + 1);
+                        var array3 = classes_lst[j + 2].slice(graphLabels.indexOf('00:00'), graphLabels.indexOf('23:00') + 1);
+
+                        var data = array1.map(function(num, idx) {
+                            return num + array2[idx] + array3[idx];
+                        });
+                        //var data  = classes_lst[j].slice(graphLabels.indexOf('00:00'),graphLabels.indexOf('23:00')+1);
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    }
+                    flg = 1;
+                }
+            }
+            tbody.appendChild(row);
+        }
+    }
+    function totalsChart(){
+        allSelected=getAllSelectedLocations();
+        datasets=[]
+        for(let i=0;i<allSelected.length;i++){ 
+            id=allSelected[i];
+            cur_data=locations_data[id];
+            sums=[]
+            for(let i=0;i<3;i++){
+                let sm=0;
+                for(let j=0;j<cur_data[0].length;j++){
+                    sm+=parseInt(cur_data[i][j]=="-"?0:cur_data[i][j]);
+                }
+                sums.push(sm);
+            } 
+            label=document.getElementById(id+"_radio").labels[0].innerHTML;
+            datasets.push({
+                label:label,
+                data:sums,
+                borderWidth:1,
+                backgroundColor:color(i),
+            });
+        }
+        // total locations graph
+        var ctx = document.getElementById("totals-chart").getContext("2d");
+        if(totals_chart)totals_chart.destroy();
+        totals_chart= new Chart(ctx, {
+                type: 'bar',
+                data: {
+                labels: ['Pedestrian', 'Cyclist', 'Motorised'],
+                datasets:datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    legend: {
+                        fullWidth:true,
+                    }
+                }
+            });
+
+    }
+    function totalDatesChart(first_date_tot,second_date_tot){
+        // total dates graph
+        var ctx=document.getElementById("total-dates-chart").getContext("2d");
+        if(total_dates_chart)total_dates_chart.destroy();
+        total_dates_chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                labels: ['Pedestrian', 'Cyclist', 'Motorised'],
+                datasets: [{
+                    label: first_date.format("DD/MM/YYYY"),
+                    data: first_date_tot,
+                    borderWidth: 1,
+                    backgroundColor:color(0),
+                },{
+                    label:second_date.format("DD/MM/YYYY"),
+                    data:second_date_tot,
+                    borderWidth: 1,
+                    backgroundColor:color(1),
+                }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Total of Selected Dates',
+                        fontSize: 16,
+                        fontColor: '#000000',
+                        fontFamily: 'Arial'
+                    },
+                    scales: {
+                        yAxes:[{
+                            ticks: {
+                                beginAtZero: true,
+                                min: 0
+                            }
+                        }]
+                    },
+                    legend: {
+                        fullWidth:true,
+                    }
+                }
+            });
+    }
+    function averageDatesChart(first_date_avg,second_date_avg){
+        // average dates graph
+        var ctx=document.getElementById("average-dates-chart").getContext("2d");
+        if(average_dates_chart)average_dates_chart.destroy();
+        average_dates_chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                datasets: [{
+                    label: first_date.format("DD/MM/YYYY"),
+                    data: [first_date_avg],
+                    borderWidth: 1,
+                    backgroundColor:color(0),
+                },
+                {
+                    label: second_date.format("DD/MM/YYYY"),
+                    data: [second_date_avg],
+                    borderWidth: 1,
+                    backgroundColor:color(1),
+                }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Average of Selected Dates',
+                        fontSize: 16,
+                        fontColor: '#000000',
+                        fontFamily: 'Arial'
+                    },
+                    scales: {
+                        yAxes:[{
+                            ticks: {
+                                beginAtZero: true,
+                                min: 0
+                            }
+                        }]
+                    },
+                    legend: {
+                        fullWidth:true,
+                    }
+                }
+            });
+
+    }
+    function direction_selector(){
+        id = document.getElementById("location_id").value;
+        allSelected=getAllSelectedLocations();
+        locations_data={};
+        if(id){
+            var start = moment(document.getElementsByClassName("date")[0].innerText.trim(), "DD/MM/YYYY");
+            var end = moment(document.getElementsByClassName("date")[1].innerText.trim(), "DD/MM/YYYY");
+            loadData(start, end, allSelected).then(function() {
+                prepareAllLocationsData(allSelected),refreshLocations()
+            });
+        }
+    }
+
+    function time_span_selector(){
+        id = document.getElementById("location_id").value;
+        locations_data={};
+        if(id){
+            var first_start_date = moment(document.getElementsByClassName("date")[2].innerText.trim(), "DD/MM/YYYY");
+            var second_start_date = moment(document.getElementsByClassName("date")[3].innerText.trim(), "DD/MM/YYYY");
+            var span=getCurrentTimeSpan();
+            var first_end_date=first_start_date.clone().add(1,span);
+            var second_end_date=second_start_date.clone().add(1,span);
+            loadData(first_start_date,first_end_date,id).then(function(){
+                locationsData={};
+                prepareLocationData(id,2);
+                first_date_data=locations_data[id].map(subArray=>subArray.slice());
+            }).then(function(){
+                loadData(second_start_date,second_end_date,id).then(function(){
+                    locationsData={};
+                    prepareLocationData(id,2);
+                    second_date_data=locations_data[id].map(subArray=>subArray.slice());
+                }).then(function(){refreshComparisonGraphs()});
+            })
+        }
+    }
+
+    function period_selector() {
+        id = document.getElementById("location_id").value;
+        allSelected=getAllSelectedLocations();
+        locations_data={};
+        if (id) {
+            var start = moment(document.getElementsByClassName("date")[0].innerText.trim(), "DD/MM/YYYY");
+            var end = moment(document.getElementsByClassName("date")[1].innerText.trim(), "DD/MM/YYYY");
+            //reload all locations
+            loadData(start, end, allSelected).then(function() {
+                prepareAllLocationsData(allSelected),refreshLocations()
+            });
+        }
+    }
+
+    var periods = document.getElementById("period-selector-popup").getElementsByClassName("popup-item");
+    for (var i = 0; i < periods.length; i++) {
+        periods[i].addEventListener("click", function() {
+            period_selector()
+        });
+    }
+    var time_spans=document.getElementById("time-span-option-popup").getElementsByClassName("popup-item");
+    for(var i=0;i<time_spans.length;i++){
+        time_spans[i].addEventListener("click",function(){
+            time_span_selector()
+        });
+    }
+    function option_selector(event){
+        option=getCurrentOption();
+        if(option=="totals"){
+            id=document.getElementById("location_id").value;
+            viewSite(id);
+        }else if(option=="compare"){
+            ids=getAllSelectedLocations();
+            for(const id of ids){
+                document.getElementById(id+"_radio").classList.remove('selected');
+            }
+            document.getElementById(id+"_radio").classList.add("selected");
+            id=document.getElementById("location_id").value;
+            viewSite(id);
+        }
+    }
+    var options=document.getElementById("analysis-option-popup").getElementsByClassName("popup-item");
+    for(var i=0;i<options.length;i++){
+        options[i].addEventListener("click",function(event){
+            option_selector();
+        });
+    }
+    function getAllSelectedLocations(){
+        elements=document.getElementsByClassName('sensorList')[1].getElementsByClassName('css-checkbox');
+        res=[]
+        for(let i=0;i<elements.length;i++){
+            if(elements[i].classList.contains("selected")){
+                let ids = /^\d+/.exec(elements[i].id);
+                id=parseInt(ids[0]);
+                if(!res.includes(id))
+                    res.push(id);
+            }
+        }
+        return res;
+    }
+
+    function viewSite(id) {
+        currentOption=getCurrentOption();
+        if(currentOption=="totals"){
+            selectedEle=document.getElementById(id+"_radio");
+            var start = moment(document.getElementsByClassName("date")[0].innerText.trim(), "DD/MM/YYYY");
+            var end = moment(document.getElementsByClassName("date")[1].innerText.trim(), "DD/MM/YYYY");
+
+            if(selectedEle.classList.contains("selected")){
+                document.getElementById("location_id").value = id;
+                loadLocation(id).then(response=>loadData(start,end,id)).then(function(){prepareLocationData(id),refreshLocations()});
+            }else{
+                allSelected=getAllSelectedLocations();
+                if(allSelected.length==0){
+                    selectedEle.classList.add("selected");
+                    document.getElementById("location_id").value = id;
+                    loadLocation(id).then(function(){refreshLocations()});
+                }else{
+                    id=allSelected[allSelected.length-1];
+                    document.getElementById("location_id").value = id;
+                    selectedEle=document.getElementById(id+"_radio");
+                    selectedEle.classList.add("selected");
+                    loadLocation(id).then(function(){refreshLocations()});
+                }
+            }
+        }else if(currentOption=="compare"){
+            document.getElementById("location_id").value = id;
+            time_span_selector();
+        }
+    }
+</script>
+{% endblock %}

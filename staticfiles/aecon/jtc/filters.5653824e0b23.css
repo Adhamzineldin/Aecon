@@ -1,0 +1,290 @@
+.dd-wrapper {
+    width: 100%;
+    margin-top: 9px;
+}
+
+.dd-select-btn,
+li {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.dd-select-btn-peak,
+li {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.dd-select-btn {
+    height: 40px;
+    padding: 0 15px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    justify-content: space-between;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    background-color: #727694;
+    color: #ffffff;
+}
+
+.dd-select-btn-peak {
+    height: 49px;
+    padding: 0 20px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    justify-content: space-between;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    background-color: #6a6c86;
+    color: #ffffff;
+}
+
+.dd-select-btn:hover {
+    background-color: #141b4d;
+}
+
+.dd-select-btn i {
+    font-size: 1.2rem;
+    transition: transform 0.3s linear;
+}
+
+.dd-select-btn-peak i {
+    font-size: 1.2rem;
+    transition: transform 0.3s linear;
+}
+
+.dd-wrapper.active .dd-select-btn i {
+    transform: rotate(-180deg);
+}
+
+.dd-wrapper.active .dd-select-btn-peak i {
+    transform: rotate(-180deg);
+}
+
+.dd-all-content {
+    position: absolute;
+    width: 100%;
+    padding-right: 20px;
+    z-index: 100;
+    margin-top: -3px;
+}
+
+.dd-all-content-peak {
+    position: absolute;
+    width: 100%;
+     padding-right: 78px;
+    z-index: 100;
+    margin-top: -3px;
+}
+
+.dd-content {
+    display: none;
+    padding: 10px 6px;
+    padding-top: 19px;
+    background-color: #434971;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dd-content-peak {
+    display: none;
+    padding: 10px;
+    padding-top: 19px;
+    background-color: #141b4d;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dd-wrapper.active .dd-content {
+    display: block;
+}
+
+.dd-wrapper.active .dd-content-peak {
+    display: block;
+}
+
+.dd-content .dd-search {
+    display: flex;
+    justify-content: center;
+}
+
+.dd-content-peak .dd-search {
+    display: flex;
+    justify-content: center;
+}
+
+.dd-search {
+    position: relative;
+}
+
+.dd-search i {
+    top: 50%;
+    right: 8%;
+    color: #999;
+    font-size: 15px;
+    pointer-events: none;
+    transform: translateY(-50%);
+    position: absolute;
+}
+
+.dd-search input {
+    height: 43px;
+    width: 90%;
+    margin: auto;
+    outline: none;
+    font-size: 1rem;
+    border-radius: 5px;
+    padding: 0 35px 0 3px !important;
+    border: 1px solid #B3B3B3;
+}
+
+.dd-search input:focus {
+    padding-left: 42px;
+    border: 2px solid #4285f4;
+}
+
+.dd-search input::placeholder {
+    color: #bfbfbf;
+}
+
+.dd-content .dd-options {
+    margin-top: 10px;
+    background-color: #ffffff;
+    margin-top: -16px;
+    border-radius: 5px;
+    padding-top: 20px;
+    padding-bottom: 5px;
+}
+
+.dd-content-peak .dd-options {
+    margin-top: 10px;
+    background-color: #ffffff;
+    margin-top: -16px;
+    border-radius: 5px;
+    padding-top: 20px;
+    padding-bottom: 5px;
+}
+.dd-content-peak .dd-options-list {
+    overflow-y: hidden;
+}
+.dd-options-list {
+    padding: 0;
+    margin-top: 1px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.dd-list {
+    margin: 0 10px 0 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.dd-options li {
+    height: 39px;
+    padding: 0 5px;
+    font-size: .9rem;
+    border-radius: 3px;
+    margin: 0 3px 0 6px;
+    padding-right: 10px;
+}
+
+.dd-options li:hover,
+li.selected {
+    border-radius: 5px;
+    background: #f0f0f3;
+}
+
+.dd-options li:hover i,
+li.selected i {
+    border-radius: 5px;
+    background: #f0f0f3 !important;
+}
+#project-select-option-list .dd-isSelected i{
+    color: #25d125;
+    font-size: 14px;
+    background-color: #dddddd;
+    height: 39px;
+    padding-top: 12px;
+
+}
+.dd-isSelected {
+    background-color: #dddddd;
+    gap: 5px;
+}
+
+.dd-time-btn{
+    width: 11%;
+}
+
+.dd-Arm-btn {
+    width: 10%;
+}
+
+.dd-Observation-btn {
+    width: 22%;
+}
+.dd-projectname-btn{
+    width: 18%;
+}
+/* .dd-main-div {
+    height: 620px;
+} */
+
+.calender-content {
+    margin-top: 12%;
+}
+
+.td-active {
+    background-color: #12d231 !important;
+    color: #ffff !important;
+}
+
+.red-box {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin-top: 3px;
+    border-radius: 3px;
+}
+.red-box.Car{
+    background-color: #5B9BD6;
+}
+.red-box.LGV{
+    background-color: #209022;
+}
+.red-box.OGV1{
+    background-color: #FF0000;
+}
+.red-box.OGV2{
+    background-color: #63666A;
+}
+.red-box.PSV{
+    background-color: #141B4D;
+}
+.red-box.MC{
+    background-color: #FF4E00;
+}
+.red-box.PC{
+    background-color: #12D231;
+}
+.red-box.All{
+    background-color: #FFFFFF;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+@media only screen and (max-device-width: 1030px) {
+    .popup-label{
+        font-size: 12px;
+    }
+    .dd-select-btn {
+        padding: 0 4px;
+    }
+    .dd-select-btn i {
+        font-size: 0.9rem;
+    }
+}
+
+
+.total5hr, .total4hr, .total3hr{
+    background: #f0f0f0;
+    width: 97%;
+    font-weight: 800;
+}

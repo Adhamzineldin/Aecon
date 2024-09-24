@@ -1,0 +1,1007 @@
+{% extends "aecon/dashboard-base.html" %}
+{% load staticversion %}
+{% load my_filters %}
+
+{% block content %}
+<style>
+
+    #countline-daily-table.show-data .weather{
+        display:none
+    }
+
+    #countline-daily-table.show-weather td{
+        padding:0;
+    }
+
+
+    #countline-daily-table.show-weather .weather{
+        display:block
+    }
+
+    #countline-daily-table.show-weather .data{
+        display:none
+    }
+
+
+
+
+</style>
+
+
+<input hidden value="{{location.id}}" id="location_id">
+
+<div id="graph-limit-popup" style="width:240px" class="conduit-popup">
+    <div class="conduit-selectable-menu  multi">
+        <ul >
+             <li data-limit="600" data-text-low="Low Flow" data-text-high="Active Flow" data-col="rgba(44, 168, 54, .4)" data-col-low="rgba(44, 168, 54, .4)" data-col-high="rgba(214, 162, 17, .5)" class="menu-item popup-item" >
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span >Low Flow</span>
+                </a>
+            </li>
+
+            <li data-limit="1200" data-text-low="Active Flow" data-text-high="High Flow" data-col="rgba(255, 0, 0, .4)" data-col-high="rgba(255, 0, 0, .4)" data-col-low="rgba(214, 162, 17, .5)" class="menu-item popup-item">
+                <a href="#"  class="selectable-menu-item">
+                    <i ></i>
+                    <span>High Flow</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<div id="classes-popup" style="width:auto;" class="conduit-popup">
+    <div class="conduit-selectable-menu multi">
+        {{ classes | safe}}
+    </div>
+</div>
+
+
+
+<div id="directions-popup" style="width:auto;" class="conduit-popup" >
+    <div class="conduit-selectable-menu min-1" data-header="directions-header">
+        {{ directions | safe}}
+    </div>
+</div>
+
+
+
+<div id="subview-selector-popup" style="width:180px" class="conduit-popup">
+    <div class="conduit-selectable-menu  min-1" data-header="subview-selector">
+        <ul >
+             <li id="5day" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item selected ">
+                    <i ></i>
+                    <span >Specific Week</span>
+                </a>
+            </li>
+
+            <li id="7day" class="menu-item popup-item">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>Average Week</span>
+                </a>
+            </li>
+
+
+        </ul>
+    </div>
+</div>
+
+
+<div id="period-selector-popup" style="width:180px" class="conduit-popup">
+    <div class="conduit-selectable-menu  min-1" data-header="period-selector">
+        <ul >
+             <li id="60" class="menu-item popup-item" data-offset="4">
+                <a href="#" class="selectable-menu-item selected ">
+                    <i ></i>
+                    <span >60 Minutes</span>
+                </a>
+            </li>
+            <li id="30" class="menu-item popup-item" data-offset="2">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>30 Minutes</span>
+                </a>
+            </li>
+            <li id="15" class="menu-item popup-item" data-offset="1">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>15 Minutes</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
+
+<div class="row align-items-center"  style="height:50px">
+    <div class="col-12 my-auto d-flex align-items-center">
+        <div class="selection-header classes-popup-trigger"><span>Classifications</span><i class="chevron-icon"></i></div>
+        {% comment %} <div class="selection-header subview-selector-popup-trigger" id="subview-selector"><span>Specific Week</span><i class="chevron-icon"></i></div> {% endcomment %}
+        <div class="selection-header directions-popup-trigger" id="directions-header"><span>Northbound</span><i class="chevron-icon"></i></div>
+        <div class="selection-header period-selector-popup-trigger" id="period-selector"><span>60 Minutes</span><i class="chevron-icon"></i></div>
+
+
+
+        <div class="d-flex align-items-center justify-content-center date-display">
+            <div class="topbar__item" onclick="decrementDate();"> <i class="fa fa-caret-left pull-right mx-auto"></i></div>
+            <div class="date"></div>
+            <div class="topbar__item" onclick="incrementDate();"> <i class="fa fa-caret-right pull-right mx-auto"></i></div>
+        </div>
+        <div class="topbar__item" id="calendar"><span><i class="icon-calendar"></i></span></div>
+        <div class="topbar__item-holder" style="margin-left:auto">
+            {% if  request.user|has_group:'weather'%}
+                <div class="topbar__item" id="weather"  onclick="toggleWeather();"><span><i class="icon-umbrella"></i></span></div>
+            {% endif %}
+            {% comment %} <div class="topbar__item events-popup-trigger opens-left" id="events" style=""><span><i class="icon-internet"></i></span></div> {% endcomment %}
+        </div>
+
+
+
+    </div>
+</div>
+
+<div class="row" style="height:calc(100% - 65px)">
+    <div  id="main-container-greyed-out" class="d-none" style="position:absolute;width:calc(100% - 300px);height:calc(100% - 105px);z-index:401;opacity:0.9;background-color:#fcfcfc;"></div>
+    <div class="col-12 h-100" id="individual-countline-overview" >
+        <div class="row" style="height:100%">
+            <div class="col-6 mb-3 h-100" id="left-container">
+                <div class="d-flex flex-column h-100">
+                    <div class="row" id="info-row" >
+                        <div class="col-12 h-100">
+                            <div class="card header-shadow" style="width:100%;height:100%"  data-group="atc-volumes-daily">
+                                <div class="card-body h-100">
+                                    <div class="row h-100">
+                                        <div class="col-auto" id="details-container" style="padding-right:30px;">
+                                            <h5 class="text-muted"><span>{{location.name}}</span></h5>
+                                            <h5 class="text-muted" style="padding-bottom:1rem;"><span>{{location.area.name}}</span> </h5>
+                                            <div class="info-cell"><div class="info-cell-title">Coordinates</div> <div class="info-cell-value"><span>{{location.installDate}}</span></div></div>
+                                            <div class="info-cell"><div class="info-cell-title">Installation Date</div> <div class="info-cell-value"><span>{{location.installDate}}</span></div></div>
+                                            <div class="info-cell"><div class="info-cell-title">Last Data Received</div> <div class="info-cell-value"><span>{{location.lastDataReceived}}</span></div></div>
+                                            {% comment %} <div class="info-cell"><div class="info-cell-title">Sensor Status</div> <div class="info-cell-value" style="color:green"><span>{{location.status}}</span></div></div> {% endcomment %}
+                                        </div>
+                                        <div class="col d-md-block" id="img-container" style="padding:0 5px;">
+                                            <div style="position:relative;display:table" class="d-none">
+                                                <img class="img-fluid" style="width:100%;min-width:200px" src="{{location.imgURL}}" id="site-img">
+                                                <div class="topbar__item" onclick="toggleExpandImg();" style="width:30px;height:30px;line-height:25px;background-color:white;position:absolute;bottom:10px;left:10px;z-index:400;border-radius:2px;border:2px solid grey;text-align:center;font-size:16px;cursor:pointer">
+                                                    <span class="icon-toggle"><i class="fa fa-expand" data-alt="fa fa-compress"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col d-none d-xl-block" id="map-container" style="padding:0 10px">
+                                            <div class="col-12 " id="map-wrapper" style="width:100%;height:100%;padding:0">
+                                                <div class = "map-panel" id = "countline-map" style="height:100%">
+
+                                                </div>
+                                                <div class="topbar__item" onclick="toggleExpandMap();" style="width:30px;height:30px;line-height:25px;background-color:white;position:absolute;bottom:10px;left:10px;z-index:400;border-radius:2px;border:2px solid grey;text-align:center;font-size:16px;cursor:pointer">
+                                                    <span class="icon-toggle"><i class="fa fa-expand" data-alt="fa fa-compress"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center flex-grow-1" id="graph-container" >
+                        <div class="col-12 h-100  pt-3 ">
+                            <div class = "card header-shadow" style="width:100%;height:100%"  data-group="atc-volumes-daily">
+                                <div class="greyed-out justify-content-center align-items-center show"> <img src ="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+                                <div class="canvaswrapper">
+                                    <canvas id="countline-classed-volumes" style="height:100%">
+
+                                    </canvas>
+
+                                </div>
+                                <div class="button-overlay d-flex" data-target="atc-volumes-daily" style="right:25px" id="graph-overlay">
+
+                                    <div class="topbar__item" onclick="saveGraphImage();" style="background-color:#f2f3f7;margin-right:5px">
+                                        <span class="icon-toggle"><i class="icon-picture"></i></span>
+                                    </div>
+
+                                    <div class="topbar__item" onclick="expandGraph();" style="background-color:#f2f3f7;margin-right:5px">
+                                        <span class="icon-toggle"><i class="icon-zoom-in" data-alt="icon-zoom-out"></i></span>
+                                    </div>
+                                    <div class="topbar__item graph-limit-popup-trigger opens-left" style="background-color:#f2f3f7;margin-right:5px">
+                                        <span class="icon-toggle"><i class="icon-controls-1" ></i></span>
+                                    </div>
+                                    <div class="topbar__item" onclick="toggleGraphDisplay();" style="background-color:#f2f3f7;margin-right:5px">
+                                        <span class="icon-toggle"><i class="icon-car" data-alt="icon-calendar-1"></i></span>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6  mb-3 h-100" id="right-container">
+                <div class="col-12 p-0 h-100">
+                    <div class="card header-shadow h-100" style="width:100%"  data-group="atc-volumes-daily">
+                        <div class="greyed-out justify-content-center align-items-center show"> <img src ="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+                        <div class="card-body" style="height:calc(100% - 50px);padding:5px;width:100%;overflow:auto">
+                            <div class="table-wrapper" style="width:100%;height:100%;overflow:auto;font-size:10px">
+                                <table class="table table-borderless table-sm table-hover show-data" id="countline-daily-table">
+                                    <thead>
+                                    <tr>
+
+                                        <th></th>
+                                        <th><label data-bg="#3e95cd" data-col="white" class="class-selector" data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="0">Monday</label></th>
+                                        <th><label data-bg="#8e5ea2" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="1">Tuesday</label></th>
+                                        <th><label data-bg="#3cba9f" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="2">Wednesday</label></th>
+                                        <th><label data-bg="#e8c3b9" data-col="black" class="class-selector " data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="3">Thursday</label></th>
+                                       <th> <label data-bg="#c45850" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="4">Friday</label></th>
+                                       <th> <label data-bg="#4286f4" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="5">Saturday</label></th>
+                                        <th><label data-bg="#60db97" data-col="black" class="class-selector " data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="6">Sunday</label></th>
+                                        <th><label data-bg="#ff3333" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="7">5 Day Avg</label></th>
+                                       <th><label data-bg="#00ccff" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="8">7 Day Avg</label></th>
+
+
+
+
+                                    </tr>
+
+                                    </thead>
+                                    <tbody>
+                                    {% load my_filters %}
+                                        {% time_range as times %}
+                                        {% for t in times %}
+                                            <tr><th>{{t}}</th>
+                                                <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                                <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                                <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                                <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                                <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                                <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                                <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                                <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"></div></div></td>
+                                                <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"></div></div></td>
+
+                                            </tr>
+                                        {% endfor %}
+                                        <tr style="border-top:1px solid grey" class="data"><th>07-19</th>
+                                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr class="data"><th>06-22</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr class="data"><th>06-24</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr class="data"><th>00-24</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr class="data"><th>AM Peak</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr class="data"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr class="data"><th>PM Peak</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr class="data"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+{% block js %}
+<script>
+
+    var classedData;
+    var chart;
+    var direction = 0;
+    var chartView = "daily";
+    var marker;
+    var dateType = "week";
+    var dataRetrievalActive = false;
+    var dataTimeout;
+    var graphLabels = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00"];
+
+    var datepicker = $('#calendar').daterangepicker({locale: {
+            format: 'DD/MM/YYYY'
+        },
+        singleDatePicker: true,
+        opens: 'left',
+        drops:'down'
+        },dateChanged);
+
+
+    function dateChanged(start,end,label){
+
+        if (dateType=="week"){
+            start.subtract(start.isoWeekday() - 1,"d")
+            end = moment(start).add(7,"d")
+        }
+        var id  = document.getElementById("location_id").value;
+        displayDates(start,end);
+        loadData(start,end,id);
+    }
+
+
+    function incrementDate(){
+        if (dataRetrievalActive) {return;}
+        clearTimeout(dataTimeout);
+        var start = moment(document.getElementsByClassName("date")[0].innerText.split("-")[0].trim(),"ddd DD/MM/YYYY");
+        start.subtract(start.isoWeekday() - 1,"d").add(7,"d");
+        var end = moment(start).add(7,"d")
+        var id  = document.getElementById("location_id").value;
+        displayDates(start,end);
+        dataTimeout = setTimeout(function(){loadData(start,end,id);},700);
+
+    }
+
+
+    function decrementDate(){
+        if (dataRetrievalActive) {return;}
+        clearTimeout(dataTimeout);
+        var start = moment(document.getElementsByClassName("date")[0].innerText.split("-")[0].trim(),"ddd DD/MM/YYYY");
+        start.subtract(start.isoWeekday() - 1,"d").subtract(7,"d");
+        var end = moment(start).add(7,"d")
+        var id  = document.getElementById("location_id").value;
+        displayDates(start,end);
+        dataTimeout = setTimeout(function(){loadData(start,end,document.getElementById("location_id").value);},700);
+
+    }
+
+
+    function calculateDatasetMax(chart){
+        var max = 0;
+        chart.data.datasets.forEach(function(dataset,index){
+            if (!dataset.hidden){
+                var dataMax = Math.max.apply(this, dataset.data);
+                if(dataMax > max){
+                    max = dataMax;
+                }
+            }
+
+        });
+        return max;
+    }
+
+
+
+
+    function changeGraph(){
+        chart.options.scales.yAxes[0].ticks.suggestedMax = undefined;
+        datasets = getSelectedDatasets("daily");
+        if (chartView == "daily"){
+            datasets = getSelectedDatasets("daily");
+
+        }
+        else{
+            datasets = getSelectedPopupIndexes("classes-popup");
+        }
+        displayGraph(chart,datasets);
+        var period = document.getElementById("period-selector-popup").getElementsByClassName("selected")[0].parentNode.id;
+        var period = parseInt(period);
+        var divisor = 60/period;
+        var lines = getLimitLines(divisor);
+        displayLimitLines(chart,lines);
+
+    }
+
+
+    function expandGraph(){
+        hideAllPopups();
+        if(document.getElementById("info-row").classList.contains("d-none")){
+            document.getElementById("info-row").classList.remove("d-none");
+            console.log("height of info row is",document.getElementById("info-row").style.height,document.getElementById("info-row").offsetHeight);
+            document.getElementById("graph-container").getElementsByClassName("col-12")[0].classList.add("pt-3");
+             document.getElementById("graph-container").style.height = "calc(100% - " + document.getElementById("info-row").offsetHeight + "px)";
+            document.getElementById("right-container").classList.remove("d-none")
+            document.getElementById("left-container").classList.add("col-6")
+            document.getElementById("left-container").classList.remove("col-12")
+        }
+        else{
+            document.getElementById("info-row").classList.add("d-none")
+            document.getElementById("graph-container").getElementsByClassName("col-12")[0].classList.remove("pt-3")
+            document.getElementById("right-container").classList.add("d-none")
+            document.getElementById("left-container").classList.remove("col-6")
+            document.getElementById("left-container").classList.add("col-12")
+        }
+    }
+
+    function saveGraphImage(){
+        var layer = findLayer(document.getElementById("location_id").value);
+        var title = ""
+        if(layer){
+            console.log(layer.feature);
+            title = layer.feature.properties.area + " - " + layer.feature.properties.name + " " + document.getElementsByClassName("date")[0].innerText;
+        }
+        console.log("title is",title);
+
+        setTimeout(function(){genScreenshotgraph("graph-container",title);},1);
+
+    }
+
+
+function updateDatasets(){
+    //
+    // remove any limit lines
+    //
+    chart.options.scales.yAxes[0].ticks.suggestedMax = undefined;
+    selectedClasses = getSelectedPopupIndexes("classes-popup");
+    var direction = getCurrentDirection();
+    var data = classedData.data[document.getElementById("location_id").value].directions[direction];
+    console.log("data is",data);
+
+    var datasets = [];
+    var tableData = [];
+    data.baseData.forEach(function(dataset,index){
+        var selectedClassVolumes = [];
+        selectedClasses.forEach(function(classIndex,i){
+            selectedClassVolumes.push(dataset[classIndex].data);
+        });
+        if (selectedClasses.length != 0){
+            console.log("sleected class volumnes are",selectedClassVolumes);
+            console.log("reduced dataset is",selectedClassVolumes.reduce(sumOfDatasets));
+            tableData.push(selectedClassVolumes.reduce(sumOfDatasets));
+        }
+        else{
+            tableData.push([]);
+        }
+    });
+    //console.log("table data is",tableData);
+    //console.log("chart is",chart);
+    console.log("chart datasets are",chart.data.datasets);
+    if (chartView == "daily"){
+        chart.options.scales.yAxes[0].stacked = false;
+        chart.data.datasets.forEach(function(dataset,index){
+            console.log("setting dataset",index,"to",tableData[index]);
+            if(!dataset.limit){
+                dataset.data = tableData[index];
+            }
+        });
+    }
+    else{
+        var day = getSelectedDatasets("daily")[0];
+        //console.log("selected day is",day);
+        console.log("data for day is",data.baseData[day]);
+        chart.data.datasets = [...data.baseData[day]] ;
+        chart.options.scales.yAxes[0].stacked = true;
+    }
+
+    chart.update();
+    chart.yAxesticks = yAxesticks;
+    changeGraph();
+    fillAveragesTable("countline-daily-table",tableData, classedData.graphLabels);
+}
+
+
+function displayDates(start,end){
+    //console.log("in display dates, datyetype is",dateType);
+    if (dateType == "specific day"){
+        document.getElementsByClassName("date")[0].innerText = start.format("ddd DD/MM/YYYY");
+    }
+    else{
+        document.getElementsByClassName("date")[0].innerText = start.format("ddd DD/MM/YYYY") + " - " + end.format("ddd DD/MM/YYYY");
+    }
+}
+
+function getCurrentDirection(){
+    var direction = 0
+    var dirs = document.getElementById("directions-popup").getElementsByClassName("selectable-menu-item");
+    for (var i=0;i<dirs.length;i++){
+        if (dirs[i].classList.contains("selected")){
+            direction = i;
+        }
+    }
+    return direction;
+}
+
+
+function changeDirection(){
+    direction= getCurrentDirection();
+    //chart.data = classedData.directions[direction].dailyChart;
+    updateDatasets();
+    changeGraph();
+}
+
+
+function triggerGetData(){
+    var dates = getDates();
+    loadData(dates[0],dates[1],document.getElementById("location_id").value);
+}
+
+setToggleDatasetSelectorsListener(document.getElementById("countline-daily-table"));
+setDatasetSelectorsFunctionListener(document.getElementById("countline-daily-table"),function(){updateDatasets();changeGraph()});
+
+
+
+
+function hoverOnDay(ele){
+    if (!chart || chartView != "daily" || !ele.classList.contains("selected")){
+        return;
+    }
+    chart.data.datasets.forEach(function(e) {
+        if(!e.limit){
+            e.hidden = true;
+        }
+
+    });
+    var index = parseInt(ele.getAttribute("data-index"));
+    chart.data.datasets[index].hidden=false;
+    chart.update(0);
+}
+
+
+function hoverExit(event){
+    if (chartView != "daily"){
+        return;
+    }
+    changeGraph();
+}
+
+
+
+
+    var id = document.getElementById("mb-id").value
+    initMap([53.476404, -2.250621],"countline-map",id);
+    map.setZoom(17);
+
+
+    function dealWithLocationFeatureCollection(feature,layer){
+        console.log("dealing with location",feature)
+        if (feature.geometry.type == "LineString" && (feature.properties.type == "countline" || feature.properties.type == "virtual")){
+            //console.log("found countline",feature);
+            layer.setStyle({color:"#2483ec"});
+            //layer.addTo(map);
+            //layer.setStyle(locationStyleOptions);
+            lineLayer.addLayer(layer);
+
+            map.fitBounds(lineLayer.getBounds(),{"maxZoom":19,padding:[500,500]});
+            var spans = document.getElementById("details-container").getElementsByTagName("span");
+            spans[0].innerText = feature.properties.name;
+            spans[1].innerText = feature.properties.area;
+            spans[2].innerText = feature.geometry.coordinates[1].toString().substring(0, 8) + "," + feature.geometry.coordinates[0].toString().substring(0, 8);
+            spans[3].innerText = moment(feature.properties.installDate).format("MMMM  DD, YYYY");
+            spans[4].innerText = moment(feature.properties.lastDataReceived).format("DD/MM/YYYY HH:mm");
+            spans[5].innerText = feature.properties.status;
+            spans[5].setAttribute("class", "")
+            spans[5].classList.add("status-" + feature.properties.status.toLowerCase());
+            document.getElementById("site-img").src = feature.properties.imgURL;
+        }
+        if (feature.geometry.type == "Point"){
+
+            if (!feature.properties.temp){
+                var className="perm";
+            }
+            else{
+                var className="temp";
+            }
+            var marker = addPlainMarker(feature,className);
+            map.panTo(marker.getLatLng());
+
+            var spans = document.getElementById("details-container").getElementsByTagName("span");
+            spans[0].innerText = feature.properties.name;
+            spans[1].innerText = feature.properties.area;
+            spans[2].innerText = feature.geometry.coordinates[1].toString().substring(0, 8) + "," + feature.geometry.coordinates[0].toString().substring(0, 8);
+            spans[3].innerText = moment(feature.properties.installDate).format("MMMM  DD, YYYY");
+            spans[4].innerText = moment(feature.properties.lastDataReceived).format("DD/MM/YYYY HH:mm");
+            spans[5].innerText = feature.properties.status;
+            spans[5].setAttribute("class", "")
+            spans[5].classList.add("status-" + feature.properties.status.toLowerCase());
+            document.getElementById("site-img").src = feature.properties.imgURL;
+        }
+    }
+
+
+    function loadData(start,end,id){
+        if (dataRetrievalActive) {return;}
+        var greyed = document.getElementsByClassName("greyed-out");
+        if (id == ""){return;}
+        for (var i=0;i<greyed.length;i++){
+            showGreyedOut(greyed[i]);
+        }
+        dataRetrievalActive = true;
+        if(chart){chart.destroy();}
+        var formData = new FormData();
+        formData.append("ids",JSON.stringify([id]));
+        formData.append("resultType","counts");
+        formData.append("period",document.getElementById("period-selector-popup").getElementsByClassName("selected")[0].parentNode.id);
+        formData.append("startDate",start.format("YYYY-MM-DD 00:00"));
+        formData.append("endDate",end.format("YYYY-MM-DD 00:00"));
+        return fetcher(formData,"getATCClassedVolumes",function(result){
+            console.log("received results",result);
+            classedData = result.data;
+            graphLabels = result.data.graphLabels;
+            dataRetrievalActive = false;
+            var greyed = document.getElementsByClassName("greyed-out");
+
+            document.getElementsByClassName("date")[0].innerText = start.format("ddd DD/MM/YYYY") + " - " + end.format("ddd DD/MM/YYYY");
+            console.log(document.getElementsByClassName("date")[0].innerText,"today date")
+            document.getElementById("events-container").innerHTML = result.data.events;
+            setUpChart();
+            if (chartView == "classed"){
+
+            }
+            else{
+                var direction = getCurrentDirection();
+
+            }
+
+
+        }).then(function(response){
+            {% if  request.user|has_group:'weather'%}
+                return getWeather(start,end,id);
+            {% endif %}
+
+        }).then(function(response){
+            for (var i=0;i<greyed.length;i++){
+                hideGreyedOut(greyed[i]);
+            }
+        });
+    }
+
+
+    function getWeather(start,end,id){
+        console.log("in get weather");
+        var formData = new FormData();
+        formData.append("id", id);
+        formData.append("resultType","counts");
+        formData.append("period",document.getElementById("period-selector-popup").getElementsByClassName("selected")[0].parentNode.id);
+        formData.append("startDate",start.format("YYYY-MM-DD 00:00"));
+        formData.append("endDate",end.format("YYYY-MM-DD 00:00"));
+        return fetcher(formData,"getWeather",function(result){
+            console.log("received results",result);
+            rows = document.getElementById("countline-daily-table").getElementsByTagName("tr");
+            //console.log("row", rows[0]);
+            for (i=1;i<rows.length;i++){
+                if (rows[i].classList.contains("data")){
+                    continue;
+                }
+                //console.log("processing row",i);
+                for(c=1;c<8;c++){
+                    //console.log("processing", c, i, result.data[c-1][i-1])
+                    //console.log("data", result.data[c-1][i-1][0], result.data[c-1][i-1][0] == "");
+                    if (result.data[c-1][i-1][0] == ""){
+                    //console.log("found blank!!!");
+                    rows[i].cells[c].getElementsByTagName("img")[0].src = "/static/aecon/blank weather img.png";
+                    rows[i].cells[c].getElementsByTagName("img")[0].classList.add("d-none");
+                    rows[i].cells[c].getElementsByClassName("weather")[0].setAttribute("data-original-title","no weather data");
+                    }
+                    else{
+                        rows[i].cells[c].getElementsByTagName("img")[0].classList.remove("d-none");
+                        rows[i].cells[c].getElementsByTagName("img")[0].src = "http://openweathermap.org/img/wn/" + result.data[c-1][i-1][0];
+                        rows[i].cells[c].getElementsByClassName("weather")[0].setAttribute("data-original-title",result.data[c-1][i-1][1]);
+                    }
+
+                }
+
+            }
+        })
+    }
+
+    function toggleWeather(){
+        if (document.getElementById("countline-daily-table").classList.contains("show-data")){
+            document.getElementById("countline-daily-table").classList.remove("show-data");
+            document.getElementById("countline-daily-table").classList.add("show-weather");
+        }
+        else{
+            document.getElementById("countline-daily-table").classList.remove("show-weather");
+            document.getElementById("countline-daily-table").classList.add("show-data");
+        }
+    }
+
+
+
+    function loadLocation(id){
+        console.log("in load location");
+        var formData = new FormData();
+        formData.append("location_id",JSON.stringify(id));
+        return fetcher(formData,"getLocations",function(result){
+            //console.log("received results of location",result);
+            lineLayer.eachLayer(function (layer) {
+                    lineLayer.removeLayer(layer);
+            });
+            processLocationGeojson(result.locations);
+            //map.fitBounds(markerLayer.getBounds());
+            document.getElementById("classes-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = result.classes;
+            //console.log("directions are",result.directions);
+            document.getElementById("directions-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = result.directions;
+            setPopupListeners(document.getElementById("classes-popup"))
+            setPopupListeners(document.getElementById("directions-popup"));
+            var items = document.getElementById("classes-popup").getElementsByClassName("menu-item");
+            document.getElementById("img-container").getElementsByTagName("div")[0].classList.remove("d-none");
+            for(var i=0;i<items.length;i++){
+                //console.log("in inline script, setting up click listener for",items[i]);
+                items[i].addEventListener("click",function(){updateDatasets();changeGraph()});
+            }
+            var items = document.getElementById("directions-popup").getElementsByClassName("menu-item");
+            for(var i=0;i<items.length;i++){
+                //console.log("in inline script, setting up click listener for",items[i]);
+                items[i].addEventListener("click",function(){changeDirection()});
+            }
+
+        });
+    }
+
+    function loadSite(start,end,id){
+        console.log("in load site",id);
+        var id  = document.getElementById("location_id").value;
+        //console.log("id is now",id);
+        loadLocation(id).then(function(){loadData(start,end,id);});
+        //loadData(start,end,id);
+    }
+
+
+
+var start = moment()
+start.subtract(start.isoWeekday() - 1,"d")
+var end =  moment()
+end.subtract(end.isoWeekday() - 1,"d").add(7,"d")
+var loc = document.getElementById("location_id").value;
+console.log("loc is",loc,loc == null, loc==undefined,loc == "");
+if (loc != ""){
+    loadSite(start,end,document.getElementById("location_id").value);
+}
+else{
+    hideAllGreyedOut();
+    //document.getElementById("img-container").getElementsByClassName("div")[0].classList.add("d-none");
+    document.getElementsByClassName("date")[0].innerText = start.format("ddd DD/MM/YYYY") + " - " + end.format("ddd DD/MM/YYYY");
+
+}
+
+
+
+function buildGraphLabels(tooltip,data){
+    //console.log("hi",tooltip,data);
+    text = [];
+    data.datasets.forEach(function(item,index){
+        //console.log("chart is",chart);
+        var val = item.data[tooltip.index];
+        if(typeof val == "string"){ val = "-";}
+        if (chart.config.type == "line"){
+            if (!item.hidden){
+                text.push(item.label + " - "  + val);
+            }
+        }
+        else{
+            if (val !=0 && val != "-" && !item.hidden){
+                text.push(item.label + " - "  + val);
+            }
+
+        }
+
+    });
+    return text;
+}
+
+
+function setUpChart(){
+        console.log("setting up  chart view labels are now ",graphLabels);
+        var selectors = document.querySelectorAll("[data-graph-group='daily']");
+        var direction = getCurrentDirection();
+        if (chart){chart.destroy();}
+        var days = document.getElementById("countline-daily-table").getElementsByClassName("class-selector");
+
+        var chartData = []
+        for(day of days){
+            chartData.push({"label":day.innerText,"data":[1,2,3],"borderColor":day.getAttribute("data-bg"),"backgroundColor":day.getAttribute("data-bg"),"fill":false,"pointRadius":0,"borderWidth":1});
+        }
+        console.log("length of graph labels is",graphLabels.length);
+
+        //console.log("weeeee chart data is",chartData);
+        if (chartView == "classed"){
+            chart = createStackedBarChart(document.getElementById("countline-classed-volumes"),{"labels":graphLabels,"datasets":chartData});
+            document.querySelectorAll("[data-graph-group='daily']")[0].click();
+        }
+        else{
+            chart = createLineChart(document.getElementById("countline-classed-volumes"),{"labels":graphLabels,"datasets":chartData});
+            document.getElementById("directions-popup").getElementsByClassName("menu-item")[direction].click();
+            chart.options.scales.xAxes[0].ticks.maxTicksLimit = 12;
+
+        }
+
+    }
+
+
+
+    function toggleGraphDisplay(){
+        console.log("current chart view is",chartView);
+        var selectors = document.querySelectorAll("[data-graph-group='daily']");
+        if (chartView == "daily"){
+            chartView = "classed";
+            selectionType = "single";
+        }
+        else{
+            chartView = "daily";
+            selectionType = "multi";
+        }
+        classSelectorSelectAll("daily");
+        for (var i=0;i<selectors.length;i++){
+            selectors[i].setAttribute("data-selection-type",selectionType);
+            if (selectionType == "single"){
+                selectors[i].classList.remove("selected");
+            }
+        }
+
+        if (chartView == "daily"){
+             classSelectorSelectAll("daily");
+        }
+        setUpChart();
+    }
+
+
+
+function toggleExpandMap(){
+    graph = document.getElementById("graph-container");
+    if (graph.classList.contains("d-none")){
+        document.getElementById("details-container").classList.remove("d-none");
+        document.getElementById("img-container").classList.remove("d-none");
+        document.getElementById("img-container").classList.add("d-md-block");
+        document.getElementById("info-row").classList.remove("h-100");
+        graph.classList.remove("d-none");
+    }
+    else{
+        document.getElementById("details-container").classList.add("d-none");
+        document.getElementById("img-container").classList.remove("d-md-block");
+        document.getElementById("img-container").classList.add("d-none");
+        document.getElementById("info-row").classList.add("h-100");
+        graph.classList.add("d-none");
+
+    }
+    map.invalidateSize();
+}
+
+
+function getDates(){
+    var start = moment(document.getElementsByClassName("date")[0].innerText.split("-")[0].trim(),"ddd DD/MM/YYYY");
+    console.log("start is",start);
+    var arr = document.getElementsByClassName("date")[0].innerText.split("-");
+    if (arr.length == 1){arr.push(moment(start).format("ddd DD/MM/YYYY"))};
+    if (dateType == "week"){
+        end = moment(start).add(7,"days");
+    }
+
+    else{
+        end = moment(arr[1].trim(),"ddd DD/MM/YYYY").add(1,"days");
+    }
+    return [start,end];
+}
+
+
+function toggleExpandImg(){
+    graph = document.getElementById("graph-container");
+    if (graph.classList.contains("d-none")){
+        document.getElementById("details-container").classList.remove("d-none");
+        document.getElementById("map-container").classList.add("d-xl-block");
+        document.getElementById("info-row").classList.remove("h-auto");
+        graph.classList.remove("d-none");
+    }
+    else{
+        document.getElementById("details-container").classList.add("d-none");
+        document.getElementById("map-container").classList.remove("d-xl-block");
+        document.getElementById("info-row").classList.add("h-auto");
+        graph.classList.add("d-none");
+
+    }
+    map.invalidateSize();
+}
+
+
+
+function redirectToAQ(){
+    var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+            showGreyedOut(greyed[i]);
+        }
+    var sites = getSelectedSites(2);
+    var dataToSave = {}
+    for(var i=0;i<sites.length;i++){
+
+        dataToSave[sites[i]]={"direction":0,"selected":false};
+    }
+    saveSitesToLocalStorage(2,dataToSave);
+    window.location.href="/aecon/redirect?view=10";
+}
+
+
+function viewSite(id){
+    //console.log("viewing site",id);
+    if (downloadActive){
+        return;
+    }
+    var obsType = document.getElementById(id).parentNode.getAttribute("data-obstype");
+    if (obsType == "2"){
+            dataTimeout = setTimeout(redirectToAQ,700);
+        }
+        else if(obsType == "1"){
+            document.getElementById("location_id").value = id;
+            var start = moment(document.getElementsByClassName("date")[0].innerText.split("-")[0].trim(),"ddd DD/MM/YYYY");
+            var end = moment(document.getElementsByClassName("date")[0].innerText.split("-")[1].trim(),"ddd DD/MM/YYYY");
+            //d.subtract(d.isoWeekday() - 1,"d")
+            //window.location.href = "/aecon/redirect/view=
+            loadSite(start,end,id);
+        }
+        else{
+            return;
+        }
+
+}
+
+function switchDateType(){
+    var dateDisplay = document.getElementsByClassName("date-display")[0];
+    var carets = dateDisplay.getElementsByClassName("topbar__item")
+    dates = getDates();
+    if (dateType == "week"){
+        dateType = "range";
+        var single = false;
+        for(var i=0;i<carets.length;i++){
+            carets[i].classList.add("d-none");
+        }
+        var day = moment(dates[0]);
+        day.subtract(1,"months");
+        day.subtract(day.date()-1,"d");
+        displayDates(day,dates[0]);
+
+    }
+    else{
+        dateType = "week";
+        var single = true;
+        for(var i=0;i<carets.length;i++){
+            carets[i].classList.remove("d-none");
+        }
+        var day = moment();
+        day.subtract(day.isoWeekday() - 1,"d")
+        end = moment(day).add(7,"d")
+        displayDates(day,end);
+
+    }
+    datepicker = $('#calendar').daterangepicker({locale: {
+            format: 'DD/MM/YYYY'
+        },
+        singleDatePicker: single,
+        opens: 'left',
+        drops:'down'
+        },dateChanged);
+
+    triggerGetData();
+
+}
+
+
+var items = document.getElementById("subview-selector-popup").getElementsByClassName("menu-item");
+    for(var i=0;i<items.length;i++){
+        items[i].addEventListener("click",switchDateType);
+    }
+
+
+var items = document.getElementById("graph-limit-popup").getElementsByClassName("menu-item");
+    for(var i=0;i<items.length;i++){
+        items[i].addEventListener("click",changeGraph);
+    }
+
+
+
+var periods = document.getElementById("period-selector-popup").getElementsByClassName("popup-item");
+for(var i=0;i<periods.length;i++){
+        periods[i].addEventListener("click",function(ele){
+                                                return function(event){
+                                                triggerGetData();
+                                                }
+                                            }(periods[i]));
+
+}
+
+
+function toggleDelegate(elem){
+
+    return function(){viewSite(elem.getElementsByTagName("a")[0].id)};
+}
+
+
+
+</script>
+
+
+{% endblock %}

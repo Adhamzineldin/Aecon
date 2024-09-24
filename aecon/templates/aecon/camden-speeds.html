@@ -1,0 +1,476 @@
+
+{% extends "aecon/dashboard-base.html" %}
+{% load staticversion %}
+
+{% block content %}
+
+<style>
+
+     #hourly-classed-table th,  #hourly-classed-table td {
+        text-align:center;
+     }
+
+    #hourly-classed-table.show-data .weather{
+        display:none
+    }
+
+    #hourly-classed-table.show-weather td{
+        padding:0;
+    }
+
+
+th.rotate{
+    padding:0;
+    max-width:30px;
+    width:30px;
+}
+
+#matrix td, #matrix th{
+    padding:0;
+}
+#matrix td{
+    cursor:pointer;
+}
+
+th.rotate > div > span {
+
+  padding: 5px 5px;
+  writing-mode: vertical-lr;
+}
+
+.month{
+    height:100%;
+    font-size:1rem;
+}
+
+.calendar .months-container .month-container{
+    height:220px;
+}
+
+</style>
+
+<div id="directions-popup" style="width:auto;" class="conduit-popup">
+    <div class="conduit-selectable-menu min-1" data-header="directions-header">
+        <ul>
+            <li class="menu-item" id="direction_1">
+                <a href="#" class="selectable-menu-item selected">
+                    <span> {{loc.directions.all.0.direction.descriptive}}</span>
+                </a>
+            </li>
+            <li class="menu-item" id="direction_0">
+                <a href="#" class="selectable-menu-item">
+                    <span> {{loc.directions.all.1.direction.descriptive}}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="row" style="height:55px">
+    <div class="selection-header directions-popup-trigger" id="directions-header"><span>{{loc.directions.all.0.direction.descriptive}}</span><i class="chevron-icon"></i></div>
+</div>
+
+<div class="row sub-view " id="atc-classed-volumes"  style="width:100%;height:calc(100% - 60px)">
+
+
+
+        <div class = "col-12 col-lg-5 h-100 pt-3" >
+            <input hidden id="locId" value="{{loc.id}}">
+            <div class="card header-shadow h-50" data-group="atc-volumes-classes">
+                <div class="card-header d-flex align-items-center bg-transparent" style="min-height:50px">
+                    <div id="title">{{title}}</div>
+                    <div></div>
+
+                </div>
+                    <div class="card-body" style="height:calc(100% - 50px);padding:5px;width:100%;position:relative">
+
+                    <div class="table-wrapper "  style="width:100%;height:100%;overflow:auto">
+                        <div class="greyed-out justify-content-center align-items-center"> <img src ="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img"></div>
+                        <table class="table table-borderless table-sm table-hover show-data" id="hourly-classed-table">
+                            <thead class="">
+                                <tr>
+                                    <th></th>
+
+                                    <th class="graph-control unselected" data-col="#3e95cd" style="width:100px">Car</th>
+                                    <th class="graph-control unselected" data-col="#3e95cd" style="width:100px">Taxi</th>
+                                    <th class="graph-control unselected" data-col="#3e95cd" style="width:100px">LGV</th>
+                                    <th class="graph-control unselected" data-col="#3e95cd" style="width:100px">Bus</th>
+                                    <th class="graph-control unselected" data-col="#3e95cd" style="width:100px">OGV</th>
+                                    <th class="graph-control unselected" data-col="#3e95cd" style="width:100px">Motorbike</th>
+                                    <th class="graph-control unselected" data-col="#3e95cd" style="width:100px">Pedestrian</th>
+                                    <th class="graph-control unselected" data-col="#3e95cd" style="width:100px">Cyclist</th>
+
+
+
+
+                                </tr>
+
+                            </thead>
+                            <tbody class="">
+                                {% load my_filters %}
+                                {% time_range_5_mins as times %}
+                                {% for t in times %}
+                                    <tr><th>{{t}}</th>
+
+                                            <td><div class="d-flex align-items-center justify-content-center"><span class="data" ></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" ></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" ></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" ></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" ></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" ></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" ></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" ></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card header-shadow h-100" data-group="atc-volumes-classes">
+                <div class="card-body" style="height:calc(100% - 50px);padding:5px;width:100%;position:relative">
+                    <div class="table-wrapper "  style="width:100%;height:100%;overflow:auto">
+                        <table class="table table-sm table-borderless">
+                            <tbody>
+                                <tr class="" style="border-top:1px solid grey"><th>07-19</th>
+                                        <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+
+                                </tr>
+                                <tr class=""><th>06-22</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class=""><th>06-24</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class=""><th>00-24</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class=""><th>AM Peak</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class=""><th></th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class=""><th>PM Peak</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class=""><th></th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-12 col-lg-7 pt-3">
+            <div class="card header-shadow  mb-3" style="height:100%">
+                <div class="card-body" style="height:100%">
+                    <div class="greyed-out justify-content-center align-items-center"> <img src ="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img"></div>
+                    <div  id="calendar-wrapper" style="width:100%;height:calc(100% - 50px);padding:0;position:relative" data-group="calendar-group">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+var graphLabels;
+var selectedDate = moment(new Date());
+
+{% if calendarDates %}
+    var calendarDates = {{calendarDates|safe}}
+{% else%}
+    var calendarDates = [];
+{% endif %}
+{% if year %}
+    var year = {{year|safe}}
+{% else%}
+    var year = new Date().getFullYear();
+{% endif %}
+
+
+{% if data %}
+    var data = {{data|safe}}
+{% else%}
+    var data;
+{% endif %}
+{% if graphLabels %}
+    var graphLabels = {{graphLabels|safe}}
+{% else %}
+    var graphLabels;
+{% endif %}
+
+console.log("grqaph lables are", graphLabels);
+{% if data %}
+    fillAveragesTable("hourly-classed-table",data[1], graphLabels, 1);
+{% endif %}
+console.log("start year is", year);
+var calendar = new Calendar('#calendar-wrapper',{style:'background',minDate:new Date(2010,1,1), startYear: year});
+
+
+
+    document.querySelector('.calendar').addEventListener('renderEnd', function(e) {
+          console.log("Render end for year: " + e.currentYear);
+          var cells = document.querySelectorAll('.day:not(.old):not(.new)');
+            for (var i=0;i<cells.length;i++){
+                cells[i].addEventListener("click",function(id,ele){
+                       return function(){
+                           console.log("clicked on ", id, ele);
+                           var id = document.getElementById("locId").value;
+                           if (id){
+                               getData(id, selectedDate.format("YYYY-MM-DD")).then(function(response){
+                                    ele.style.backgroundColor = "green";
+                                    ele.style.color = "white";
+                                    hideAllGreyedOut();
+                                });
+                            }
+                            else{
+                                hideAllGreyedOut();
+                            }
+                       }
+                    }("calendar-popup",cells[i]));
+            }
+          fillCalendar("off");
+          console.log("clicking on current date to start data retrieval");
+          var cell = findCellforDate(selectedDate);
+          //
+          // at end of first render, we want to listen for a year change event
+          document.querySelector('.calendar').addEventListener('yearChanged', function(e) {
+              console.log("New year selected: " + e.currentYear, e.preventRendering);
+              e.preventRendering = true;
+              year = e.currentYear;
+              viewSite(document.getElementById("locId").value);
+            })
+          console.log("current cell is", cell);
+          cell.click()
+        })
+
+    document.querySelector('.calendar').addEventListener('clickDay', function(e) {
+      console.log("Click on day: " + e.date + " (" + e.events.length + " events)");
+      if (selectedDate){
+        clearSelectedDate(selectedDate);
+      }
+      selectedDate = moment(e.date);
+    })
+    calendar.setYear({{year}});
+
+function getCalendarData(year, toggle){
+
+    var formData = new FormData();
+    formData.append("location_id",document.getElementById("locId").value);
+    formData.append("year",year);
+    return fetcher(formData,"getLocationDataCounts",function(result){
+        console.log("result is", result.result.data);
+        calendarData = result.result;
+        fillCalendar(toggle);
+    });
+
+}
+
+function findCellforDate(d){
+    var months = document.getElementById("calendar-wrapper").getElementsByClassName("month-container");
+    var cell = months[d.month()].querySelectorAll('.day:not(.old):not(.new)')[d.date() -1];
+    return cell;
+}
+
+function clearSelectedDate(d){
+    var cell = findCellforDate(d)
+    console.log("cell is", cell);
+    cell.style.backgroundColor = cell.getAttribute("data-col");
+    cell.style.color = "black";
+
+}
+
+
+
+function fillCalendar(toggle){
+    //console.log("calendar data is", calendarDates);
+    var months = document.getElementById("calendar-wrapper").getElementsByClassName("month-container");
+    for(var i=0;i<calendarDates.length;i++){
+        var d = moment(calendarDates[i])
+        //console.log("processing", calendarData.data[i], d, d.month() - 1)
+        var selectedMonth = document.querySelectorAll("[data-month-id='" + d.month()   + "']")[0];
+        //console.log("selected month is", selectedMonth)
+        //console.log("selected day is", d.date())
+
+        var cell = selectedMonth.querySelectorAll('.day:not(.old):not(.new)')[d.date() -1];
+        //console.log("cell is", cell)
+        var val = 1;
+
+        //var status = calendarData.data[i+1][d+1]["status"];
+        //var removed = calendarData.data[i+1][d+1]["removed"];
+        var text = "Total count: " + val + "\n"
+        if (!val){
+            col = "white";
+        }
+        else{
+            col = "rgb(0,255,0)";
+        }
+        cell.setAttribute("data-col", col)
+        cell.style.backgroundColor = col;
+        //console.log("setting extra listener for", cell);
+    }
+}
+
+function fillAveragesTable(table, data, graphLabels, period){
+
+    console.log("filling table", table, data)
+    var table = document.getElementById(table);
+    if(document.getElementById("period-selector-popup")){
+
+        //console.log("found period selector", document.getElementById("period-selector-popup"))
+        var rowOffset = parseInt(document.getElementById("period-selector-popup").getElementsByClassName("selected")[0].parentNode.getAttribute("data-offset"));
+
+    }
+    else{
+        var rowOffset = period;
+    }
+    if(!data ){return;}
+    //console.log("here",rowOffset)
+    for(var datasetIndex=0;datasetIndex<data.length;datasetIndex++){
+        var dataset = data[datasetIndex];
+        //console.log("filling dataset",dataset);
+        //console.log("graph labels are",graphLabels);
+        var columnData = [];
+        for (var row=0;row<288;row++){
+            //console.log("dealing with row", row);
+            //console.log("checking row", row,rowOffset, datasetIndex,  row % rowOffset,row % rowOffset == 0)
+            if(row % rowOffset == 0){
+
+                if(typeof dataset[row/rowOffset] === "undefined"){
+                    val="-";
+                }
+                else{
+                    var val = dataset[row/rowOffset];
+                    if (typeof val === 'string' || val instanceof String){
+                        val = "-";
+                    }
+                    else{
+                        val = Math.round(val)
+                    }
+
+
+                }
+
+                //table.rows[row + 1].classList.remove("d-none");
+                table.rows[row + 1].cells[datasetIndex + 1].getElementsByTagName("span")[0].innerText = val//.toFixed(0);
+                columnData.push(val)
+            }
+            else{
+                table.rows[row + 1].classList.add("d-none");
+                columnData.push("-")
+            }
+        }
+
+
+    }
+}
+
+function getData(id, date){
+    console.log("getting data!!!",id);
+    showGreyedOut(document.getElementsByClassName("greyed-out")[0]);
+    console.log(id, date);
+    var formData = new FormData()
+    formData.append("date",date);
+    formData.append("id",id);
+    return fetcher(formData,"camdenSpeeds",function(response){
+        console.log("received response",response);
+        data = response.data
+        graphLabels = response.graphLabels
+        fillAveragesTable("hourly-classed-table",data[1], graphLabels, 1);
+        document.getElementById("title").innerText = "Average Speed(mph) " + response.title;
+    })
+}
+
+function viewSite(id){
+    showAllGreyedOut();
+    window.location.href = "/aecon/camden-speeds?id=" + id + "&year=" + year
+}
+
+
+var dirs = document.getElementById("directions-popup").getElementsByClassName("menu-item");
+for (var i=0;i<dirs.length;i++){
+
+    dirs[i].addEventListener("click",function(){
+        selected = document.getElementById("directions-popup").getElementsByClassName("selected")[0].parentNode.id.replace("direction_", "");
+        console.log("selected is", selected);
+        var index = parseInt(selected);
+        fillAveragesTable("hourly-classed-table",data[index], graphLabels, 1);
+    });
+}
+
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,82 @@
+
+<div class="col-12 mt-4 px-4">
+
+    <a class="site-view pe-auto view-popup-trigger">
+        <h5 class="text-muted">
+            ATC Data
+            <i class="fas fa-chevron-down float-right px-3 pt-1"></i>
+        </h5>
+    </a>
+    <div class="selection-header sites-popup-trigger shadow mx-0 dropdownView" id="sites" style="display: none"><span>Aberlady, West Main Street(Site 4)</span><i class="chevron-icon"></i></div>
+    <div class="customScroll" id="atcList">
+      {% for locations in client.locations.all %}
+      <input
+      type="radio"
+      name="direction"
+      id="{{locations.name}}_radio"
+      class="css-checkbox"
+      value={{locations.id}}
+      onclick="viewSite('{{locations.id}}')"
+     />
+      <label for="{{locations.name}}_radio" class="css-label cb0 radGroup2"
+      >{{locations.name}}</label
+      >
+      {% endfor %}
+    </div>
+  </div>
+  <div class="horizontal my-4"></div>
+  <div class="col-12 my-4">
+    <div class="d-flex align-items-center justify-content-center mb-3">
+      <div class="w-50">
+        <div class="text-muted text-center my-1">Primary Direction</div>
+        <h4 class="text-center my-1 text-danger">Eastbound</h4>
+        <div class="text-muted text-center my-1">
+          Secondary Direction
+        </div>
+        <h4 class="text-center my-1 text-danger">Westbound</h4>
+      </div>
+      <div class="w-50 singleNumber">
+        <div class="d-flex align-items-center justify-content-center">
+          <div class="position-relative">
+            <img
+              src="/static/aecon/speed-limit.png"
+              width="60"
+              height="60"
+            />
+            <div class="donut-text">
+              <span
+                class="donut-number text-bold"
+                style="
+                  color: black !important;
+                  font-weight: bold;
+                  font-size: 20px;
+                "
+                >30</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="" class="row align-items-center justify-content-center singleNumber" >
+      <div class="w-50">
+        <h6 class="text-center my-1">Survey Start Date:</h6>
+        <h6 class="text-center my-1">Survey End Date:</h6>
+      </div>
+      <div class="w-50">
+        <h5 class="text-center my-1">10/07/2020</h5>
+        <h5 class="text-center my-1">16/07/2020</h5>
+      </div>
+    </div>
+  </div>
+  <div class="horizontal my-2"></div>
+  <div  class="col-12 p-3 h-40" id="map-container2" style="padding:0 10px">
+    <div class="col-12 " id="map-wrapper" style="width:100%;height:100%;padding:0">
+        <div class = "map-panel" id = "london-map" style="height:100%">
+
+        </div>
+        <div class="topbar__item" onclick="toggleExpandMap('london','vivacity','map-container2','map-container');" style="width:30px;height:30px;line-height:25px;background-color:white;position:absolute;bottom:10px;left:10px;z-index:400;border-radius:2px;border:2px solid grey;text-align:center;font-size:16px;cursor:pointer">
+            <span class="icon-toggle"><i class="fa fa-expand" data-alt="fa fa-compress"></i></span>
+        </div>
+    </div>
+  </div>

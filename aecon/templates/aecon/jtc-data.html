@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link rel="icon" type="image/png" href="/static/aecon/tapIcon.png" />
+  <!-- Bootstrap CSS -->
+
+  {% load staticversion %} {% load my_filters %} {% load client_tags %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://use.typekit.net/qhi7zfc.css" />
+  <link rel="stylesheet" type="text/css"
+    href="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.css" />
+  <link rel="stylesheet" type="text/css" href="/static/aecon/daterangepicker.css" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+    integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css" />
+  <link rel="stylesheet" href="{% staticversion 'aecon/leaflet.awesome-markers.css' %}" type="text/css" />
+  {% if DEBUG %}
+  <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css" />
+  {% else %}
+  <link rel="stylesheet" href="/static/media/icons/font-packs/style.css" type="text/css" />
+  {% endif %}
+  <link rel="stylesheet" href="{% staticversion 'aecon/nouislider.css' %}" type="text/css" />
+  <link rel="stylesheet" href="{% staticversion 'aecon/cv2-base.css' %}" type="text/css" />
+  <link rel="stylesheet" href="{% staticversion 'aecon/bootstrap.min.css' %}" />
+  <link rel="stylesheet" href="{% staticversion 'aecon/checkbox-style.css' %}" type="text/css" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
+  <script type="text/javascript" src="/static/aecon/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"
+    integrity="sha512-JPcRR8yFa8mmCsfrw4TNte1ZvF1e3+1SdGMslZvmrzDYxS69J7J49vkFL8u6u8PlPJK+H3voElBtUCzaXj+6ig=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+  <script src="https://d3js.org/d3.v3.js"></script>
+  <script src="https://mapbox.github.io/geojson-vt/geojson-vt-dev.js"></script>
+
+  <script src="{% staticversion 'aecon/leaflet.polylineDecorator.js' %}"></script>
+  <script src="{% staticversion 'aecon/L.Line3.js' %}"></script>
+  <script src="{% staticversion 'aecon/nouislider.js' %}"></script>
+  <script src="{% staticversion 'aecon/leaflet.lineextremities.js' %}"></script>
+
+  <script src="{% staticversion 'aecon/bootstrap.bundle.min.js' %}"></script>
+
+  <script src="{% staticversion 'aecon/cv2-data-func.js' %}"></script>
+
+  <script src="{% staticversion 'aecon/cv2-map.js' %}"></script>
+  <script src="{% staticversion 'aecon/atc.js' %}"></script>
+  <script src="{% staticversion 'aecon/cv2-main.js' %}"></script>
+  <link rel="stylesheet" href="/static/aecon/jtc/filters.css" />
+  <link rel="stylesheet" href="/static/aecon/jtc/sidebar.css" />
+  <link rel="stylesheet" href="/static/aecon/jtc/jtc.css" />
+  <title>Tracsis AECON</title>
+</head>
+<style>
+  {% comment %} .table-wrapper {
+    overflow-y: hidden;
+} {% endcomment %}
+
+#countline-daily-table-avg {
+    border-spacing: 0;
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    table-layout: fixed;
+}
+
+
+#countline-daily-table-avg-data {
+  max-height: 300px;
+  overflow: auto;
+  display: table-caption;
+  width: 542px;
+}
+.div1 tbody td {
+  width: 55px;
+}
+.div1 tfoot td {
+  width: 55px;
+}
+.div1 thead th{
+  width: 55px;
+  border-top:0;
+}
+.div1 thead{
+  width: 97%;
+  display: block;
+
+}
+.classification-option{
+  gap: 5px;
+  display: flex;
+}
+.table-firstchild{
+  color: #141b4d;
+  display: table-cell;
+  border: 0 !important;
+}
+#countline-daily-table-avg-head{
+  height:67px
+}
+@media (max-width: 1850px) {
+  #countline-daily-table-avg-data {
+ 
+    width: 511px;
+  }
+}
+.box01 {
+  position: relative; 
+  display: inline-block; 
+}
+.box01.u-turn:before {
+  content: "";
+  background: url(/static/aecon/u-turn.png) no-repeat;
+  position: absolute;
+  background-size: contain;
+  display: block;
+  top: -65%;
+  left: -97px;
+  width: 144px;
+  height: 25px;
+  transform: translate(-20%) rotate(180deg);
+  font-weight: bold;
+}
+.box01.up:before {
+  content: "";
+  background: url(/static/aecon/straight-arrow.png) no-repeat;
+  position: absolute;
+  background-size: contain;
+  display: block;
+  top: -25%;
+  left: -97px;
+  width: 145px;
+  height: 22px;
+  transform: translate(-20%) rotate(180deg);
+  font-weight: bold;
+}
+.box01.right:before {
+  content: "";
+  background: url(/static/aecon/down-arrow.png) no-repeat;
+  position: absolute;
+  background-size: contain;
+  display: block;
+  top: -50%;
+  left: -97px;
+  width: 148px;
+  height: 20px;
+  transform: translate(-20%) rotate(180deg);
+  font-weight: bold;
+}
+.box01.left:before {
+  content: "";
+  background: url(/static/aecon/down-arrow.png) no-repeat;
+  position: absolute;
+  background-size: contain;
+  display: block;
+  top: 43%;
+  left: -120px;
+  width: 134px;
+  height: 20px;
+  transform: translate(-20%) rotate(180deg);
+  font-weight: bold;
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
+.box01.u-turn:before {
+  content: "";
+  background: url(/static/aecon/u-turn.png) no-repeat;
+  position: absolute;
+  background-size: contain;
+  display: block;
+  top: -65%;
+  left: -97px;
+  width: 144px;
+  height: 25px;
+  transform: translate(-20%) rotate(180deg);
+  font-weight: bold;
+}
+.box01.up:before {
+  content: "";
+  background: url(/static/aecon/straight-arrow.png) no-repeat;
+  position: absolute;
+  background-size: contain;
+  display: block;
+  top: -25%;
+  left: -97px;
+  width: 145px;
+  height: 22px;
+  transform: translate(-20%) rotate(180deg);
+  font-weight: bold;
+}
+.box01.right:before {
+  content: "";
+  background: url(/static/aecon/down-arrow.png) no-repeat;
+  position: absolute;
+  background-size: contain;
+  display: block;
+  top: -50%;
+  left: -97px;
+  width: 148px;
+  height: 20px;
+  transform: translate(-20%) rotate(180deg);
+  font-weight: bold;
+}
+.box01.left:before {
+  content: "";
+  background: url(/static/aecon/down-arrow.png) no-repeat;
+  position: absolute;
+  background-size: contain;
+  display: block;
+  top: 43%;
+  left: -120px;
+  width: 134px;
+  height: 20px;
+  transform: translate(-20%) rotate(180deg);
+  font-weight: bold;
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+#jtc-table-header th:first-child {
+  border-radius: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius:0;
+  -ms-border-radius:0;
+  -o-border-radius:0;
+}
+
+.box01.u-turn.td-active:before {
+  content: "";
+  background: url(/static/aecon/u-turn-green.png) no-repeat;
+  position: absolute;
+  background-size: contain;
+  display: block;
+  top: -65%;
+  left: -97px;
+  width: 144px;
+  height: 25px;
+  transform: translate(-20%) rotate(180deg);
+  font-weight: bold;
+}
+.box01.up.td-active:before {
+  content: "";
+  background: url(/static/aecon/straight-arrow-green.png) no-repeat;
+  position: absolute;
+  background-size: contain;
+  display: block;
+  top: -25%;
+  left: -97px;
+  width: 145px;
+  height: 22px;
+  transform: translate(-20%) rotate(180deg);
+  font-weight: bold;
+}
+.box01.right.td-active:before {
+  content: "";
+  background: url(/static/aecon/down-arrow-green.png) no-repeat;
+  position: absolute;
+  background-size: contain;
+  display: block;
+  top: -50%;
+  left: -97px;
+  width: 148px;
+  height: 20px;
+  transform: translate(-20%) rotate(180deg);
+  font-weight: bold;
+}
+.box01.left.td-active:before {
+  content: "";
+  background: url(/static/aecon/down-arrow-green.png) no-repeat;
+  position: absolute;
+  background-size: contain;
+  display: block;
+  top: 43%;
+  left: -120px;
+  width: 134px;
+  height: 20px;
+  transform: translate(-20%) rotate(180deg);
+  font-weight: bold;
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+.customScroll {
+  height: auto !important;
+}
+.dd-list label,
+  .dd-list p {
+    display: inline-block;
+    margin-left: 10px;
+  }
+
+
+
+
+</style>
+<body>
+  {% csrf_token %}
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link href="/static/aecon/select2.min.css" rel="stylesheet" />
+  <script src="/static/aecon/select2.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/static/aecon/moment.min.js"></script>
+  <script type="text/javascript" src="/static/aecon/daterangepicker.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/geolib@3.3.4/lib/index.min.js"></script>
+
+  <div id="imgModal" class="modal">
+
+    <!-- The Close Button -->
+    <span class="close">&times;</span>
+  
+    <!-- Modal Content (The Image) -->
+    <img class="modal-content" id="img01">
+  
+    <!-- Modal Caption (Image Text) -->
+    <div id="caption"></div>
+  </div>
+  <div class="header">
+    {% include "aecon/jtc-navbar.html" %}
+    {% include "aecon/jtc-subnavbar.html" %}
+    <div class="section mt-5">
+      <div class="container-fluid" id="main-container">
+        <div class="row my-2">
+          <div class="sites-tab selection-header atc-popup-trigger shadow col-md-6 flex-fill" id="header">
+            <span>ATC Data </span><i class="chevron-icon"></i>
+          </div>
+          <div class="sites-tab selection-header header-popup-trigger shadow col-md-6 flex-fill" id="header">
+            <span>Headline Data </span><i class="chevron-icon"></i>
+          </div>
+        </div>
+        <div class="col-12">
+          {% include "aecon/jtc-filters.html" %}
+        </div>
+        <div class="row mt-3 px-1">
+          {% if not request.path == "/aecon/jtc-data/jtc-overview" %}
+            {% include "aecon/jtc-sidebar.html" %}
+          {% else %}
+            <div class="col-md-3 lg-view">
+              <div class="floating-card mt-4">
+                  <div class="sidee carddd card ">
+                    <div class="sidee carddd card ">
+                      <div class="px-5 mt-5" id="location-info">
+                        <div class="btn-textbox justify-content-between mb-3">
+                          <h5>Site</h5>
+                          <div id="accordion">
+                            
+                            
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          {% endif %}
+          <div class="contentTab col-sm-12 col-md-9 mt-4">
+            <div class="content">
+              <div class="row main">
+              </div>
+              {% block content %} {% endblock %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Observation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Observation:</label>
+            <textarea class="form-control" id="Observation-name" {% if not request.user.is_superuser %} disabled {%endif%}>
+              </textarea >
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        {% if request.user.is_superuser %}
+          <button type="button" class="btn jtc-modal-btn" onclick="observationadd();">Save</button>
+        {%endif%}
+      </div>
+    </div>
+  </div>
+</div>
+  <script>
+    var location_details = ''
+    var url = window.location.href;
+    // Assume armsData is initially empty
+    var armsData = [];
+
+    function tabContent(type, flg = "") {
+
+      var tab_content = {
+        headline: "jtc-headline",
+        volume: "jtc-volume",
+        overview: "jtc-overview",
+      };
+      var keys = Object.keys(tab_content);
+      for (let i = 0; i < keys.length; i++) {
+        if (type == keys[i] && type != "") {
+          window.location.href =
+            "/aecon/jtc-data/" + tab_content[keys[i]];
+        } else if ((flg != "", flg == tab_content[keys[i]])) {
+          document.getElementById(keys[i]).classList.add("active");
+        }
+      }
+    }
+
+   
+    tabContent("", "{{flg}}");
+
+
+    //
+   
+    
+  </script>
+  
+  <script src="/static/aecon/jtc/sidebar.js"></script>
+</body>
+
+</html>

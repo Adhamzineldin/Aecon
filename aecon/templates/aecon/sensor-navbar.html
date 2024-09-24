@@ -1,0 +1,133 @@
+{% load staticversion %} {% load my_filters %} {% load client_tags %} 
+ <script src="/static/aecon/moment.min.js"></script>
+<script type="text/javascript" src="/static/aecon/daterangepicker.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+<script src="https://unpkg.com/js-year-calendar@latest/dist/js-year-calendar.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+<script src="{% staticversion 'aecon/leaflet.polylineDecorator.js' %}"></script>
+<script src="{% staticversion 'aecon/L.Line3.js' %}"></script>
+<script src="{% staticversion 'aecon/nouislider.js' %}"></script>
+<script src="{% staticversion 'aecon/leaflet.lineextremities.js' %}"></script>
+
+<script src="{% staticversion 'aecon/cv2-data-func.js' %}"></script>
+<script src="{% staticversion 'aecon/cv2-base.js' %}"></script>
+<script src="{% staticversion 'aecon/cv2-local-storage.js' %}"></script>
+<script src="{% staticversion 'aecon/cv2-graphs.js' %}"></script>
+<script src="{% staticversion 'aecon/cv2-map.js' %}"></script>
+<script src="{% staticversion 'aecon/atc.js' %}"></script>
+<script src="{% staticversion 'aecon/cv2-main.js' %}"></script>
+<script src="https://d3js.org/d3.v3.js"></script>
+<script src="https://mapbox.github.io/geojson-vt/geojson-vt-dev.js"></script>
+
+
+    {% comment %} <a class="site-view pe-auto view-popup-trigger">
+        <h5 class="text-muted">
+            Sensor Data
+            <i class="fas fa-chevron-down float-right px-3 pt-1"></i>
+        </h5>
+    </a>
+    <div class="selection-header sites-popup-trigger shadow mx-0 dropdownView" id="sites" style="display: none"><span>Aberlady, West Main Street(Site 4)</span><i class="chevron-icon"></i></div>
+    <div class="customScroll" id="atcList">
+      
+      {% for locations in client.locations.all|order_by:"name" %}
+      <input
+      type="radio"
+      name="direction"
+      id="{{locations.name}}_radio"
+      class="css-checkbox"
+      value={{locations.id}}
+      onclick="viewSite('{{locations.id}}')"
+     />
+      <label for="{{locations.name}}_radio" class="css-label cb0 radGroup2"
+      >{{locations.name}}</label
+      >
+      {% endfor %}
+    </div>
+  </div>
+<div class="horizontal my-2"></div>
+<div class="col-12 my-2">
+  <div class="d-flex align-items-center justify-content-center mb-3">
+    <div class="w-50">
+      <div class="text-muted text-center my-1">Primary Direction</div>
+      <h4 class="text-center my-1 text-danger">Eastbound</h4>
+      <div class="text-muted text-center my-1">
+        Secondary Direction
+      </div>
+      <h4 class="text-center my-1 text-danger">Westbound</h4>
+    </div>
+    <div class="w-50 singleNumber">
+      <div class="d-flex align-items-center justify-content-center">
+        <div class="position-relative">
+          <img
+            src="/static/aecon/speed-limit.png"
+            width="60"
+            height="60"
+          />
+          <div class="donut-text">
+            <span
+              class="donut-number text-bold"
+              style="
+                color: black !important;
+                font-weight: bold;
+                font-size: 20px;
+              "
+              >30</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div id="dataDetail" class="row align-items-center justify-content-center singleNumber" >
+    <div class="w-50">
+      <h6 class="text-center my-1">Installation Date:</h6>
+      <h6 class="text-center my-1">Late Data Received:</h6>
+      <h6 class="text-center my-1">Sensor Status:</h6>
+    </div>
+    <div class="w-50 singleNumber">
+      <span class="text-center my-1 col-md-12 font-weight-bold" id="installDate"></span>
+      <span class="text-center my-1 col-md-12 font-weight-bold" id="lastDate"></span>
+      <span class="text-center my-1 text-success col-md-12 font-weight-bold" id="sensorStatus"></span>
+    </div>  {% endcomment %}
+    {% comment %} <table clas="table-responsive">
+      <tr>
+        <th>Installation Data</th>
+        <th>:</th>
+        <th id="istallDate"></th>
+     </tr>
+     <tr>
+      <th>Late Data Received</th>
+      <th>:</th>
+      <th>24/15/2345</th>
+    </tr>
+    <tr>
+      <th>Sensor Status</th>
+      <th>:</th>
+      <th>Good</th>
+  </tr>
+    </table> {% endcomment %}
+  {% comment %} </div>
+</div>
+<div class="horizontal my-2"></div>
+<div class="col-12 p-3 h-25" id="map-container">
+  <div
+    class="card header-shadow"
+    style="width: 100%; height: 150%"
+    data-group="atc-volumes-daily"
+  >
+    <div
+      class="col-12"
+      id="map-wrapper"
+      style="width: 100%; height: 100%; padding: 10px"
+    >
+    <div class = "map-panel" id = "countline-map" style="height:100%">
+        
+    </div>
+    <div class="topbar__item" onclick="toggleExpandMap('vivacity','london','map-container','map-container2');" style="width:30px;height:30px;line-height:25px;background-color:white;position:absolute;bottom:10px;left:10px;z-index:400;border-radius:2px;border:2px solid grey;text-align:center;font-size:16px;cursor:pointer">
+        <span class="icon-toggle"><i class="fa fa-expand" data-alt="fa fa-compress"></i></span>
+    </div>
+    </div> 
+  </div>
+</div> {% endcomment %}

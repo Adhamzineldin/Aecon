@@ -1,0 +1,208 @@
+{% extends "aecon/dashboard-base.html" %}
+{% load staticversion %}
+{% load my_filters %}
+
+{% block content %}
+
+<input hidden value="{{location.id}}" id="location_id">
+
+<div id="classes-popup" style="width:auto;" class="conduit-popup">
+    <div class="conduit-selectable-menu multi">
+        {{ classes | safe}}
+    </div>
+</div>
+
+
+<div id="directions-popup" style="width:auto;" class="conduit-popup">
+    <div class="conduit-selectable-menu">
+        {{ directions | safe}}
+    </div>
+</div>
+
+
+<div id="subview-popup" style="width:180px" class="conduit-popup">
+        <div class="conduit-selectable-menu  min-1" data-header="view-selector">
+            <ul >
+                 <li id="5day" class="menu-item popup-item view-nav"   data-view="map-view" >
+                    <a href="#" class="selected ">
+                        <i ></i>
+                        <span >Specific Week</span>
+                    </a>
+                </li>
+
+                <li id="7day" class="menu-item popup-item view-nav" data-view="atc-view">
+                    <a href="#"  >
+                        <i ></i>
+                        <span>Average </span>
+                    </a>
+                </li>
+
+                <li id="e" class="menu-item popup-item view-nav" data-view="viv-view">
+                    <a href="#"  >
+                        <i ></i>
+                        <span>Map View</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+
+
+<div class="row align-items-center"  style="height:50px">
+    <div class="col-12 my-auto d-flex align-items-center">
+        <div class="selection-header classes-popup-trigger"><span>Classifications</span><i class="chevron-icon"></i></div>
+        {% comment %} <div class="selection-header"><span>Specific Week</span><i class="chevron-icon"></i></div> {% endcomment %}
+        <div class="selection-header directions-popup-trigger"><span>Northbound</span><i class="chevron-icon"></i></div>
+
+
+
+        <div class="d-flex align-items-center justify-content-center date-display">
+            <div class="topbar__item" onclick="decrementDate();"> <i class="fa fa-caret-left pull-right mx-auto"></i></div>
+            <div class="date"></div>
+            <div class="topbar__item" onclick="incrementDate();"> <i class="fa fa-caret-right pull-right mx-auto"></i></div>
+        </div>
+        <div class="topbar__item" id="calendar"><span><i class="icon-calendar"></i></span></div>
+
+
+    </div>
+</div>
+
+<div class="row" style="height:calc(100% - 50px)">
+    <div class="col-12" id="individual-countline-overview" >
+        <div class="row" style="height:100%">
+            <div class="col-6 mb-3">
+                <div class="d-flex flex-column h-100">
+                    <div class="row ">
+                        <div class="col-12 ">
+                            <div class="card header-shadow mb-3 " style="width:100%"  data-group="atc-volumes-daily">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-auto" id="details-container">
+                                            <h5 class="text-muted"><span>{{location.name}}</span></h5>
+                                            <h5 class="text-muted" style="padding-bottom:1rem;"><span>{{location.area.name}}</span> </h5>
+                                            <div class="info-cell"><div class="info-cell-title">Installation Date</div> <div class="info-cell-value"><span>{{location.installDate}}</span></div></div>
+                                            <div class="info-cell"><div class="info-cell-title">Last Data Received</div> <div class="info-cell-value"><span>{{location.lastDataReceived}}</span></div></div>
+                                            {% comment %} <div class="info-cell"><div class="info-cell-title">Sensor Status</div> <div class="info-cell-value" style="color:green"><span>{{location.status}}</span></div></div> {% endcomment %}
+                                        </div>
+                                        <div class="col d-none d-md-block" id="img-container">
+                                            <img class="img-fluid" style="max-height:100%;width:auto" src="{{location.imgURL}}" id="site-img">
+                                        </div>
+
+                                        <div class="col d-none d-xl-block" id="map-container">
+                                            <div class="col-12 " id="map-wrapper" style="width:100%;height:100%;padding:0">
+                                                <div class = "map-panel" id = "countline-map">
+
+                                                </div>
+                                                <div onclick="toggleExpandMap();" style="width:30px;height:30px;line-height:25px;background-color:white;position:absolute;bottom:10px;left:10px;z-index:3000;border-radius:2px;border:2px solid grey;text-align:center;font-size:16px;cursor:pointer">
+                                                    <span class="icon-toggle"><i class="fa fa-expand" data-alt="fa fa-compress"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center flex-grow-1" id="graph-container">
+                        <div class="col-12 h-100 ">
+                            <div class = "card header-shadow" style="width:100%;height:100%"  data-group="atc-volumes-daily">
+                                <div class="greyed-out justify-content-center align-items-center show"> <img src ="/static/generic/small_loading.gif" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+                                <div class="canvaswrapper">
+                                    <canvas id="countline-classed-volumes">
+
+                                    </canvas>
+                                    <div class="button-overlay" data-target="atc-volumes-daily">
+                                        <div class="topbar__item" onclick="toggleGraphDisplay();">
+                                            <span class="icon-toggle"><i class="icon-car" data-alt="icon-calendar-1"></i></span>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6  mb-3 ">
+                <div class="col-12 p-0">
+                    <div class="card header-shadow h-100" style="width:100%"  data-group="atc-volumes-daily">
+                        <div class="greyed-out justify-content-center align-items-center show"> <img src ="/static/generic/small_loading.gif" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+                        <div class="card-body" style="height:calc(100% - 50px);padding:5px;width:100%;overflow:auto">
+                            <div class="table-wrapper" style="width:100%;height:100%;overflow:auto;font-size:10px">
+                                <table class="table table-borderless table-sm table-hover" id="countline-daily-table">
+                                    <thead>
+                                    <tr>
+
+                                        <th></th>
+                                        <th><label data-bg="#3e95cd" data-col="white" class="class-selector" data-graph-group="daily" data-selection-type="multi">Monday</label></th>
+                                        <th><label data-bg="#8e5ea2" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi">Tuesday</label></th>
+                                        <th><label data-bg="#3cba9f" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi">Wednesday</label></th>
+                                        <th><label data-bg="#e8c3b9" data-col="black" class="class-selector " data-graph-group="daily" data-selection-type="multi">Thursday</label></th>
+                                       <th> <label data-bg="#c45850" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi">Friday</label></th>
+                                       <th> <label data-bg="#4286f4" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi">Saturday</label></th>
+                                        <th><label data-bg="#60db97" data-col="black" class="class-selector " data-graph-group="daily" data-selection-type="multi">Sunday</label></th>
+                                        <th><label data-bg="#ff3333" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi">5 Day Avg</label></th>
+                                       <th><label data-bg="#00ccff" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi">7 Day Avg</label></th>
+
+
+
+
+                                    </tr>
+
+                                    </thead>
+                                    <tbody>
+                                        <tr><th>00:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                                        <tr><th>01:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>02:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>03:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>04:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>05:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>06:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>07:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>08:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>09:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>10:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>11:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>12:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>13:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>14:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>15:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>16:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>17:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>18:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>19:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>20:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>21:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>22:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>23:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+
+                                        <tr style="border-top:1px solid grey"><th>07-19</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>06-22</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>06-24</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>00-24</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>AM Peak</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><th>PM Peak</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+

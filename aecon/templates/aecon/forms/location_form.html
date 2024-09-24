@@ -1,0 +1,121 @@
+<form id="location-form" enctype="multipart/form-data" method="post" >
+    {% csrf_token %}
+
+    <div class="form-group row">
+        <label for="locId" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Tracsis Unique Id field" data-content="A String that uniquely identifies this location internally in the tracsis database">Tracsis Unique ID</label>
+        <div class="col-12 col-lg-7">
+          <input type="text" class="form-control" id="locId" name="locId" value="{{loc.id}}" {% if loc %} readonly {% endif %}>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="vivacity_sensor_id" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Tracsis Unique Id field" data-content="The sensor number that is used to identify the sensor when communicating with vivacity">Vivacity Sensor ID</label>
+        <div class="col-12 col-lg-7">
+          <input type="text" class="form-control" id="vivacity_sensor_id" name="vivacity_sensor_id" value="{{loc.vivacity_sensor_id}}" >
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="area" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Location field" data-content="Geographical area or city, for grouping locations on the client dashboard. Can be left blank, but location wont appear on the dashboard">Area</label>
+        <div class="col-12 col-lg-7">
+          <input type="text" class="form-control" id="area" name="area" value="{{loc.area.name}}">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="locName" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Location field" data-content="Eg. Street name, Site name or number. This is the name that will be displayed on the dashboard">Location Name</label>
+        <div class="col-12 col-lg-7">
+          <input type="text" class="form-control" id="locName" name="name" value="{{loc.name}}">
+        </div>
+    </div>
+
+
+    <div class="form-group row">
+        <label for="observationType" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Location field" data-content="Type of survey done at this location">Observation Type</label>
+        <div class="col-12 col-lg-7">
+          <select class="form-control" id="observationType" name="observationType" disabled>
+              {% for t in observationtypes %}
+                <option value="{{t.id}}" {% ifequal t.id loc.observationType.id %} selected{% endifequal %}>{{t.name}}</option>
+              {% endfor %}
+          </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="installDate" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Location field" data-content="Date of installation of sensor, if any. Can be left blank">Install Date</label>
+        <div class="col-12 col-lg-7">
+          <input type="date" class="form-control" id="installDate" name="installDate" value="{{loc.installDate|date:'Y-m-d'}}">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="company" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Unique Id field" data-content="Name of API provider, eg Vivacity. Can be left blank">API Provider</label>
+        <div class="col-12 col-lg-7">
+          <select class="form-control toggle-fields" id="company" name="company" disabled>
+              <option>-------</option>
+              <option>Vivacity</option>
+              <option>Envirowatch</option>
+          </select>
+        </div>
+    </div>
+
+     <div class="form-group row d-none" data-dependency="company" data-value="Vivacity">
+        <label for="selectedAPI" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Location field" data-content="API name">API Name</label>
+        <div class="col-12 col-lg-7">
+          <select class="form-control" id="selectedAPI" name="apiName" disabled>
+              <option value="null">-------</option>
+              {% for api in apis %}
+                <option value="{{api.id}}" {% ifequal api.id loc.vivacityapi_set.all.0.id %} selected{% endifequal %}>{{api.name}}</option>
+              {% endfor %}
+          </select>
+        </div>
+    </div>
+
+
+    <div class="form-group row">
+        <label for="api_identifier" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Unique Id field" data-content="Sometimes needed to match data to a specific device when retrieving data from an API. Can be left blank">Vivacity API ID</label>
+        <div class="col-12 col-lg-7">
+          <input type="text" class="form-control" id="api_identifier" name="api_identifier" value="{{loc.api_identifier}}">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="lat" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Unique Id field" data-content="Latitude of location. Can be left blank. Can be selected from map">Latitude</label>
+        <div class="col-12 col-lg-7">
+          <input type="text" class="form-control" id="lat" name="lat" value="{{loc.lat}}">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="lon" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Unique Id field" data-content="Longitude of location.Can be left blank. Can be selected from map">Longitude</label>
+        <div class="col-12 col-lg-7">
+          <input type="text" class="form-control" id="lon" name="lon" value="{{loc.lon}}">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="sensorcheck" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Sensor Status" data-content="Sensor Status">Status</label>
+        <div class="col-12 col-lg-7">
+            <select type="text" class="form-control" id="sensorcheck" name="sensorcheck" value="{{item}}">
+                {% for item in loc.StatusChoices %}
+                    <option value="{{item}}" {% if item == loc.sensorcheck %}selected{% endif %}>{{item.label}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="area" class="col-12 col-lg-5 col-form-label" data-toggle="popover" title="Location field" data-content="Image of site, eg of vivacity camera view, for display on dashboard. Can be left blank">Site Image</label>
+        <div class="col-12 col-lg-7">
+            <div class="input-group d-flex align-items-center">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="inputGroupFile01" name="imgURL"
+                      aria-describedby="inputGroupFileAddon01" onchange="updateLabel(event);">
+                    <label class="custom-file-label" for="inputGroupFile01" >Choose file</label>
+
+                </div>
+                <div class="fn" data-toggle="popover"  data-content="View current site image" onclick="viewSiteImage();"><i class="far fa-eye text-muted" style="font-size:20px"></i></div>
+            </div>
+        </div>
+    </div>
+
+
+
+</form>

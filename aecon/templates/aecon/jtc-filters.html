@@ -1,0 +1,240 @@
+<div class="row p-0" id="onDropdowns">
+  
+  <div class="col-md-3">
+    {% if not request.path == "/aecon/jtc-data/jtc-overview" %}
+    {% comment %} <label class="popup-label mt-1 ml-3">JTC Data</label> {% endcomment %}
+    <div class="popup-label mt-1 row">
+      <label class="col-md-4" style="white-space: pre;" id="jtc_label">JTC Data</label>
+      <label class="switch col-md-4 ml-1 d-none" style="white-space: pre;">
+        <input type="checkbox" id="jtc_toggler" checked>
+        <span class="sliderss round"></span>
+      </label>
+      <!-- <label class="col-md-4" style="white-space: pre;" id="">Temp Data</label> -->
+    </div>
+      <div class="dd-wrapper" id="site-select-wrapper" style="z-index: 10;
+      position: relative;">
+          <div class="dd-select-btn" id="site-select-btn">
+              <span>Site Name</span>
+              <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="dd-all-content" style="padding-right: 0;">
+              <div class="dd-content">
+                  <div class="dd-search">
+                      <i class="fa-solid fa-magnifying-glass" ></i>
+                      <input onkeyup="filterSiteList(this)" onclick="event.stopPropagation()" spellcheck="false"
+                          type="text" placeholder="Search" id="site-select-input">
+                  </div>
+                  <div class="dd-options">
+                      <ul class="dd-options-list" id="site-select-option-list">
+                      {% for location in locations %}
+                        <li onclick="updateSiteName(this)" class="dd-list" id="{{location.id}}"  lat="{{location.lat}}"  lon="{{location.lon}}" data-obs={{location.observationType_id}} style={% if location.observationType_id == 13%}"display:none;"{% endif  %}>{{location.name}}</li>
+                      {% endfor %}
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </div>
+    
+    {% else %}
+      <div class="customScroll atcList" id="atcList2">
+        <label class="popup-label mt-1">Survey</label>
+        <div class="dd-wrapper" id="project-select-wrapper">
+        <div sectionId="project-select-wrapper" class="dd-select-btn" id="project-select-btn">
+          <span sectionId="project-select-wrapper">Project Name</span>
+          <i sectionId="project-select-wrapper" class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="dd-all-content">
+            <div class="dd-content">
+              <div class="dd-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input onkeyup="filterList(this,'project')" onclick="event.stopPropagation()" spellcheck="false"
+                  type="text" placeholder="Search" id="project-select-input">
+              </div>
+              <div class="dd-options">
+                <ul class="dd-options-list" id="project-select-option-list">
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  <div class="col-md-9">
+    <div class="row">
+      <div class="col-md-2 dd-projectname-btn">
+        {% if not request.path == "/aecon/jtc-data/jtc-overview" %}
+          <div class="customScroll atcList" id="atcList2">
+            <label class="popup-label mt-1">Survey</label>
+            <div class="dd-wrapper" id="project-select-wrapper">
+            <div sectionId="project-select-wrapper" class="dd-select-btn" id="project-select-btn">
+              <span sectionId="project-select-wrapper">Project Name</span>
+              <i sectionId="project-select-wrapper" class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="dd-all-content">
+                <div class="dd-content">
+                  <div class="dd-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input onkeyup="filterList(this,'project')" onclick="event.stopPropagation()" spellcheck="false"
+                      type="text" placeholder="Search" id="project-select-input">
+                  </div>
+                  <div class="dd-options">
+                    <ul class="dd-options-list" id="project-select-option-list">
+                    
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          
+        <label class="popup-label mt-1">Site</label>
+        <div class="dd-wrapper" id="site-select-wrapper">
+            <div class="dd-select-btn" id="site-select-btn">
+                <span>Site Name</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="dd-all-content">
+                <div class="dd-content">
+                    <div class="dd-search">
+                        <i class="fa-solid fa-magnifying-glass" ></i>
+                        <input onkeyup="filterSiteList(this)" onclick="event.stopPropagation()" spellcheck="false"
+                            type="text" placeholder="Search" id="site-select-input">
+                    </div>
+                    <div class="dd-options">
+                        <ul class="dd-options-list" id="site-select-option-list">
+                        {% for location in locations %}
+                          <li onclick="updateSiteName(this)" class="dd-list d-none" id="{{location.id}}"  lat="{{location.lat}}"  lon="{{location.lon}}">{{location.name}}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+      </div>
+      <div class="col-md-1 dd-time-btn">
+        <label class="popup-label mt-1">Start Time</label>
+        <div class="dd-wrapper" id="start-time-select-wrapper">
+          <div sectionId="start-time-select-wrapper" class="dd-select-btn" id="start-time-select-btn">
+            <span sectionId="start-time-select-wrapper">ALL</span>
+            <i sectionId="start-time-select-wrapper" class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="dd-all-content">
+            <div class="dd-content" id="project-content">
+              <div class="dd-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input onkeyup="filterList(this,'startTime')" onclick="event.stopPropagation()" spellcheck="false"
+                  type="text" placeholder="Search" id="start-time-select-input">
+              </div>
+              <div class="dd-options">
+                <ul class="dd-options-list" id="start-time-select-option-list"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-1 dd-time-btn">
+        <label class="popup-label mt-1">End Time</label>
+        <div class="dd-wrapper" id="end-time-select-wrapper">
+          <div sectionId="end-time-select-wrapper" class="dd-select-btn" id="end-time-select-btn">
+            <span sectionId="end-time-select-wrapper">ALL</span>
+            <i sectionId="end-time-select-wrapper" class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="dd-all-content">
+            <div class="dd-content">
+              <div class="dd-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input onkeyup="filterList(this,'endTime')" onclick="event.stopPropagation()" spellcheck="false" type="text"
+                  placeholder="Search" id="end-time-select-input">
+              </div>
+              <div class="dd-options">
+                <ul class="dd-options-list" id="end-time-select-option-list"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-1 dd-Arm-btn">
+        <label class="popup-label mt-1">Origin Arm</label>
+        <div class="dd-wrapper" id="origin-arm-select-wrapper">
+          <div sectionId="origin-arm-select-wrapper" class="dd-select-btn" id="origin-arm-select-btn">
+            <span sectionId="origin-arm-select-wrapper">ALL</span>
+            <i sectionId="origin-arm-select-wrapper" class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="dd-all-content">
+            <div class="dd-content">
+              <div class="dd-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input onkeyup="filterList(this,'originArm')" onclick="event.stopPropagation()" spellcheck="false"
+                  type="text" placeholder="Search" id="origin-arm-select-input">
+              </div>
+              <div class="dd-options">
+                <ul class="dd-options-list" id="origin-arm-select-option-list"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-1 dd-Arm-btn">
+        <label class="popup-label mt-1 ">Dest Arm</label>
+        <div class="dd-wrapper" id="dest-arm-select-wrapper">
+          <div sectionId="dest-arm-select-wrapper" class="dd-select-btn" id="dest-arm-select-btn">
+            <span sectionId="dest-arm-select-wrapper">ALL</span>
+            <i sectionId="dest-arm-select-wrapper" class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="dd-all-content">
+            <div class="dd-content">
+              <div class="dd-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input onkeyup="filterList(this,'destArm')" onclick="event.stopPropagation()" spellcheck="false" type="text"
+                  placeholder="Search" id="dest-arm-select-input">
+              </div>
+              <div class="dd-options">
+                <ul class="dd-options-list" id="dest-arm-select-option-list"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2 dd-projectname-btn">
+        <label class="popup-label mt-1">Classification</label>
+        <div class="dd-wrapper" id="classification-select-wrapper">
+          <div sectionId="classification-select-wrapper" class="dd-select-btn" id="classification-select-btn">
+            <span sectionId="classification-select-wrapper">ALL</span>
+            <i sectionId="classification-select-wrapper" class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="dd-all-content">
+            <div class="dd-content">
+              <div class="dd-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input onkeyup="filterList(this,'classification')" onclick="event.stopPropagation()" spellcheck="false"
+                  type="text" placeholder="Search" id="classification-select-input">
+              </div>
+              <div class="dd-options">
+                <ul class="dd-options-list" id="classification-select-option-list"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2 dd-Observation-btn">
+        <label class="popup-label mt-1">Observation</label>
+        <button class="dd-wrapper" id="observation-select-wrapper" style="border: none;" onclick="observationPopup(this)">
+          <div sectionId="observation-select-wrapper" class="dd-select-btn" id="observation-select-btn">
+            <span sectionId="observation-select-wrapper">Observation</span>
+            {% comment %} <i sectionId="observation-select-wrapper" class="fa-solid fa-chevron-down"></i> {% endcomment %}
+          </div>
+          <!--<div class="dd-all-content">
+            <div class="dd-content">
+              <div class="dd-options">
+                <ul class="dd-options-list" id="observation-select-option-list"></ul>
+              </div>
+            </div>
+          </div>-->
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

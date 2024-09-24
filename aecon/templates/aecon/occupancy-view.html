@@ -1,0 +1,662 @@
+{% extends "aecon/dashboard-base.html" %}
+{% load staticversion %}
+
+{% block content %}
+<input hidden value="" id="location_id">
+
+<div id="graph-limit-popup" style="width:240px" class="conduit-popup">
+    <div class="conduit-selectable-menu  multi">
+        <ul >
+             <li data-limit="600" data-text-low="Low Flow" data-text-high="Active Flow" data-col="rgba(44, 168, 54, .4)" data-col-low="rgba(44, 168, 54, .4)" data-col-high="rgba(214, 162, 17, .5)" class="menu-item popup-item" >
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span >Low Flow</span>
+                </a>
+            </li>
+
+            <li data-limit="1200" data-text-low="Active Flow" data-text-high="High Flow" data-col="rgba(255, 0, 0, .4)" data-col-high="rgba(255, 0, 0, .4)" data-col-low="rgba(214, 162, 17, .5)" class="menu-item popup-item">
+                <a href="#"  class="selectable-menu-item">
+                    <i ></i>
+                    <span>High Flow</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<div id="directions-popup" style="width:auto;" class="conduit-popup " >
+    <div class="conduit-selectable-menu min-1" data-header="directions-header">
+        {{ directions | safe}}
+    </div>
+</div>
+
+
+<div id="zone-popup" style="width:200px;" class="conduit-popup min-1" >
+    <div class="conduit-selectable-menu min-1" data-header="zone-selector">
+        {{ client.get_occupancy_zones | safe}}
+    </div>
+</div>
+
+
+<div id="period-selector-popup" style="width:180px" class="conduit-popup">
+    <div class="conduit-selectable-menu  min-1" data-header="period-selector">
+        <ul >
+             <li id="60" class="menu-item popup-item" data-offset="4">
+                <a href="#" class="selectable-menu-item selected ">
+                    <i ></i>
+                    <span >60 Minutes</span>
+                </a>
+            </li>
+            <li id="30" class="menu-item popup-item" data-offset="2">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>30 Minutes</span>
+                </a>
+            </li>
+            <li id="15" class="menu-item popup-item" data-offset="1">
+                <a href="#" class="selectable-menu-item">
+                    <i ></i>
+                    <span>15 Minutes</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
+<div id="classes-popup" style="width:auto;" class="conduit-popup">
+    <div class="conduit-selectable-menu multi">
+        {{ classes | safe}}
+    </div>
+</div>
+
+<div class="row align-items-center"  style="height:50px">
+    <div class="col-12 my-auto d-flex align-items-center">
+        <div class="selection-header classes-popup-trigger"><span>Classifications</span><i class="chevron-icon"></i></div>
+        <div class="selection-header zone-popup-trigger" id="zone-selector"><span>Please select a zone</span><i class="chevron-icon"></i></div>
+        <div class="selection-header subview-selector-popup-trigger d-none" id="subview-selector"><span>Daily/Weekly</span><i class="chevron-icon"></i></div>
+        <div class="selection-header period-selector-popup-trigger" id="period-selector"><span>60 Minutes</span><i class="chevron-icon"></i></div>
+
+
+
+
+        <div class="d-flex align-items-center justify-content-center date-display">
+            <div class="topbar__item" onclick="decrementDate();"> <i class="fa fa-caret-left pull-right mx-auto"></i></div>
+            <div class="date"></div>
+            <div class="topbar__item" onclick="incrementDate();"> <i class="fa fa-caret-right pull-right mx-auto"></i></div>
+        </div>
+        <div class="topbar__item" id="calendar"><span><i class="icon-calendar"></i></span></div>
+        {% comment %} <div class="topbar__item events-popup-trigger opens-left" id="events" style="margin-left:auto"><span><i class="icon-internet"></i></span></div> {% endcomment %}
+
+
+    </div>
+</div>
+
+<div class="row" style="height:calc(100% - 65px)">
+    <div  id="main-container-greyed-out" class="d-none" style="position:absolute;width:calc(100% - 300px);height:calc(100% - 105px);z-index:401;opacity:0.9;background-color:#fcfcfc;"></div>
+    <div class="col-6 mb-3 h-100 w-100" id="left-container">
+        <div class="row " style="height:60%" id="map-row">
+            <div class="col-12 h-100 pb-3">
+                <div class="card header-shadow mb-3 h-100" >
+                    <div class="card-body h-100">
+                        <div class = "map-panel" id = "countline-map" style="height:100%">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="height:40%" id="graph-container">
+            <div class="col-12 h-100">
+                <div class="card header-shadow" style="width:100%;height:100%"  data-group="atc-volumes-daily">
+                    <div class="greyed-out justify-content-center align-items-center show"> <img src ="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+                    <div class="canvaswrapper">
+                        <canvas id="countline-classed-volumes">
+
+                        </canvas>
+                        <div class="button-overlay d-flex" data-target="atc-volumes-daily" style="right:25px" id="graph-overlay">
+
+                            <div class="topbar__item" onclick="saveGraphImage();" style="background-color:#f2f3f7;margin-right:5px">
+                                <span class="icon-toggle"><i class="icon-picture"></i></span>
+                            </div>
+
+                            <div class="topbar__item" onclick="expandGraph();" style="background-color:#f2f3f7;margin-right:5px">
+                                <span class="icon-toggle"><i class="icon-zoom-in" data-alt="icon-zoom-out"></i></span>
+                            </div>
+                            <div class="topbar__item" onclick="toggleGraphDisplay();" style="background-color:#f2f3f7;margin-right:5px">
+                                <span class="icon-toggle"><i class="icon-car" data-alt="icon-calendar-1"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <div class="col-6  mb-3 h-100" id="right-container">
+        <div class="col-12 p-0 h-100">
+            <div class="card header-shadow h-100" style="width:100%"  data-group="atc-volumes-daily">
+                <div class="greyed-out justify-content-center align-items-center show"> <img src ="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+                <div class="card-body" style="height:calc(100% - 50px);padding:5px;width:100%;overflow:auto">
+                    <div class="table-wrapper" style="width:100%;height:100%;overflow:auto;font-size:10px">
+                        <table class="table table-borderless table-sm table-hover" id="countline-daily-table">
+                            <thead>
+                            <tr>
+
+                                <th></th>
+                                <th><label data-bg="#3e95cd" data-col="white" class="class-selector" data-graph-group="daily" data-selection-type="multi">Monday</label></th>
+                                <th><label data-bg="#8e5ea2" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi">Tuesday</label></th>
+                                <th><label data-bg="#3cba9f" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi">Wednesday</label></th>
+                                <th><label data-bg="#e8c3b9" data-col="black" class="class-selector " data-graph-group="daily" data-selection-type="multi">Thursday</label></th>
+                               <th> <label data-bg="#c45850" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi">Friday</label></th>
+                               <th> <label data-bg="#4286f4" data-col="white" class="class-selector " data-graph-group="daily" data-selection-type="multi">Saturday</label></th>
+                                <th><label data-bg="#60db97" data-col="black" class="class-selector " data-graph-group="daily" data-selection-type="multi">Sunday</label></th>
+
+
+
+
+
+                            </tr>
+
+                            </thead>
+                            <tbody>
+                                {% load my_filters %}
+                                {% time_range as times %}
+                                {% for t in times %}
+                                    <tr><th>{{t}}</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                                {% endfor %}
+
+
+                                <tr class=d-none" style="border-top:1px solid grey;display:none"><th>07-19</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                <tr class=d-none" style="display:none"><th>06-22</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                <tr class=d-none" style="display:none"><th>06-24</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                <tr class=d-none" style="display:none"><th>00-24</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                <tr class=d-none" style="display:none"><th>AM Peak</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                <tr class=d-none" style="display:none"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                <tr class=d-none" style="display:none"><th>PM Peak</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+                                <tr class=d-none" style="display:none"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+
+
+<script>
+var chart;
+var chartView = "daily";
+var classedData;
+var graphLabels = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00"];
+var dateType = "week";
+var id = document.getElementById("mb-id").value
+initMap([53.476404, -2.250621],"countline-map",id);
+var datepicker = $('#calendar').daterangepicker({locale: {
+            format: 'DD/MM/YYYY'
+        },
+        singleDatePicker: true,
+        opens: 'left',
+        drops:'down'
+        },dateChanged);
+
+var formData = new FormData();
+
+
+function dateChanged(start,end,label){
+
+    if (dateType=="week"){
+        start.subtract(start.isoWeekday() - 1,"d")
+        end = moment(start).add(7,"d");
+    }
+    else{
+
+    }
+    //console.log("retrieving dates",s,e)
+    var id  = document.getElementById("location_id").value;
+    loadData(start,end,id);
+}
+
+
+function getDates(){
+    var start = moment.utc(document.getElementsByClassName("date")[0].innerText.split("-")[0].trim(),"ddd DD/MM/YYYY");
+    console.log("start is",start);
+    var arr = document.getElementsByClassName("date")[0].innerText.split("-");
+    if (arr.length == 1){arr.push(moment.utc(start).format("ddd DD/MM/YYYY"))};
+    if (dateType == "specific day"){
+        end = moment.utc(arr[0].trim(),"ddd DD/MM/YYYY").add(1,"days");
+    }
+    if (dateType == "week"){
+        start.subtract(start.isoWeekday() - 1,"d");
+        end = moment.utc(start).add(7,"days");
+    }
+    else{
+        console.log("in get dates, adding one day to end");
+        end = moment.utc(arr[1].trim(),"ddd DD/MM/YYYY").add(1,"days");
+    }
+    return [start,end];
+}
+
+function incrementDate(){
+    var start = moment.utc(document.getElementsByClassName("date")[0].innerText.split("-")[0].trim(),"ddd DD/MM/YYYY");
+    var end = moment.utc(document.getElementsByClassName("date")[0].innerText.split("-")[1].trim(),"ddd DD/MM/YYYY");
+
+    start.subtract(start.isoWeekday() - 1,"d").add(7,"d");
+    end = moment.utc(start).add(7,"d");
+    var id  = document.getElementById("location_id").value;
+    loadData(start,end,id);
+}
+
+
+function decrementDate(){
+     var start = moment.utc(document.getElementsByClassName("date")[0].innerText.split("-")[0].trim(),"ddd DD/MM/YYYY");
+    var end = moment.utc(document.getElementsByClassName("date")[0].innerText.split("-")[1].trim(),"ddd DD/MM/YYYY");
+    start.subtract(start.isoWeekday() - 1,"d").subtract(7,"d");
+    end = moment.utc(start).add(7,"d");
+    var id  = document.getElementById("location_id").value;
+    loadData(start,end,id);
+}
+
+
+function changeGraph(){
+    console.log("in change graph");
+    chart.options.scales.yAxes[0].ticks.suggestedMax = undefined;
+    datasets = getSelectedDatasets("daily");
+    //console.log("selected datasets are",datasets);
+    //updateDatasets();
+    if (chartView == "daily"){
+        datasets = getSelectedDatasets("daily");
+
+    }
+    else{
+        datasets = [0,1,2];
+    }
+    displayGraph(chart,datasets);
+    displayLimitLines();
+
+}
+
+function expandGraph(){
+    if(document.getElementById("map-row").classList.contains("d-none")){
+        document.getElementById("map-row").classList.remove("d-none")
+        //document.getElementById("graph-container").classList.add("mt-3");
+        document.getElementById("graph-container").style.height="40%";
+        document.getElementById("right-container").classList.remove("d-none")
+        document.getElementById("left-container").classList.add("col-6")
+        document.getElementById("left-container").classList.remove("col-12")
+    }
+    else{
+        document.getElementById("map-row").classList.add("d-none")
+        document.getElementById("graph-container").classList.remove("mt-3");
+        document.getElementById("graph-container").style.height="100%";
+        document.getElementById("right-container").classList.add("d-none")
+        document.getElementById("left-container").classList.remove("col-6")
+        document.getElementById("left-container").classList.add("col-12")
+    }
+}
+
+function saveGraphImage(){
+    var layer = findLayer(document.getElementById("location_id").value);
+    var title = ""
+    if(layer){
+        title = layer.feature.properties.name + " - occupancy - "
+        if (chartView == "classed"){
+            title = title + document.getElementById("countline-daily-table").getElementsByClassName("selected")[0].innerText + " in week ";
+        }
+        title = title + document.getElementsByClassName("date")[0].innerText;
+    }
+    setTimeout(function(){genScreenshotgraph("graph-container",title);},1);
+}
+
+function dealWithLocationFeatureCollection(feature,layer){
+    console.log("HERE!");
+    console.log("dealing with location",feature,layer)
+    if (feature.geometry.type == "Polygon" && feature.properties.type == "virtual"){
+        console.log("found countline",feature);
+        layer.setStyle({color:"#2483ec",weight:3});
+        //layer.addTo(map);
+        //layer.setStyle(locationStyleOptions);
+        lineLayer.addLayer(layer);
+        //var popup = L.popup({maxWidth:350,minWidth:350});
+        //popup.setContent(createMetaDataPopup2(feature));
+        //layer.bindPopup(popup);
+
+        console.log("line layer is",lineLayer);
+        //setupLocationLineWithArrowhead(layer);
+        //layer.options.direction = feature.properties.direction_id;
+        //layer.options.order = feature.properties.order;
+
+    }
+    if (feature.geometry.type == "LineString" && feature.properties.type == "associated"){
+        console.log("found assoc",feature);
+        layer.setStyle({color:"red",weight:3});
+
+        lineLayer.addLayer(layer);
+
+
+    }
+}
+
+
+function setUpChart(){
+    console.log("setting up  chart view for ",chartView);
+    console.log("classed data is",classedData);
+        var selectors = document.querySelectorAll("[data-graph-group='daily']");
+        var direction = getCurrentDirection();
+        if (chart){chart.destroy();}
+        var days = document.getElementById("countline-daily-table").getElementsByClassName("class-selector");
+
+        var chartData = []
+
+        if (chartView == "classed"){
+            chartData.push({"label":"Occupancy","data":[],"borderColor":"blue","backgroundColor":"blue","fill":false,"pointRadius":0,"borderWidth":3,"type":"line"});
+            chartData.push({"label":"Outbound","data":[],"borderColor":"red","backgroundColor":"red","fill":false,"pointRadius":0,"borderWidth":1,"type":"bar"});
+            chartData.push({"label":"Inbound","data":[],"borderColor":"#45f775","backgroundColor":"#45f775","fill":false,"pointRadius":0,"borderWidth":1,"type":"bar"});
+
+            chart = createStackedBarChart(document.getElementById("countline-classed-volumes"),{"labels":graphLabels,"datasets":chartData});
+
+            document.querySelectorAll("[data-graph-group='daily']")[0].click();
+        }
+        else{
+            for(day of days){
+                chartData.push({"label":day.innerText,"data":[1,2,3],"borderColor":day.getAttribute("data-bg"),"backgroundColor":day.getAttribute("data-bg"),"fill":false,"pointRadius":0,"borderWidth":1});
+            }
+            chart = createLineChart(document.getElementById("countline-classed-volumes"),{"labels":graphLabels,"datasets":chartData});
+            //document.getElementById("directions-popup").getElementsByClassName("menu-item")[direction].click();
+            console.log("chart is",chart);
+            chart.options.scales.xAxes[0].ticks.maxTicksLimit = 12;
+            updateDatasets();
+            changeGraph();
+        }
+        console.log("exiting chart setup",chart.datasets);
+}
+
+
+function getCurrentDirection(){
+    return 2;
+}
+
+
+function buildGraphLabels(tooltip,data){
+    //console.log(tooltip,data);
+    text = [];
+    data.datasets.forEach(function(item,index){
+        //console.log("chart is",chart);
+        var val = item.data[tooltip.index];
+        if(typeof val == "string"){ val = "-";}
+        if (chart.config.type == "line"){
+            if (!item.hidden){
+                    text.push(item.label + " - "  + val);
+                }
+
+            }
+        else{
+
+            if (val !=0 && val != "-" && !item.hidden){
+                if (item.label == "Outbound"){
+                    text.push(item.label + " : "  + Math.abs(val));
+                }
+                else{
+                    text.push(item.label + " : "  + val);
+                }
+            }
+
+        }
+
+    });
+    if (chart.config.type == "bar"){
+        var result = data.datasets[0].data.reduce((c,v)=>{
+            if ( !isNaN( v ) ) c.push( Math.floor( v ) );
+            return c;
+        },[]);
+        var max = Math.max.apply(null,result)
+        if (!max || max==0){
+            max = 1;
+        }
+        var col = pickHex([255,0,0],[0,255,0],data.datasets[0].data[tooltip.index]/max);
+        console.log("color is",col);
+        lineLayer.eachLayer(function(layer){
+            console.log(layer.feature.geometry.type);
+            if(layer.feature.geometry.type == "Polygon"){
+                layer.setStyle({color:col,weight:4,"fillOpacity": .75});
+            }
+
+        });
+    }
+    return text;
+}
+
+
+function updateDatasets(){
+    chart.options.scales.yAxes[0].ticks.suggestedMax = undefined;
+    selectedClasses = getSelectedPopupIndexes("classes-popup");
+    //console.log("in updatedatesets,selected classes are",selectedClasses);
+    var data = classedData.data[document.getElementById("location_id").value].directions[2];
+    console.log("data is",data);
+
+    var datasets = [];
+    var tableData = [];
+    data.baseData.forEach(function(dataset,index){
+        var selectedClassVolumes = [];
+        selectedClasses.forEach(function(classIndex,i){
+            selectedClassVolumes.push(dataset[classIndex].data);
+        });
+        if (selectedClasses.length != 0){
+            tableData.push(selectedClassVolumes.reduce(sumOfDatasets));
+        }
+        else{
+            tableData.push([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+        }
+    });
+    if (chartView == "daily"){
+        chart.options.scales.yAxes[0].stacked = false;
+        chart.data.datasets.forEach(function(dataset,index){
+            //console.log("setting dataset",index,"to",tableData[index]);
+            dataset.data = tableData[index];
+        });
+    }
+    else{
+        var day = getSelectedDatasets("daily")[0];
+        console.log("selected day is",day);
+        for(var i=0;i<2;i++){
+            console.log("selected classes are",selectedClasses);
+            var dataset = classedData.data[document.getElementById("location_id").value].directions[i].baseData[day]
+            console.log("dataset for day is",dataset);
+            var selectedClassVolumes = [];
+            selectedClasses.forEach(function(classIndex,j){
+                console.log("pushing",dataset[classIndex].data);
+                selectedClassVolumes.push(dataset[classIndex].data);
+            });
+            if (selectedClasses.length != 0){
+                chart.data.datasets[i+1].data = selectedClassVolumes.reduce(sumOfDatasets);
+            }
+            else{
+                chart.data.datasets[i+1].data =[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+            }
+
+        }
+        console.log("chart datasets are",chart.data.datasets);
+        chart.data.datasets[0].data = tableData[day];
+        chart.options.scales.xAxes[0].ticks.beginAtZero = false;
+    }
+    chart.update();
+    fillAveragesTable("countline-daily-table",tableData);
+}
+
+
+function toggleGraphDisplay(){
+        console.log("current chart view is",chartView);
+        var selectors = document.querySelectorAll("[data-graph-group='daily']");
+        if (chartView == "daily"){
+            chartView = "classed";
+            selectionType = "single";
+        }
+        else{
+            chartView = "daily";
+            selectionType = "multi";
+        }
+        classSelectorSelectAll("daily");
+        for (var i=0;i<selectors.length;i++){
+            selectors[i].setAttribute("data-selection-type",selectionType);
+            if (selectionType == "single"){
+                selectors[i].classList.remove("selected");
+            }
+        }
+
+        if (chartView == "daily"){
+             classSelectorSelectAll("daily");
+
+        }
+        setUpChart();
+
+    }
+
+
+function loadData(start,end,id){
+    console.log("ID IS ",id,end,end.format("YYYY-MM-DD"),end.utc().format("YYYY-MM-DD"));
+    if (!id || id == ""){
+        return;
+    }
+    var greyed = document.getElementsByClassName("greyed-out");
+    for (var i=0;i<greyed.length;i++){
+        showGreyedOut(greyed[i]);
+    }
+    if(chart){chart.destroy();}
+    var formData = new FormData();
+    formData.append("ids",JSON.stringify([id]));
+    formData.append("resultType","occupancy");
+    formData.append("startDate",start.format("YYYY-MM-DD 00:00"));
+    formData.append("endDate",end.format("YYYY-MM-DD 00:00"));
+    formData.append("period",document.getElementById("period-selector-popup").getElementsByClassName("selected")[0].parentNode.id);
+    fetcher(formData,"getATCClassedVolumes",function(result){
+        console.log("received results",result);
+        classedData = result.data;
+        graphLabels = result.data.graphLabels;
+        document.getElementById("events-container").innerHTML = result.data.events;
+        //console.log("data",classedData);
+        //console.log("data",classedData);
+        //return;
+        var greyed = document.getElementsByClassName("greyed-out");
+        for (var i=0;i<greyed.length;i++){
+            hideGreyedOut(greyed[i]);
+        }
+        console.log("dates are",moment(start).format("ddd DD/MM/YYYY") + " - " + moment(end).format("ddd DD/MM/YYYY"));
+        document.getElementsByClassName("date")[0].innerText = moment(start,"DD/MM/YYYY").format("ddd DD/MM/YYYY") + " - " + moment(end,"DD/MM/YYYY").format("ddd DD/MM/YYYY");
+        setUpChart();
+        updateDatasets();
+        changeGraph();
+    });
+}
+
+
+var start = moment.utc()
+start.subtract(start.isoWeekday() - 1,"d")
+var end =  moment.utc()
+end.subtract(end.isoWeekday() - 1,"d").add(7,"d")
+console.log("end is",end,end.format("ddd DD/MM/YYYY"));
+document.getElementsByClassName("date")[0].innerText = start.format("ddd DD/MM/YYYY") + " - " + end.format("ddd DD/MM/YYYY");
+setToggleDatasetSelectorsListener(document.getElementById("countline-daily-table"));
+setDatasetSelectorsFunctionListener(document.getElementById("countline-daily-table"),function(){updateDatasets();changeGraph()});
+
+
+function viewSite(id){
+    if(downloadActive){return;}
+    window.location.href = "/aecon/redirect?view=1&location_id=" + id;
+}
+
+
+function loadLocation(id){
+    console.log("in load location");
+    var formData = new FormData();
+    formData.append("location_id",JSON.stringify(id));
+    return fetcher(formData,"getLocations",function(result){
+        console.log("received results of location",result);
+        lineLayer.eachLayer(function (layer) {
+                lineLayer.removeLayer(layer);
+        });
+        processLocationGeojson(result.locations);
+        map.fitBounds(lineLayer.getBounds());
+        console.log("setting classes popup");
+        document.getElementById("classes-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = result.classes;
+        console.log("seetting dir popup");
+        //document.getElementById("directions-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = result.directions;
+        setPopupListeners(document.getElementById("classes-popup"))
+        //setPopupListeners(document.getElementById("directions-popup"));
+        var items = document.getElementById("classes-popup").getElementsByClassName("menu-item");
+        //document.getElementById("img-container").getElementsByTagName("div")[0].classList.remove("d-none");
+        for(var i=0;i<items.length;i++){
+            //console.log("in inline script, setting up click listener for",items[i]);
+            items[i].addEventListener("click",function(){updateDatasets();changeGraph()});
+        }
+        var items = document.getElementById("directions-popup").getElementsByClassName("menu-item");
+        for(var i=0;i<items.length;i++){
+            //console.log("in inline script, setting up click listener for",items[i]);
+            items[i].addEventListener("click",function(){changeDirection()});
+        }
+
+    });
+}
+
+
+var items = document.getElementById("zone-popup").getElementsByClassName("menu-item");
+for(var i=0;i<items.length;i++){
+    //console.log("in inline script, setting up click listener for",items[i]);
+    items[i].addEventListener("click",function(){changeZone()});
+}
+
+
+var items = document.getElementById("graph-limit-popup").getElementsByClassName("menu-item");
+    for(var i=0;i<items.length;i++){
+        items[i].addEventListener("click",changeGraph);
+    }
+
+function changeZone(){
+
+    id = document.getElementById("zone-popup").getElementsByClassName("selected")[0].parentNode.id.replace("zone_","");
+    document.getElementById("location_id").value = id;
+    hidePopup("zone-popup");
+    loadLocation(id);
+    var dates = getDates();
+    loadData(dates[0],dates[1],id);
+}
+
+
+function loadSite(){
+
+}
+
+
+var periods = document.getElementById("period-selector-popup").getElementsByClassName("popup-item");
+for(var i=0;i<periods.length;i++){
+        periods[i].addEventListener("click",function(ele){
+                                                return function(event){
+                                                changeZone();
+                                                }
+                                            }(periods[i]));
+
+}
+
+
+
+hideAllGreyedOut();
+
+document.getElementById("zone-popup").getElementsByTagName("li")[0].click();
+
+
+</script>
+
+{% endblock %}

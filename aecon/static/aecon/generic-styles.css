@@ -1,0 +1,134 @@
+body,
+html {
+    height: 100%;
+    width: 100%;
+}
+
+#logon-box {
+    width: 480px;
+    height: 100%;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 0px 20px #00000029;
+    opacity: 1;
+    padding: 4%;
+    margin-left: auto;
+    margin-right: auto;
+    float: right;
+}
+
+#logon-box.synchro {
+    background-color: rgba(255, 255, 255, 0.75);
+    box-shadow: 1px 2px 5px 1px #242526;
+    height: 340px;
+}
+
+#full-image-container {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    margin: 0;
+    padding: 0;
+
+}
+
+#login-button,
+#map-button,
+#forgot-button,
+#forgot-button2{
+    background: #209022 0% 0% no-repeat padding-box;
+    opacity: 1;
+    width: 280px;
+    height: 40px;
+    text-align: center;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#map-button{
+    color: #28a745 !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: 1px solid #28a745 !important;
+}
+#logo-img-logon {
+    background: transparent 0% 0% no-repeat padding-box;
+    opacity: 1;
+    width: 300px;
+    /* height: 190px; */
+}
+
+#login-instructions
+{
+    margin-top: 36px;
+    margin-left: 22px;
+    color: #706f6f;
+    font-size: 14px;
+    text-align: left;
+}
+
+#logo-img-logon2
+{
+    background: transparent 0% 0% no-repeat padding-box;
+    opacity: 1;
+    width: 200px;
+    height: 66px;
+    margin-top: 30px;
+}
+
+#exampleInputEmail1,
+#exampleInputPassword1 {
+    width: 280px;
+    height: 38px;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    border: 1px solid #2B2D42;
+    opacity: 1;
+
+}
+
+
+.input-labels{
+    font: normal normal bold 16px/21px 'proxima-nova', sans-serif;
+    letter-spacing: 0px;
+    color: #304659;
+    opacity: 1;
+    margin-left: 3px;
+}
+
+.btn {
+    background-color: #005293 !important;
+    color: white !important;
+    border-color: #005293;
+}
+
+.btn-primary:focus,
+.btn-primary:hover,
+.btn-primary:active {
+    box-shadow: 0 0 0 0.2rem #005293;
+    border-color: #005293;
+}
+
+#full-image-container .row {
+    margin: auto;
+}
+
+@media (min-width:768px)and (max-width:1555px) {
+    .welcome-box {
+        width: 50% !important;
+    }
+}
+
+@media (min-width:300px)and (max-width:767px) {
+    .down-tab,
+    .vertical {
+        display: none;
+    }
+    .w-50 {
+        width: 100% !important;
+    }
+}

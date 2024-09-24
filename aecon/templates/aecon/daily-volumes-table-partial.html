@@ -1,0 +1,126 @@
+{% load staticversion %}
+<style>
+
+    #countline-daily-table.show-data .weather{
+        display:none
+    }
+
+    #countline-daily-table.show-weather td{
+        padding:0;
+    }
+</style>
+
+<div class="table-wrapper" style="width:100%;height:100%;overflow:auto;font-size:10px">
+    <table class="table table-borderless table-sm table-hover show-data" id="countline-daily-table">
+        <thead>
+        <tr>
+
+            <th></th>
+            <th><label data-bg="#3e95cd" data-col="white" class="class-selector selected" data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="0">Monday</label></th>
+            <th><label data-bg="#8e5ea2" data-col="white" class="class-selector selected" data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="1">Tuesday</label></th>
+            <th><label data-bg="#3cba9f" data-col="white" class="class-selector selected" data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="2">Wednesday</label></th>
+            <th><label data-bg="#e8c3b9" data-col="black" class="class-selector selected" data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="3">Thursday</label></th>
+           <th> <label data-bg="#c45850" data-col="white" class="class-selector selected" data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="4">Friday</label></th>
+           <th> <label data-bg="#4286f4" data-col="white" class="class-selector selected" data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="5">Saturday</label></th>
+            <th><label data-bg="#60db97" data-col="black" class="class-selector selected" data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="6">Sunday</label></th>
+            <th><label data-bg="#ff3333" data-col="white" class="class-selector selected" data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="7">5 Day Avg</label></th>
+           <th><label data-bg="#00ccff" data-col="white" class="class-selector selected" data-graph-group="daily" data-selection-type="multi" onmouseover="hoverOnDay(this)" onmouseout="hoverExit(this)" data-index="8">7 Day Avg</label></th>
+
+
+
+
+        </tr>
+
+        </thead>
+        <tbody>
+        {% load my_filters %}
+            {% time_range as times %}
+            {% for t in times %}
+                <tr><th>{{t}}</th>
+                    <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                    <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                    <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                    <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                    <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                    <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                    <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                    <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"></div></div></td>
+                    <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"></div></div></td>
+
+                </tr>
+            {% endfor %}
+            <tr style="border-top:1px solid grey" class="data"><th>07-19</th>
+                <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+            <tr class="data"><th>06-22</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+            <tr class="data"><th>06-24</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+            <tr class="data"><th>00-24</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+            <tr class="data"><th>AM Peak</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+            <tr class="data"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+            <tr class="data"><th>PM Peak</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+            <tr class="data"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><td></tr>
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+
+
+
+
+    function setUpDailyVolumesTable(data, graphLabels, period){
+        //chart.options.scales.yAxes[0].ticks.suggestedMax = undefined;
+        if (!data){
+            return
+        }
+        selectedClasses = getSelectedPopupIndexes("classes-popup");
+        console.log("data is",data);
+        console.log(graphLabels)
+        var datasets = [];
+        var tableData = [];
+        data.baseData.forEach(function(dataset,index){
+            var selectedClassVolumes = [];
+            selectedClasses.forEach(function(classIndex,i){
+                selectedClassVolumes.push(dataset[classIndex].data);
+            });
+            if (selectedClasses.length != 0){
+                console.log("sleected class volumnes are",selectedClassVolumes);
+                console.log("reduced dataset is",selectedClassVolumes.reduce(sumOfDatasets));
+                tableData.push(selectedClassVolumes.reduce(sumOfDatasets));
+            }
+            else{
+                tableData.push([]);
+            }
+        });
+        console.log("table data is",tableData);
+        //console.log("chart is",chart);
+        //console.log("chart datasets are",chart.data.datasets);
+        //if (chartView == "daily"){
+        //    chart.options.scales.yAxes[0].stacked = false;
+        //    chart.data.datasets.forEach(function(dataset,index){
+        //        console.log("setting dataset",index,"to",tableData[index]);
+        //        if(!dataset.limit){
+        //            dataset.data = tableData[index];
+        //        }
+        //    });
+        //}
+        //else{
+        //    var day = getSelectedDatasets("daily")[0];
+        //    //console.log("selected day is",day);
+        //    console.log("data for day is",data.baseData[day]);
+        //    chart.data.datasets = [...data.baseData[day]] ;
+        //    chart.options.scales.yAxes[0].stacked = true;
+       // }
+
+        //chart.update();
+        //chart.yAxesticks = yAxesticks;
+        //changeGraph();
+        console.log("filling averages table with period", period);
+        fillAveragesTable("countline-daily-table",tableData, graphLabels, period);
+        return tableData;
+
+    }
+
+
+
+</script>

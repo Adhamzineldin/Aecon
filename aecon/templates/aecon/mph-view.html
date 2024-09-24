@@ -1,0 +1,712 @@
+
+{% extends "aecon/dashboard-base.html" %}
+{% load staticversion %}
+
+{% block content %}
+<style>
+
+     table.show-data .weather{
+        display:none
+    }
+
+    table.show-weather td{
+        padding:0;
+    }
+
+
+    table.show-weather .weather{
+        display:block
+    }
+
+    table.show-weather .data{
+        display:none
+    }
+
+
+</style>
+<div id="classes-popup" style="width:auto;" class="conduit-popup">
+    <div class="conduit-selectable-menu multi">
+        {{ classes | safe}}
+    </div>
+</div>
+
+<div id="day-popup" style="width:180px" class="conduit-popup" data-header="speeds-header">
+    <div class="conduit-selectable-menu  min-1" data-header="speeds-header">
+        <ul >
+            <li id="mon"  class="menu-item" data-index="0" data-content="Monday">
+                <a href="#" class="selectable-menu-item selected" >
+                    <i ></i>
+                    <span>Monday</span>
+                </a>
+            </li>
+
+            <li id="tue" class="menu-item popup-item " data-index="1" data-content="Tuesday">
+                <a href="#"  class="selectable-menu-item">
+                    <i ></i>
+                    <span>Tuesday</span>
+                </a>
+            </li>
+
+            <li id="wed" class="menu-item popup-item" data-index="2" data-content="Wednesday">
+                <a href="#"  class="selectable-menu-item">
+                    <i ></i>
+                    <span>Wednesday</span>
+                </a>
+            </li>
+
+            <li id="thu" class="menu-item popup-item" data-index="3" data-content="Thursday">
+                <a href="#"  class="selectable-menu-item">
+                    <i ></i>
+                    <span>Thursday</span>
+                </a>
+            </li>
+
+            <li id="fri" class="menu-item popup-item" data-index="4" data-content="Friday">
+                <a href="#"  class="selectable-menu-item">
+                    <i ></i>
+                    <span>Friday</span>
+                </a>
+            </li>
+
+            <li id="sat" class="menu-item popup-item" data-index="5" data-content="Saturday">
+                <a href="#"  class="selectable-menu-item">
+                    <i ></i>
+                    <span>Saturday</span>
+                </a>
+            </li>
+
+            <li id="sun" class="menu-item popup-item" data-index="6" data-content="Sunday">
+                <a href="#"  class="selectable-menu-item">
+                    <i ></i>
+                    <span>Sunday</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<div id="directions-popup" style="width:180px" class="conduit-popup">
+    <div class="conduit-selectable-menu  min-1" data-header="directions-popup-header">
+        <ul >
+            {% for d in location.directions.all %}
+
+                <li id="{{d.id}}"  class="menu-item" data-order="{{forloop.counter0}}">
+                    <a href="#" class="selectable-menu-item {% if forloop.first %}selected {% endif %}" >
+                        <i ></i>
+                        <span>{{d.direction.descriptive}}</span>
+                    </a>
+                </li>
+            {% endfor %}
+
+            <li id="combined"  class="menu-item" data-order="{{location.directions.all|length}}">
+                    <a href="#" class="selectable-menu-item " >
+                        <i ></i>
+                        <span>Combined</span>
+                    </a>
+                </li>
+
+        </ul>
+    </div>
+</div>
+
+
+<div id="averages-popup" style="width:180px" class="conduit-popup">
+    <div class="conduit-selectable-menu  min-1" data-header="averages-header">
+        <ul >
+            <li id="5day"  class="menu-item" data-order="7">
+                <a href="#" class="selectable-menu-item selected" >
+                    <i ></i>
+                    <span>5 Day Average</span>
+                </a>
+            </li>
+
+            <li id="7day" class="menu-item popup-item " data-order="8">
+                <a href="#"  class="selectable-menu-item">
+                    <i ></i>
+                    <span>7 Day Average</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<form class="d-none">
+    {% csrf_token %}
+    <input hidden value="{{loc.id}}" id="target_id">
+</form>
+
+
+
+
+<div class="row align-items-center"  style="height:50px">
+    <input hidden value="{{location.id}}" id="location_id">
+    <div class="col-12 my-auto d-flex align-items-center">
+        <div><h6 class="text-muted" style="margin:0" id="atc-breadcrumbs"></h6></div>
+        <div>
+
+            <h6 class="bg-transparent" style="margin:0;margin-left:5px" id="atc-site-name">
+                {{loc.name}}
+            </h6>
+        </div>
+        <div class="d-flex align-items-center justify-content-center">
+            <div class="selection-header classes-popup-trigger" ><span>Classifications</span><i class="chevron-icon"></i></div>
+            <div class=" selection-header directions-popup-trigger" id="directions-popup-header" style="margin-left:10px">
+                <span>Northbound</span>
+                <i class="chevron-icon"></i>
+            </div>
+            <ul class="nav" style="margin-left:20px;">
+
+                <li><a class="btn nav-button sub-view-nav selected" data-view="atc-view" data-sub-view="atc-basic-overview">Overview</a></li>
+                <li><a class="btn nav-button sub-view-nav" data-view="atc-view" data-sub-view="atc-daily-volumes">Daily Volumes</a></li>
+                <li><a class="btn nav-button sub-view-nav" data-view="atc-view" data-sub-view="atc-classed-volumes">Classed Volumes</a></li>
+                <li><a class="btn nav-button sub-view-nav" data-view="atc-view" data-sub-view="atc-basic-speeds">Speed Data</a></li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<div class="row sub-view" id="atc-basic-overview" style="height:calc(100% - 50px)">
+    <div class="col-12"  style="width:100%;height:100%;overflow-y:auto">
+
+        <div class="row" style="height:100%">
+            <div class="col-lg-4 col-sm-12" style="padding-bottom:5px">
+
+                <div class="card header-shadow">
+                    <div class="greyed-out justify-content-center align-items-center show"> <img src ="/static/generic/small_loading.gif" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 h-100">
+                                <div class="class-selector-container" style="height:100%" data-graph-list="['atc-overview-donut1','atc-overview-donut2','atc-overview-donut3','atc-overview-donut4','atc-overview-donut5','atc-overview-donut6']" id="overview-selector-container">
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="height:210px;position:relative;border-top:1px solid #e2e7ea">
+
+
+                            <div class="col-12">
+                                <h6 class="card-subtitle text-muted text-center" style="margin:0;padding:5px">Total Volumes</h6>
+                            </div>
+
+                            <div class="col-6" style="height:calc(100% - 30px)">
+                                <div class="canvaswrapper" style="height:100%">
+                                    <canvas id="atc-overview-donut1">
+
+                                    </canvas>
+                                    <div class="donut-text text-muted"><span>North East</span><br><span class="donut-number"></span></div>
+
+                                </div>
+                            </div>
+                            <div class="col-6" style="height:calc(100% - 30px)">
+                                <div class="canvaswrapper" style="height:100%">
+                                    <canvas id="atc-overview-donut2" >
+
+                                    </canvas>
+                                    <div class="donut-text text-muted"><span>South West</span><br><span class="donut-number"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="height:210px;border-top:1px solid #e2e7ea">
+                            <div class="col-12">
+                                <h6 class="card-subtitle text-muted text-center" style="margin:0;padding:5px">Weekday Average</h6>
+                            </div>
+                            <div class="col-6" style="height:calc(100% - 30px);width:100%">
+
+                                <div class="canvaswrapper" style="height:100%">
+
+
+
+                                    <canvas id="atc-overview-donut3" >
+
+                                    </canvas>
+                                    <div class="donut-text text-muted"><span>South West</span><br><span class="donut-number"></span></div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-6" style="height:calc(100% - 30px)">
+
+                                <div class="canvaswrapper" style="height:100%">
+
+
+
+                                    <canvas id="atc-overview-donut4" >
+
+                                    </canvas>
+                                    <div class="donut-text text-muted"><span>South West</span><br><span class="donut-number"></span></div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row" style="height:210px;border-top:1px solid #e2e7ea">
+
+                            <div class="col-12">
+                                <h6 class="card-subtitle text-muted text-center" style="margin:0;padding:5px">7 Day Average</h6>
+                            </div>
+                            <div class="col-6" style="height:calc(100% - 30px);width:100%">
+
+                                <div class="canvaswrapper" style="height:100%">
+
+
+
+                                    <canvas id="atc-overview-donut5" >
+
+                                    </canvas>
+                                    <div class="donut-text text-muted"><span>South West</span><br><span class="donut-number"></span></div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-6" style="height:calc(100% - 30px)">
+
+                                <div class="canvaswrapper" style="height:100%">
+
+
+
+                                    <canvas id="atc-overview-donut6" >
+
+                                    </canvas>
+                                    <div class="donut-text text-muted"><span>South West</span><br><span class="donut-number"></span></div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-sm-12" style="padding-bottom:5px">
+
+                <div class="row justify-content-center">
+                    <div class="col-6 d-none" style="padding-bottom:5px">
+                        <div class="card header-shadow">
+                            <div class="card-body d-flex align-items-center">
+                                <div>
+                                    <h6 class="card-subtitle text-muted text-center" style="margin:0">Posted Speed Limit</h6>
+
+                                </div>
+                                <div style="margin-left:auto;position:relative">
+                                    <img src="/static/aecon/speed-limit.png" width="60" height="60">
+                                    <div class="donut-text"><span class="donut-number text-bold" style="color:black !important;font-weight:bold">{{loc.speedLimit}}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12" style="padding-bottom:5px">
+                        <div class="card header-shadow" style="margin-bottom:5px">
+                            <div class="greyed-out justify-content-center align-items-center show"> <img src ="/static/generic/small_loading.gif" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+                            <div class="card-header bg-transparent  d-none align-items-center justify-content-center" style="padding:5px">
+
+
+
+
+                                <div>
+                                    <h6 class="card-subtitle text-muted text-center" style="margin:0">Posted Speed Limit</h6>
+
+                                </div>
+                                <div style="position:relative;height:100%;margin-left:20px">
+                                    <img src="/static/aecon/speed-limit.png" style="height:100%;width:auto">
+                                    <div class="donut-text"><span class="donut-number " style="color:black !important;font-weight:bold">{{loc.speedLimit}}</span></div>
+                                </div>
+
+                            </div>
+                            <div class="card-body d-flex align-items-center table-wrapper">
+                                <div class="table-responsive" style="height:100%;font-size:0.88rem;position:relative">
+
+
+
+                                    <table class="table table-striped table-bordered text-left" style="width:100%;overflow:auto" id="overview-table">
+                                        <thead class="">
+                                            <tr>
+                                                <th></th>
+                                                <th>Northeastbound</th>
+                                                <th>Southwestbound</th>
+                                                <th>Combined</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="font-weight:400;color:#495057">
+                                            <tr><td>5 Day Avg Speed</td><td></td><td></td><td></td></tr>
+                                            <tr><td>7 Day Avg Speed</td><td></td><td></td><td></td></tr>
+                                            <tr><td>5 Day 85th %ile Speed</td><td></td><td></td><td></td></tr>
+                                            <tr><td>7 Day 85th %ile Speed</td><td></td><td></td><td></td></tr>
+                                            <tr><td>5 Day 95th %ile Speed</td><td></td><td></td><td></td></tr>
+                                            <tr><td>7 Day 95th %ile Speed</td><td></td><td></td><td></td></tr>
+                                            <tr><td>5 Day over PSL</td><td></td><td></td><td></td></tr>
+                                            <tr><td>7 Day over PSL</td><td></td><td></td><td></td></tr>
+                                            <tr><td>5 Day 10% + 2 over PSL</td><td></td><td></td><td></td></tr>
+                                            <tr><td>7 Day 10% + 2 over PSL</td><td></td><td></td><td></td></tr>
+                                            <tr><td>5 Day 15mph over PSL</td><td></td><td></td><td></td></tr>
+                                            <tr><td>7 Day 15mph over PSL</td><td></td><td></td><td></td></tr>
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-sm-12" style="width:100%;height:100%;padding-bottom:5px">
+                <div class="card header-shadow" style="height:50%;margin-bottom:5px">
+                    <div class="card-body" style="height:100%;width:100%">
+                        <div class="col-12 " id="map-wrapper" style="width:100%;height:100%;padding:0">
+                            <div class = "map-panel" id = "atc-overview-map">
+
+                            </div>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="card header-shadow" style="margin-top:5px;margin-bottom:5px">
+                    <div class="card-body d-flex align-items-center">
+                        <div>
+                            <h6 class="card-subtitle text-muted text-center" style="margin:0">Posted Speed Limit</h6>
+
+                        </div>
+                        <div style="margin-left:auto;position:relative">
+                            <img src="/static/aecon/speed-limit.png" width="60" height="60">
+                            <div class="donut-text"><span class="donut-number text-muted" id="speed-limit" style="color:black !important;font-weight:bold;font-size:20px">{{loc.speedLimit}}</span></div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card header-shadow" style="margin-top:5px;margin-bottom:5px">
+                    <h5 class="card-header  bg-transparent">
+                        Incidents/Observations
+                    </h5>
+                    <div class="card-body" style="height:100%;width:100%">
+                        None
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+<div class="sub-view d-none" id="atc-daily-volumes"  style="width:100%;height:calc(100% - 60px)">
+    <div class="row" style="height:100%">
+        <div class = "col-12 col-lg-6  h-100">
+            <div class="card header-shadow h-100" style="width:100%"  data-group="atc-volumes-daily">
+                <div class="card-header d-flex align-items-center bg-transparent" style="height:50px;min-height:50px"><div>Total by day &nbsp </div>
+
+
+                </div>
+                <div class="card-body" style="height:calc(100% - 50px);padding:5px;width:100%;overflow:auto">
+                    {% include "aecon/daily-volumes-table-partial.html" %}
+                </div>
+            </div>
+        </div>
+
+        <div class = "col-12 col-lg-6 h-100" >
+
+            <div class="card header-shadow h-100" data-group="atc-volumes-classes">
+                <div class="card-body h-100" style="padding:5px">
+                    <div class="greyed-out justify-content-center align-items-center" style="display:none;width:99%;height:99%">
+                            <img src ="/static/generic/small_loading.gif" class="loading-img">
+                    </div>
+
+
+                    <div class="d-flex flex-column" style="height:100%;width:100%;margin:0">
+
+                        <div class="row h-100" style="width:100%">
+                            <div class="col-12 " style="height:100%">
+                                <div id="totals-graph-wrapper" style="width:100%;height:100%;position:relative" >
+                                    <canvas id="atc-daily-totals-graph">
+
+                                    </canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row sub-view d-none" id="atc-classed-volumes"  style="width:100%;height:calc(100% - 60px)">
+
+
+
+        <div class = "col-12 col-lg-auto h-100" >
+
+            <div class="card header-shadow h-100" data-group="atc-volumes-classes">
+                <div class="card-header d-flex align-items-center bg-transparent" style="height:50px;min-height:50px">
+                    <div>Total by Class &nbsp</div>
+                    <div></div>
+
+                    <div class=" selection-header averages-popup-trigger"  id="averages-header" style="margin-left:10px;height:30px;font-size:12px">
+                        <span>5 Day Average</span><i class="chevron-icon"></i>
+                    </div>
+                </div>
+                    <div class="card-body" style="height:calc(100% - 50px);padding:5px;width:100%;position:relative">
+
+                    <div class="table-wrapper"  style="width:100%;height:100%;overflow:auto">
+                        <table class="table table-borderless table-sm table-hover show-data" id="hourly-classed-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    {% for cl in location.classes.all %}
+                                        <th class="graph-control unselected" data-col="#3e95cd">{{cl.obsClass.name}}</th>
+                                    {% endfor %}
+
+
+
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                            {% load my_filters %}
+                                {% time_range as times %}
+                                {% for t in times %}
+                                    <tr><th>{{t}}</th>
+                                        {% for cl in location.classes.all %}
+                                            <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                <tr class="" style="border-top:1px solid grey"><th>07-19</th><{% for cl in location.classes.all %}
+                                        <td></td>
+                                    {% endfor %}
+                                </tr>
+                                <tr class=""><th>06-22</th>{% for cl in location.classes.all %}
+                                        <td></td>
+                                    {% endfor %}
+                                </tr>
+                                <tr class=""><th>06-24</th>{% for cl in location.classes.all %}
+                                        <td></td>
+                                    {% endfor %}
+                                </tr>
+                                <tr class=""><th>00-24</th>{% for cl in location.classes.all %}
+                                        <td></td>
+                                    {% endfor %}
+                                </tr>
+                                <tr class=""><th>AM Peak</th>{% for cl in location.classes.all %}
+                                        <td></td>
+                                    {% endfor %}
+                                </tr>
+                                <tr class=""><th></th>{% for cl in location.classes.all %}
+                                        <td></td>
+                                    {% endfor %}
+                                </tr>
+                                <tr class=""><th>PM Peak</th>{% for cl in location.classes.all %}
+                                        <td></td>
+                                    {% endfor %}
+                                </tr>
+                                <tr class=""><th></th>{% for cl in location.classes.all %}
+                                        <td></td>
+                                    {% endfor %}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class = "flex-grow-1  h-100">
+            <div class="card header-shadow h-100 mr-3" data-group="atc-volumes-classes">
+                <div class="card-body h-100" style="padding:5px">
+                    <div class="greyed-out justify-content-center align-items-center" style="display:none;width:99%;height:99%">
+                            <img src ="/static/generic/small_loading.gif" class="loading-img">
+                    </div>
+
+
+                    <div class="d-flex flex-column" style="height:100%;width:100%;margin:0">
+
+                        <div class="row h-100" style="width:100%">
+                            <div class="col-12 " style="height:100%">
+                                <div id="classed-graph-wrapper" style="width:100%;height:100%;position:relative" >
+                                    <canvas id="atc-classed-totals-graph">
+
+                                    </canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</div>
+
+<div class="row sub-view d-none" id="atc-basic-speeds" style="width:100%;height:calc(100% - 60px)">
+
+
+        <div class = "col-12 h-100 d-flex flex-column" >
+            <div class="card header-shadow" style="height:100%">
+                <div class="card-header d-flex align-items-center bg-transparent" style="height:50px;min-height:50px">
+                    <div>Speeds by day &nbsp </div>
+                    <div></div>
+
+                    <div class=" selection-header day-popup-trigger" id="speeds-header" style="margin-left:10px;height:30px;font-size:12px;width:100px">
+                        <span>Monday</span><i class="chevron-icon"></i>
+                    </div>
+
+                    <div class="fn toggle-between icon-toggle" data-target="atc-speed">
+                        <i data-alt="fa fa-table" style="color:green" class="scatter-icon"></i>
+                    </div>
+
+
+
+
+                </div>
+
+                <div class="card-body d-none" data-group="atc-speed" style="padding:5px;width:100%;height:calc(100% - 50px)">
+
+
+
+                    <div class="col-12  d-flex flex-column" style="width:100%;height:100%">
+
+                        <div class="row" style="width:100%;margin:0;">
+
+                        </div>
+
+                        <div class="row h-100" style="width:100%">
+                            <div id="speed-graph-wrapper" style="width:100%;height:100%;position:relative" >
+                                <canvas id="atc-speeds-graph">
+
+                                </canvas>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card-body" data-group="atc-speed" style="padding:5px;width:100%;height:calc(100% - 50px)">
+
+                    <div class="greyed-out justify-content-center align-items-center" style="display:none;height:99%;width:99%">
+                            <img src ="/static/generic/small_loading.gif" class="loading-img">
+                    </div>
+                    <div class="table-wrapper table-responsive" style="width:100%;height:100%;overflow:auto" id="speed-table-wrapper">
+
+                        <table class="table table-borderless table-sm table-hover show-data" id="speed-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th class="graph-control unselected" data-col="#8e5ea2">0-10</th>
+                                    <th class="graph-control unselected" data-col="#3cba9f">10-15</th>
+                                    <th class="graph-control unselected" data-col="#e8c3b9">15-20</th>
+                                    <th class="graph-control unselected" data-col="#c45850">20-25</th>
+                                    <th class="graph-control unselected" data-col="#4286f4">25-30</th>
+                                    <th class="graph-control unselected" data-col="#60db97">30-35</th>
+                                    <th class="graph-control unselected" data-col="#ff3333">35-40</th>
+                                    <th class="graph-control unselected" data-col="#00ccff">40-45</th>
+                                    <th class="graph-control unselected" data-col="#3e95cd">45-50</th>
+                                    <th class="graph-control unselected" data-col="#8e5ea2">50-55</th>
+                                    <th class="graph-control unselected" data-col="#3cba9f">55-60</th>
+                                    <th class="graph-control unselected" data-col="#e8c3b9">60-65</th>
+                                    <th class="graph-control unselected" data-col="#c45850">65-70</th>
+                                    <th class="graph-control unselected" data-col="#4286f4">70-75</th>
+                                    <th class="graph-control unselected" data-col="#60db97">75-80</th>
+                                    <th class="graph-control unselected" data-col="#ff3333">80-85</th>
+                                    <th class="graph-control unselected" data-col="#00ccff">85-90</th>
+                                    <th class="graph-control unselected" data-col="#ff3333">90-95</th>
+                                    <th class="graph-control unselected" data-col="#00ccff">95-100</th>
+                                    <th class="graph-control unselected" data-col="#00ccff">100+</th>
+
+                                    <th class="graph-control unselected" data-col="#e8c3b9">PSL</th>
+                                    <th class="graph-control unselected" data-col="#c45850">%</th>
+                                    <th class="graph-control unselected" data-col="#4286f4">ACPO</th>
+                                    <th class="graph-control unselected" data-col="#60db97">%</th>
+                                    <th class="graph-control unselected" data-col="#ff3333">DFT</th>
+                                    <th class="graph-control unselected" data-col="#00ccff">%</th>
+                                    <th class="graph-control unselected" data-col="#ff3333">Avg</th>
+                                    <th class="graph-control unselected" data-col="#00ccff">85th</th>
+                                    <th class="graph-control unselected" data-col="#00ccff">95th</th>
+
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                {% load my_filters %}
+                                {% time_range as times %}
+                                {% for t in times %}
+                                    <tr><th>{{t}}</th>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        <td><div class="d-flex align-items-center justify-content-center"><span class="data" style="padding-left:10px"></span> <div class="weather" data-toggle="tooltip" data-placement="top" title="Toggle show formations on hover"><img style="width:40px;height:40px" src=" http://openweathermap.org/img/wn/10d@2x.png"></div></div></td>
+                                        </tr>
+                                    {% endfor %}
+                                <tr style="border-top:1px solid grey"><th>07:00-19:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                                <tr><th>06:00-22:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                                <tr><th>06:00-24:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                                <tr><th>00:00-24:00</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                                <tr><th>AM Peak</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                                <tr><th></th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                                <tr><th>PM Peak</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                                <tr><th></th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{% staticversion 'aecon/cv2-atc-view.js' %}"></script>
+
+{% endblock %}

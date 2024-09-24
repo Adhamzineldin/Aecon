@@ -1,0 +1,817 @@
+ {% extends "aecon/sensor-data.html" %} {% block content %} {% load staticversion %} {% load my_filters %} {% load client_tags %} {% comment %}
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <div class="row">
+            <div class="font-weight-bold my-auto px-4">
+                Specific Week
+            </div>
+            <div class="topbar__item" id="calendar"><span><i class="icon-calendar"></i></span></div>
+            <div class="d-flex align-items-center justify-content-center date-display shadow m-2">
+                <div class="date"></div>
+            </div>
+            <div class="d-flex align-items-center justify-content-center date-display shadow m-2">
+                <div class="date"></div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="col-md-6 row text-right mb-3 pr-0">
+        <div class="selection-header period-selector-popup-trigger  col-4 shadow" id="period-selector"><span>Time Frequency</span><i class="chevron-icon"></i></div>
+        <div class="selection-header directions-popup-trigger col-4 shadow" id="directions-header"><span>Combined</span><i class="chevron-icon"></i></div>
+    </div>
+</div> {% endcomment %}
+<div class="row main">
+    <div class="col-md-12 mt-4 mb-3">
+        <div class="row">
+            <div class="font-weight-bold my-auto pl-2">
+                Date Range
+            </div>
+             <div class="calendar_green selection-header col-sm-auto shadow px-3" id="calendar">
+                <div id="date-button" class="date-text"><span>+</span></div>
+                <span><img id="changing-calender-icon" class="icon-calendar"
+                           src="/static/aecon/calendar_icon_white.svg"
+                          ></img></span>
+            </div>
+
+            <div class="d-none d-flex align-items-center bg-white justify-content-center date-display col-md-1 shadow my-2">
+                <div id="date_from" class="d-none date"></div>
+            </div>
+
+            <div class="topbar__item d-none" id="calendar2"><span><i class="calendar-icon"></i></span></div>
+            <div class="d-none d-flex align-items-center bg-white justify-content-center date-display col-md-1 shadow my-2">
+                <div id="date_to" class="d-none date"></div>
+            </div>
+            <div class="selection-header period-selector-popup-trigger col-md-2 ml-4 me-3 shadow" id="period-selector"><label class="popup-label">Time Frequency</label><span>60 Minutes</span><i class="chevron-icon"></i></div>
+            <div class="selection-header directions-popup-trigger col-md-2 shadow" id="directions-header"><label class="popup-label">Directions</label><span>Combined</span><i class="chevron-icon"></i></div>
+              
+            <div class="selection-header col-md-2 shadow" onclick="observationPopup(this)">
+                <label class="popup-label">Observation</label>
+                <span>Observation</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="px-3 py-1 mt-4 bg-white" style="box-shadow: 0px 0px 10px #0000001A; border-radius: 5px;">
+    <div class="row p-4">
+        <div class="table-wrapper table-responsive ht-40 div1 sen-traff col-md-12 col-sm-12 ml-2 me-3">
+            {% comment %}
+            <div class="greyed-out justify-content-center align-items-center "> <img src="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img" data-greyed-out="atc-basic-overview"></div> {% endcomment %}
+            <table class="table text-center show-data" rules="cols" id="countline_table">
+                <thead>
+                    <tr style="height: 35px !important;">
+                        <th>Time Period</th>
+                        <th>Pedestrian</th>
+                        <th>Cyclist</th>
+                        <th>Motorbike</th>
+                        <th>Car</th>
+                        <th>Taxi</th>
+                        <th>Van</th>
+                        <th>Minibus</th>
+                        <th>Bus</th>
+                        <th>Rigid</th>
+                        <th>Truck</th>
+                        <th>Emergency Vechiles</th>
+                    </tr>
+                </thead>
+                <tbody >
+                    <tr>
+                        <td>00:00-01:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>01:00-02:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>02:00-03:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>03:00-04:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>04:00-05:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>05:00-06:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>06:00-07:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>07:00-08:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>08:00-09:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>09:00-10:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>10:00-11:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>11:00-12:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>12:00-13:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>13:00-14:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>14:00-15:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>15:00-16:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>16:00-17:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>17:00-18:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>18:00-19:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>19:00-20:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>20:00-21:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>21:00-22:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>22:00-23:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>23:00-24:00</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>07:00:-19:00</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>06:00:-22:00</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>06:00:-24:00</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>00:00:-24:00</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            </table>
+        </div>
+
+        {% comment %}
+        <div class="row justify-content-center flex-grow-1 col-md-7 h-30" id="graph-container">
+            <div class="col-12 h-100  pt-3 ">
+                <div class="card header-shadow" style="width:100%;height:100%" data-group="atc-volumes-daily">
+                    <div class="greyed-out justify-content-center align-items-center"> <img src="{% staticversion 'aecon/small_loading.gif' %}" class="loading-img" data-greyed-out="atc-basic-overview"></div>
+                    <div class="canvaswrapper">
+                        <canvas id="countline-classed-volumes" style="height:100%">
+
+                    </canvas>
+
+                    </div>
+                    <div class="button-overlay d-flex" data-target="atc-volumes-daily" style="right:25px" id="graph-overlay">
+
+                        <div class="topbar__item" onclick="saveGraphImage();" style="background-color:#f2f3f7;margin-right:5px">
+                            <span class="icon-toggle"><i class="icon-picture"></i></span>
+                        </div>
+
+                        <div class="topbar__item" onclick="expandGraph();" style="background-color:#f2f3f7;margin-right:5px">
+                            <span class="icon-toggle"><i class="icon-zoom-in" data-alt="icon-zoom-out"></i></span>
+                        </div>
+                        <div class="topbar__item graph-limit-popup-trigger opens-left" style="background-color:#f2f3f7;margin-right:5px">
+                            <span class="icon-toggle"><i class="icon-controls-1" ></i></span>
+                        </div>
+                        <div class="topbar__item" onclick="toggleGraphDisplay();" style="background-color:#f2f3f7;margin-right:5px">
+                            <span class="icon-toggle"><i class="icon-car" data-alt="icon-calendar-1"></i></span>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div> {% endcomment %}
+    </div>
+    {% comment %}
+    <div class="col-md-12">
+
+        <div class="row ">
+            <div class="col-md-2 text-center mb-4">
+                <div class="position-relative mb-1">
+                    <img src="/static/aecon/cycle.png" width="100" height="40" />
+                </div>
+                <h6 class="font-weight-bold ">
+                    Pedal Cycle / Motorcycle
+                </h6>
+                <h1>0</h1>
+                <h5 class="text-danger">0.0%</h5>
+            </div>
+            <div class="col-md-2 text-center mb-4">
+                <div class="position-relative mb-1">
+                    <img src="/static/aecon/car.png" width="100" height="40" />
+                </div>
+                <h6 class="font-weight-bold">Car & LGV</h6>
+                <h1>5596</h1>
+                <h5 class="text-danger">90.5%</h5>
+            </div>
+            <div class="col-md-2 text-center mb-4">
+                <div class="position-relative mb-1">
+                    <img src="/static/aecon/track.png" width="100" height="40" />
+                </div>
+                <h6 class="font-weight-bold">OGV1 & PSV</h5>
+                    <h1>552</h1>
+                    <h5 class="text-danger">8.9%</h5>
+            </div>
+            <div class="col-md-2 text-center mb-4">
+                <div class="position-relative mb-1">
+                    <img src="/static/aecon/bigtrack.png" width="100" height="40" />
+                </div>
+                <h6 class="font-weight-bold">OGV2</h6>
+                <h1>33</h1>
+                <h5 class="text-danger">0.5%</h5>
+            </div>
+            <div class="col-md-2 text-center mb-3">
+                <h1 class="font-weight-bold text-center text-blue">6181</h1>
+                <h3 class="font-weight-bold">Total Vehicles</h3>
+                <h5 class="text-blue text-center font-weight-bold">(00:00 - 24:00)</h5>
+            </div>
+        </div>
+    </div> {% endcomment %}
+</div>
+{% endblock %} {% block js %}
+<script>
+    $(".table-wrapper").on("scroll", function() {
+        $(".table-wrapper:not(this)").scrollTop($(this).scrollTop());
+    });
+</script>
+<script>
+ var datepicker = $('#calendar').daterangepicker({
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+            singleDatePicker: false,
+            opens: 'right',
+            drops: 'down'
+        });
+
+    datepicker.on('apply.daterangepicker', function (ev, picker) {
+
+        console.log("in apply func");
+        console.log(picker);
+
+        document.getElementById("date-button").innerText = picker.startDate.format('DD/MM/YYYY');
+        document.getElementById("date_from").innerText = picker.startDate.format('DD/MM/YYYY');
+        document.getElementById("date_to").innerText = picker.endDate.format('DD/MM/YYYY');
+        userChangedDate = true;
+        period_selector()
+    });
+  
+
+    function setdata(id) {
+        var table_data = classedData.data[id].directions[getCurrentDirection()].baseData
+        var classes_lst = [];
+        location_details.classes.split("<span>").forEach(function(item) {
+            item.includes("</span>") ? classes_lst.push(item.split("</span>")[0]) : "";
+        });
+        classes_lst = classes_lst.filter(item => item !== 'All');
+        var avg_lst = ["07:00-19:00", "06:00-22:00", "06:00-24:00", "00:00-24:00"];
+        if (classes_lst.length == 0) {
+            return;
+        }
+        var graphLabels = classedData.graphLabels;
+        var table = document.getElementById('countline_table');
+        var thead = table.querySelector('thead');
+        var tbody = table.querySelector('tbody');
+        thead.innerHTML = '';
+        tbody.innerHTML = '';
+        var tr = document.createElement('tr');
+        var th = document.createElement('th');
+        th.innerHTML = 'Time Period';
+        var flg = 0;
+        for (let i = 0; i < classes_lst.length; i++) {
+            if (i == 0) {
+                var th = document.createElement('th');
+                th.innerHTML = 'Time Period';
+                tr.appendChild(th);
+            }
+            if (i < classes_lst.length - 3) {
+                var th = document.createElement('th');
+                th.innerHTML = classes_lst[i];
+                tr.appendChild(th);
+            } else if (flg == 0) {
+                var th = document.createElement('th');
+                th.innerHTML = "Emergency Vehicles";
+                tr.appendChild(th);
+                flg = 1;
+            }
+
+
+            // filter the data  adding the days according to the classes
+            var temp = [];
+            for (let j = 0; j < 7; j++) {
+                table_data[j].forEach(function(item, index) {
+                    if (index == i) {
+                        if (temp.length) {
+                            temp.forEach(function(item2, index2) {
+                                item2 = item2 == "-" ? 0 : item2;
+                                item.data[index2] = item.data[index2] == "-" ? 0 : item.data[index2];
+                                temp[index2] = parseInt(item2) + parseInt(item.data[index2]);
+                                temp[index2] = temp[index2] == 0 ? "-" : temp[index2];
+                            });
+                        } else {
+                            temp = item.data;
+                        }
+                    }
+                });
+            }
+            classes_lst[i] = temp;
+        }
+        thead.appendChild(tr);
+
+
+        for (let i = 0; i < (graphLabels.length) - 1; i++) {
+            var tr = document.createElement('tr');
+            var td = document.createElement('td');
+            if (i < (graphLabels.length) - 2) {
+                td.innerHTML = graphLabels[i] + '-' + graphLabels[i + 1];
+            } else {
+                td.innerHTML = graphLabels[i] + '-' + "24:00";
+            }
+            tr.appendChild(td);
+            flg = 0;
+            for (let j = 0; j < classes_lst.length; j++) {
+                var td = document.createElement('td');
+                if (j < classes_lst.length - 3) {
+                    td.innerHTML = classes_lst[j][i];
+                    tr.appendChild(td);
+                } else if (flg == 0) {
+                    let data = [classes_lst[j][i], classes_lst[j + 1][i], classes_lst[j + 2][i]].reduce(function(a, b) {
+                        return myReduce(a, b)
+                    }, 0).toFixed(0)
+                    td.innerHTML = (data != 0 ? data : "-");
+                    tr.appendChild(td);
+                    flg = 1;
+                }
+
+            }
+
+            tbody.appendChild(tr);
+        }
+
+        for (let i = 0; i < avg_lst.length; i++) {
+            var row = document.createElement('tr');
+            var cell1 = document.createElement('td');
+            cell1.innerHTML = avg_lst[i];
+            row.appendChild(cell1);
+            flg = 0;
+            for (let j = 0; j < classes_lst.length; j++) {
+                if (j < classes_lst.length - 3) {
+                    if (i == 0) {
+                        var cell = document.createElement('td');
+                        var data = classes_lst[j].slice(graphLabels.indexOf('07:00'), graphLabels.indexOf('20:00'));
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 1) {
+                        var cell = document.createElement('td');
+                        var data = classes_lst[j].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00'));
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 2) {
+                        var cell = document.createElement('td');
+                        var data = classes_lst[j].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00')+1);
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 3) {
+                        var cell = document.createElement('td');
+                        var data = classes_lst[j].slice(graphLabels.indexOf('00:00'), graphLabels.indexOf('23:00')+1);
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    }
+                } else if (flg == 0) {
+
+                    if (i == 0) {
+                        var cell = document.createElement('td');
+                        var array1 = classes_lst[j].slice(graphLabels.indexOf('07:00'), graphLabels.indexOf('20:00'));
+                        var array2 = classes_lst[j + 1].slice(graphLabels.indexOf('07:00'), graphLabels.indexOf('20:00'));
+                        var array3 = classes_lst[j + 2].slice(graphLabels.indexOf('07:00'), graphLabels.indexOf('20:00'));
+
+                        var data = array1.map(function(num, idx) {
+                            return num + array2[idx] + array3[idx];
+                        });
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 1) {
+                        var cell = document.createElement('td');
+                        var array1 = classes_lst[j].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00'));
+                        var array2 = classes_lst[j + 1].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00'));
+                        var array3 = classes_lst[j + 2].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00'));
+
+                        var data = array1.map(function(num, idx) {
+                            return num + array2[idx] + array3[idx];
+                        });
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 2) {
+                        var cell = document.createElement('td');
+                        var array1 = classes_lst[j].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00') + 1);
+                        var array2 = classes_lst[j + 1].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00') + 1);
+                        var array3 = classes_lst[j + 2].slice(graphLabels.indexOf('06:00'), graphLabels.indexOf('23:00') + 1);
+
+                        var data = array1.map(function(num, idx) {
+                            return num + array2[idx] + array3[idx];
+                        });
+                        //var data  = classes_lst[j].slice(graphLabels.indexOf('06:00'),graphLabels.indexOf('23:00')+1);
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    } else if (i == 3) {
+                        var cell = document.createElement('td');
+                        var array1 = classes_lst[j].slice(graphLabels.indexOf('00:00'), graphLabels.indexOf('23:00') + 1);
+                        var array2 = classes_lst[j + 1].slice(graphLabels.indexOf('00:00'), graphLabels.indexOf('23:00') + 1);
+                        var array3 = classes_lst[j + 2].slice(graphLabels.indexOf('00:00'), graphLabels.indexOf('23:00') + 1);
+
+                        var data = array1.map(function(num, idx) {
+                            return num + array2[idx] + array3[idx];
+                        });
+                        //var data  = classes_lst[j].slice(graphLabels.indexOf('00:00'),graphLabels.indexOf('23:00')+1);
+                        cell.innerHTML = data.reduce(function(a, b) {
+                            return myReduce(a, b)
+                        }, 0).toFixed(0);
+                        row.appendChild(cell);
+                    }
+                    flg = 1;
+                }
+            }
+            tbody.appendChild(row);
+        }
+
+    }
+
+    function period_selector() {
+        id = document.getElementById("location_id").value;
+        if (id) {
+            var start = moment(document.getElementsByClassName("date")[0].innerText.trim(), "DD/MM/YYYY");
+            var end = moment(document.getElementsByClassName("date")[1].innerText.trim(), "DD/MM/YYYY");
+            loadData(start, end, id).then(function() {
+                setdata(id);
+            });
+        }
+    }
+
+    var periods = document.getElementById("period-selector-popup").getElementsByClassName("popup-item");
+    for (var i = 0; i < periods.length; i++) {
+        periods[i].addEventListener("click", function() {
+            period_selector()
+        });
+    }
+
+    function viewSite(id) {
+        document.getElementById("location_id").value = id;
+        var start = moment(document.getElementsByClassName("date")[0].innerText.trim(), "DD/MM/YYYY");
+        var end = moment(document.getElementsByClassName("date")[1].innerText.trim(), "DD/MM/YYYY");
+        loadLocation(id).then(function() {
+            /*
+            document.getElementById("directions-popup").getElementsByClassName("conduit-selectable-menu")[0].innerHTML = location_details.directions;
+            setPopupListeners(document.getElementById("directions-popup"));
+            */
+            var items = document.getElementById("directions-popup").getElementsByClassName("menu-item");
+            for (var i = 0; i < items.length; i++) {
+                items[i].addEventListener("click", function() {
+                    setdata(id)
+                });
+            }
+            loadData(start, end, id).then(function() {
+                setdata(id);
+            });
+        });
+    }
+</script>
+{% endblock %}

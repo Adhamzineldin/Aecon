@@ -1,0 +1,189 @@
+    /*
+    Flaticon icon font: Flaticon
+    Creation date: 07/05/2018 08:46
+    */
+
+    @font-face {
+  font-family: "Flaticon";
+  src: url("./Flaticon.eot");
+  src: url("./Flaticon.eot?#iefix") format("embedded-opentype"),
+       url("./Flaticon.woff") format("woff"),
+       url("./Flaticon.ttf") format("truetype"),
+       url("./Flaticon.svg#Flaticon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Flaticon";
+    src: url("./Flaticon.svg#Flaticon") format("svg");
+  }
+}
+
+    .fi:before{
+        display: inline-block;
+  font-family: "Flaticon";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+    }
+
+    .flaticon-001-wheel-1:before { content: "\f100"; }
+.flaticon-002-wheel:before { content: "\f101"; }
+.flaticon-003-tyre:before { content: "\f102"; }
+.flaticon-004-pickup-truck:before { content: "\f103"; }
+.flaticon-005-delivery-truck:before { content: "\f104"; }
+.flaticon-006-crane-2:before { content: "\f105"; }
+.flaticon-007-crane-1:before { content: "\f106"; }
+.flaticon-008-steering-wheel-1:before { content: "\f107"; }
+.flaticon-009-steering-wheel:before { content: "\f108"; }
+.flaticon-010-speedometer-1:before { content: "\f109"; }
+.flaticon-011-speedometer:before { content: "\f10a"; }
+.flaticon-012-traffic-light:before { content: "\f10b"; }
+.flaticon-013-car-repair-11:before { content: "\f10c"; }
+.flaticon-014-service:before { content: "\f10d"; }
+.flaticon-015-tools:before { content: "\f10e"; }
+.flaticon-016-check-1:before { content: "\f10f"; }
+.flaticon-017-check:before { content: "\f110"; }
+.flaticon-018-mechanic-1:before { content: "\f111"; }
+.flaticon-019-mechanic:before { content: "\f112"; }
+.flaticon-020-car-key-1:before { content: "\f113"; }
+.flaticon-021-gear-shift:before { content: "\f114"; }
+.flaticon-022-gas-station:before { content: "\f115"; }
+.flaticon-023-garage-3:before { content: "\f116"; }
+.flaticon-024-fire-extinguisher:before { content: "\f117"; }
+.flaticon-025-electric-car-3:before { content: "\f118"; }
+.flaticon-026-electric-car-2:before { content: "\f119"; }
+.flaticon-027-driving-test:before { content: "\f11a"; }
+.flaticon-028-electric-car-1:before { content: "\f11b"; }
+.flaticon-029-chain-1:before { content: "\f11c"; }
+.flaticon-030-chain:before { content: "\f11d"; }
+.flaticon-031-car-14:before { content: "\f11e"; }
+.flaticon-032-car-13:before { content: "\f11f"; }
+.flaticon-033-car-12:before { content: "\f120"; }
+.flaticon-034-car-11:before { content: "\f121"; }
+.flaticon-035-car-wash-5:before { content: "\f122"; }
+.flaticon-036-car-wash-4:before { content: "\f123"; }
+.flaticon-037-car-wash-3:before { content: "\f124"; }
+.flaticon-038-crane:before { content: "\f125"; }
+.flaticon-039-car-repair-10:before { content: "\f126"; }
+.flaticon-040-car-repair-9:before { content: "\f127"; }
+.flaticon-041-car-repair-8:before { content: "\f128"; }
+.flaticon-042-insurance-4:before { content: "\f129"; }
+.flaticon-043-insurance-3:before { content: "\f12a"; }
+.flaticon-044-insurance-2:before { content: "\f12b"; }
+.flaticon-045-car-10:before { content: "\f12c"; }
+.flaticon-046-car-9:before { content: "\f12d"; }
+.flaticon-047-car-8:before { content: "\f12e"; }
+.flaticon-048-car-key:before { content: "\f12f"; }
+.flaticon-049-insurance-1:before { content: "\f130"; }
+.flaticon-050-insurance:before { content: "\f131"; }
+.flaticon-051-garage-2:before { content: "\f132"; }
+.flaticon-052-garage-1:before { content: "\f133"; }
+.flaticon-053-garage:before { content: "\f134"; }
+.flaticon-054-car-7:before { content: "\f135"; }
+.flaticon-055-car-6:before { content: "\f136"; }
+.flaticon-056-car-5:before { content: "\f137"; }
+.flaticon-057-car-4:before { content: "\f138"; }
+.flaticon-058-car-3:before { content: "\f139"; }
+.flaticon-059-car-2:before { content: "\f13a"; }
+.flaticon-060-car-wash-2:before { content: "\f13b"; }
+.flaticon-061-car-wash-1:before { content: "\f13c"; }
+.flaticon-062-car-wash:before { content: "\f13d"; }
+.flaticon-063-electric-car:before { content: "\f13e"; }
+.flaticon-064-car-repair-7:before { content: "\f13f"; }
+.flaticon-065-car-repair-6:before { content: "\f140"; }
+.flaticon-066-car-repair-5:before { content: "\f141"; }
+.flaticon-067-car-repair-4:before { content: "\f142"; }
+.flaticon-068-car-repair-3:before { content: "\f143"; }
+.flaticon-069-car-repair-2:before { content: "\f144"; }
+.flaticon-070-car-repair-1:before { content: "\f145"; }
+.flaticon-071-car-repair:before { content: "\f146"; }
+.flaticon-072-battery:before { content: "\f147"; }
+.flaticon-073-car-1:before { content: "\f148"; }
+.flaticon-074-car:before { content: "\f149"; }
+.flaticon-075-bus:before { content: "\f14a"; }
+    
+    $font-Flaticon-001-wheel-1: "\f100";
+    $font-Flaticon-002-wheel: "\f101";
+    $font-Flaticon-003-tyre: "\f102";
+    $font-Flaticon-004-pickup-truck: "\f103";
+    $font-Flaticon-005-delivery-truck: "\f104";
+    $font-Flaticon-006-crane-2: "\f105";
+    $font-Flaticon-007-crane-1: "\f106";
+    $font-Flaticon-008-steering-wheel-1: "\f107";
+    $font-Flaticon-009-steering-wheel: "\f108";
+    $font-Flaticon-010-speedometer-1: "\f109";
+    $font-Flaticon-011-speedometer: "\f10a";
+    $font-Flaticon-012-traffic-light: "\f10b";
+    $font-Flaticon-013-car-repair-11: "\f10c";
+    $font-Flaticon-014-service: "\f10d";
+    $font-Flaticon-015-tools: "\f10e";
+    $font-Flaticon-016-check-1: "\f10f";
+    $font-Flaticon-017-check: "\f110";
+    $font-Flaticon-018-mechanic-1: "\f111";
+    $font-Flaticon-019-mechanic: "\f112";
+    $font-Flaticon-020-car-key-1: "\f113";
+    $font-Flaticon-021-gear-shift: "\f114";
+    $font-Flaticon-022-gas-station: "\f115";
+    $font-Flaticon-023-garage-3: "\f116";
+    $font-Flaticon-024-fire-extinguisher: "\f117";
+    $font-Flaticon-025-electric-car-3: "\f118";
+    $font-Flaticon-026-electric-car-2: "\f119";
+    $font-Flaticon-027-driving-test: "\f11a";
+    $font-Flaticon-028-electric-car-1: "\f11b";
+    $font-Flaticon-029-chain-1: "\f11c";
+    $font-Flaticon-030-chain: "\f11d";
+    $font-Flaticon-031-car-14: "\f11e";
+    $font-Flaticon-032-car-13: "\f11f";
+    $font-Flaticon-033-car-12: "\f120";
+    $font-Flaticon-034-car-11: "\f121";
+    $font-Flaticon-035-car-wash-5: "\f122";
+    $font-Flaticon-036-car-wash-4: "\f123";
+    $font-Flaticon-037-car-wash-3: "\f124";
+    $font-Flaticon-038-crane: "\f125";
+    $font-Flaticon-039-car-repair-10: "\f126";
+    $font-Flaticon-040-car-repair-9: "\f127";
+    $font-Flaticon-041-car-repair-8: "\f128";
+    $font-Flaticon-042-insurance-4: "\f129";
+    $font-Flaticon-043-insurance-3: "\f12a";
+    $font-Flaticon-044-insurance-2: "\f12b";
+    $font-Flaticon-045-car-10: "\f12c";
+    $font-Flaticon-046-car-9: "\f12d";
+    $font-Flaticon-047-car-8: "\f12e";
+    $font-Flaticon-048-car-key: "\f12f";
+    $font-Flaticon-049-insurance-1: "\f130";
+    $font-Flaticon-050-insurance: "\f131";
+    $font-Flaticon-051-garage-2: "\f132";
+    $font-Flaticon-052-garage-1: "\f133";
+    $font-Flaticon-053-garage: "\f134";
+    $font-Flaticon-054-car-7: "\f135";
+    $font-Flaticon-055-car-6: "\f136";
+    $font-Flaticon-056-car-5: "\f137";
+    $font-Flaticon-057-car-4: "\f138";
+    $font-Flaticon-058-car-3: "\f139";
+    $font-Flaticon-059-car-2: "\f13a";
+    $font-Flaticon-060-car-wash-2: "\f13b";
+    $font-Flaticon-061-car-wash-1: "\f13c";
+    $font-Flaticon-062-car-wash: "\f13d";
+    $font-Flaticon-063-electric-car: "\f13e";
+    $font-Flaticon-064-car-repair-7: "\f13f";
+    $font-Flaticon-065-car-repair-6: "\f140";
+    $font-Flaticon-066-car-repair-5: "\f141";
+    $font-Flaticon-067-car-repair-4: "\f142";
+    $font-Flaticon-068-car-repair-3: "\f143";
+    $font-Flaticon-069-car-repair-2: "\f144";
+    $font-Flaticon-070-car-repair-1: "\f145";
+    $font-Flaticon-071-car-repair: "\f146";
+    $font-Flaticon-072-battery: "\f147";
+    $font-Flaticon-073-car-1: "\f148";
+    $font-Flaticon-074-car: "\f149";
+    $font-Flaticon-075-bus: "\f14a";

@@ -1,0 +1,269 @@
+{% extends "aecon/admin-base.html" %}
+{% load staticversion %}
+{% load client_tags %}
+{% load my_filters %}
+
+{% block content %}
+
+<style>
+
+    th { font-size: 12px; padding-right:20px !important}
+    td { font-size: 12px;white-space: nowrap;overflow: hidden }
+
+    select.form-control:not([size]):not([multiple]) {
+        height: calc(2.25rem + 2px);
+    }
+
+    .btn.filtered{
+        border-color:red;
+        box-shadow: 0 0 0 0.2rem rgba(255,0,0,.5);
+}
+
+
+    
+
+</style>
+
+
+<div class="row" style="width:100%;height:100%">
+    <div class="col-12 d-flex align-items-center" style="height:50px">
+        <div>
+            <select class="form-control" id="project-select" onchange="table.draw();">
+                <option>All Projects</option>
+                {% for client in clients %}
+                    <option value="{{client.id}}">{{client.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button class="btn btn-primary btn-light-primary " id="no-data-button" href="#" style="position:relative" onclick="filterIssues(this);">
+            No Data
+            <span class="badge badge-danger badge-pill d-none" id="check-notification">52</span>
+        </button>
+        <button class="btn btn-primary btn-light-primary d-none" id="todays-checks-tab" href="#"  style="position:relative;margin-left:10px">
+            Potential Issues
+            <span class="badge badge-danger badge-pill" id="check-notification">3</span>
+        </button>
+    </div>
+    <div class="col-12 pb-3" style="height:calc(100% - 50px)">
+        <div class="card header-shadow" style="max-height:100%">
+            <div class="card-header  bg-transparent d-none">
+                <h5>Location Details</h5>
+                <div class="topbar__item-holder">
+                    <div class="topbar__item text-muted toggle-between" data-target="location-group" ><span><i class="flaticon-calendar"></i></span></div>
+                    {% comment %} <div class="topbar__item text-muted events-popup-trigger" ><span><i class="flaticon-internet"></i></span></div> {% endcomment %}
+
+                    <div class=" d-none dropdown-header classes-popup-trigger" style="margin-left:auto" id="class-selector">
+                        <span>Classes</span><i class="chevron-icon"></i>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <div class="card-body" style="overflow:auto;max-height:100%">
+                <table class="table table-striped" id="sensor-table">
+                    <thead>
+                    <tr>
+                        <th style="max-width:50px;width:50px">Project</th>
+                        <th class="d-none">Supervisor</th>
+                        <th style="max-width:50px;width:50px">Tracsis Unique ID</th>
+                        <th style="max-width:50px;width:50px">Vivacity Sensor ID</th>
+                        <th style="max-width:50px;width:50px">Vivacity API ID</th>
+
+
+                        <th >Readable Name</th>
+                        <th style="max-width:50px;width:50px">Area</th>
+
+                        <th class="d-none" style="max-width:100px;width:100px">Last Data Received</th>
+                        <th style="max-width:100px;width:100px">Last Non Zero Data</th>
+
+                        <th style="max-width:50px;width:50px">Total For Today</th>
+                        <th style="max-width:60px;width:60px">Total For Yesterday</th>
+                        <th style="max-width:60px;width:60px">2 month avg for yesterday</th>
+                        <th style="max-width:50px;width:50px">% Diff</th>
+                        <th style="max-width:60px;width:60px">Total For Prev Week</th>
+                        <th style="max-width:60px;width:60px">Avg Week over last 8 weeks</th>
+                        <th style="max-width:50px;width:50px">% Diff</th>
+                        <th style="max-width:50px;width:50px">Status</th>
+                        <th style="max-width:50px;width:50px;padding:.5rem"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for loc in locations %}
+                            <tr>
+                                <td>{{loc.client__name}}</td>
+                                <td class="d-none">supervisor</td>
+                                <td style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden">{{loc.id}}</td>
+                                <td>{{loc.vivacity_sensor_id}}</td>
+                                <td>{{loc.api_identifier}}</td>
+                                <td>{{loc.name}}</td>
+                                <td >{{loc.area__name}}</td>
+                                <td class="d-none">{{loc.lastDataReceived|date:"d/m/Y H:i"}}</td>
+                                <td>{{loc.lastNonZeroDataReceived|date:"d/m/Y H:i"}}</td>
+                                <td>{{loc.today_total|none_or_zero}}</td>
+                                <td style="max-width:50px;width:50px">{{loc.yesterday_total|none_or_zero}}</td>
+                                <td>{{loc.weekday_avg|none_or_zero}}</td>
+                                <td>{{loc.yesterday_total|percentage:loc.weekday_avg}}</td>
+                                <td>{{loc.weekly_total|none_or_zero}}</td>
+                                <td>{{loc.weekly_avg|none_or_zero}}</td>
+                                <td>{{loc.weekly_total|percentage:loc.weekly_avg}}</td>
+                                {% if loc.sensorcheck == 1 %}
+                                    <td>Live</td>
+                                {% elif loc.sensorcheck == 2 %}
+                                    <td>Under Review</td>
+                                {% else %}
+                                    <td>Not in Use</td>
+                                {% endif %}
+                                <td style="max-width:50px;width:50px;cursor:pointer" class="text-center" onclick="window.location.href='/aecon/admin/location?id={{loc.id}}'"><i class="far fa-eye text-muted" style="font-size:20px"></i></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+    var table;
+    var issueCount = 0
+    $(document).ready(function() {
+        $.fn.dataTable.moment("DD/MM/YYYY HH:mm");
+        table = $('#sensor-table').DataTable( {
+                drawCallback: function () {
+                    console.log("aqoeriaeh ");
+                    $('[data-toggle="popover"]').popover({
+                        trigger: 'hover',
+                        container:"body",
+                        placement: 'right',
+
+                    })
+                },
+                "createdRow": function(row, data, dataIndex){
+                    //console.log(row.cells);
+                    indexes = [12,15];
+                    indexes.forEach(function(i){
+                        var val = parseInt(row.cells[i].innerText)
+                        //console.log("value", val, getThresholdClass(val));
+                        row.cells[i].classList.add(getThresholdClass(val))
+                        row.cells[i].classList.add("variance");
+                    })
+                    indexes = [8];
+                    indexes.forEach(function(i){
+                        //console.log("parsing", row.cells[6]);
+                        if (row.cells[i].innerText == ""){
+                            var d= moment("2000-01-01")
+                        }
+                        else{
+                            var d = moment(row.cells[i].innerText,"DD/MM/YYYY HH:mm")
+                        }
+
+                        //console.log("d is", d)
+                        var diff = d.diff(moment(), "minutes");
+                        if(Math.abs(diff) <= 60){
+                            row.cells[i].classList.add("acceptable")
+                        }
+                        else if(Math.abs(diff) > 60 && Math.abs(diff) < 1440){
+                            row.cells[i].classList.add("medium")
+                        }
+                        else{
+                            row.cells[i].classList.add("unacceptable")
+                            if (i==8){
+                                issueCount = issueCount + 1;
+                            }
+
+                            console.log("adding an issue!!!");
+                        }
+                        //row.cells[6].setAttribute("data-order", Math.abs(diff));
+                    });
+
+                },
+                "paging":   false,
+                "searching": true,
+                "info":     false,
+                'autoWidth': false,
+                "order": [[7, "asc"]],
+                aoColumns:[
+                {"bSortable": true},
+                {"bSortable": true, "sWidth":"120px" },
+                {"bSortable": true },
+                {"bSortable": true },
+                {"bSortable": true },
+                {"bSortable": true },
+                {"bSortable": true },
+                {"bSortable": true },
+                {"bSortable": true },
+                {"bSortable": true},
+                {"bSortable": true},
+                {"bSortable": true},
+                {"bSortable": true },
+                {"bSortable": true },
+                {"bSortable": true },
+                {"bSortable": true },
+                {"bSortable": true },
+                {"bSortable": false },
+
+
+
+
+
+
+
+                ],
+
+            } );
+        console.log("number of sites with issues is", issueCount);
+        var badge = document.getElementById("no-data-button").getElementsByClassName("badge")[0]
+        if (issueCount == 0){
+            badge.classList.add("d-none");
+        }
+        else{
+            badge.classList.remove("d-none");
+            badge.innerText = issueCount;
+        }
+        });
+
+        $.fn.dataTable.ext.search.push(
+          function( settings, data, dataIndex ) {
+            var sel = document.getElementById("project-select");
+            var text = sel.options[sel.selectedIndex].text;
+            if (text == "All Projects"){
+                return true;
+            }
+            else{
+                return text == data[0];
+            }
+          });
+
+    function viewSite(id){
+        document.getElementsByClassName("greyed-out")[1].classList.add("show");
+        window.location.href = "/aecon/admin/location?id=" + id;
+    }
+
+    function filterIssues(ele){
+        if (ele.classList.contains("filtered")){
+            ele.classList.remove("filtered");
+            $.fn.dataTable.ext.search.pop();
+            table.draw();
+        }
+        else{
+            ele.classList.add("filtered");
+               $.fn.dataTable.ext.search.push(
+                   function(settings, data, dataIndex) {
+                    //console.log("row is", table.row(dataIndex).node().cells[7]);
+                    return table.row(dataIndex).node().cells[8].classList.contains("unacceptable");
+
+                   }
+                );
+            table.draw();
+        }
+
+    }
+
+
+</script>
+{% endblock %}
