@@ -1,6 +1,8 @@
 import boto3
 import time
 from botocore.exceptions import ClientError
+import time
+import mysql.connector
 
 region = 'eu-north-1'
 # Initialize boto3 clients
@@ -10,7 +12,7 @@ rds_client = boto3.client('rds', region_name=region)
 ec2_resource = boto3.resource('ec2', region_name=region)
 
 # Name of the EC2 instance
-instance_name = 'Aceon4'  # Update with your desired instance name
+instance_name = 'Aceon5'  # Update with your desired instance name
 rds_db_instance_id = 'Aceon-Django-DB'
 
 # 1. Create an EC2 Instance for Django App or update existing one
@@ -36,104 +38,56 @@ def create_or_update_ec2_instance(security_group_id, db_url):
             return instance_id
         else:
             print("Creating new EC2 instance...")
-            user_data_script = f'''#!/bin/bash
-                                    # Update package index
-                                    sudo apt update
+            user_data_script = '''#!/bin/bash
+            # Update package index
+            sudo apt update || { echo "Failed to update package index"; exit 1; }
 
-                                    # Install Python 3.12 and necessary packages
-                                    sudo apt install -y python3.12 python3.12-venv python3.12-dev python3-pip libpq-dev postgresql postgresql-contrib nginx curl git
+            # Install Python 3.12 and necessary packages
+            sudo apt install -y python3.12 python3.12-venv python3.12-dev python3-pip libpq-dev postgresql postgresql-contrib nginx curl git || { echo "Failed to install required packages"; exit 1; }
 
-                                    # Create a directory for the Django app
-                                    sudo mkdir -p /home/ubuntu/mydjangoapp
+            # Create a directory for the Django app
+            APP_DIR="/home/ubuntu/mydjangoapp"
+            sudo mkdir -p $APP_DIR || { echo "Failed to create app directory"; exit 1; }
 
-                                    # Clone your Django app from your repository
-                                    git clone https://github.com/Adhamzineldin/Aecon.git /home/ubuntu/mydjangoapp  # Update this URL
+            # Clone your Django app from your repository
+            git clone https://github.com/Adhamzineldin/Aecon.git $APP_DIR || { echo "Failed to clone repository"; exit 1; }
 
-                                    # Navigate to the application directory
-                                    cd /home/ubuntu/mydjangoapp
+            # Navigate to the application directory
+            cd $APP_DIR || { echo "Failed to navigate to app directory"; exit 1; }
 
-                                    # Create a virtual environment using Python 3.12
-                                    /usr/bin/python3.12 -m venv venv
+            # Create a virtual environment using Python 3.12
+            /usr/bin/python3.12 -m venv venv || { echo "Failed to create virtual environment"; exit 1; }
 
-                                    # Activate the virtual environment
-                                    source venv/bin/activate
+            # Activate the virtual environment
+            source venv/bin/activate
 
-                                    # Upgrade pip to the latest version
-                                    pip install --upgrade pip
+            # Upgrade pip and install dependencies from requirements.txt
+            pip install --upgrade pip || { echo "Failed to upgrade pip"; exit 1; }
+            pip install -r serverReq.txt || { echo "Failed to install dependencies"; exit 1; }
 
-                                    # Install dependencies from requirements.txt
-                                    pip install -r requirements.txt
+           
+            # Set environment variables for Django (only for the current session)
+            export DBNAME="aecon"
+            export DBHOST="aceon-django-db.cruwmaqss4p9.eu-north-1.rds.amazonaws.com"
+            export DBUSER="admin"
+            export DBPASS="a251m2006"
+            export DBPORT="3306"
+            export SECRET_KEY="h6#9_tw1#cc_q7*da(1=ni(-%t45wx)qvlyx+c6wt7+5)aqk0r"
+            export API_KEY="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"
+            export DEBUG=True
+            export WEBSITE_HOSTNAME="127.0.0.1"
+            export SEND_MAIL_TO="sam.aziz@tracsis.com"
 
-                                    # Create .env file with database URL
-                                    echo "DATABASE_URL={db_url}" > .env
-
-                                    # Set environment variables for Django
-                                    echo 'export DJANGO_SETTINGS_MODULE=mydjangoapp.settings' | tee -a ~/.bashrc
-                                    echo 'export PYTHONPATH=/home/ubuntu/mydjangoapp' | tee -a ~/.bashrc
-                                    echo 'SECRET_KEY=h6#9_tw1#cc_q7*da(1=ni(-%t45wx)qvlyx+c6wt7+5)aqk0r' | tee -a ~/.bashrc
-                                    echo 'API_KEY=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' | tee -a ~/.bashrc
-                                    echo 'DEBUG=True' | tee -a ~/.bashrc
-                                    echo 'WEBSITE_HOSTNAME=127.0.0.1' | tee -a ~/.bashrc
-
-                                    # Migrate database
-                                    /usr/bin/python3.12 manage.py migrate
-
-                                    # Collect static files
-                                    /usr/bin/python3.12 manage.py collectstatic --noinput
-
-                                    # Start Gunicorn to serve the Django app
-                                    gunicorn mydjangoapp.wsgi:application --bind 0.0.0.0:8000 --daemon
-
-                                    # Set up Nginx to reverse proxy to Gunicorn
-                                    sudo bash -c 'cat > /etc/nginx/sites-available/mydjangoapp <<EOF
-                                    server {{
-                                        listen 80;
-                                        server_name _;  # Change to your server's domain name or public IP
-
-                                        location = /favicon.ico {{ access_log off; log_not_found off; }}
-                                        location /static/ {{
-                                            root /home/ubuntu/mydjangoapp;
-                                        }}
-
-                                        location / {{
-                                            include proxy_params;
-                                            proxy_pass http://127.0.0.1:8000;
-                                        }}
-                                    }}
-                                    EOF'
-
-                                    # Enable the new Nginx site and remove the default
-                                    sudo ln -s /etc/nginx/sites-available/mydjangoapp /etc/nginx/sites-enabled
-                                    sudo rm /etc/nginx/sites-enabled/default
-
-                                    # Test Nginx configuration
-                                    sudo nginx -t
-
-                                    # Restart Nginx to apply changes
-                                    sudo systemctl restart nginx
-
-                                    # Optional: Set the Gunicorn service to start on boot
-                                    sudo bash -c 'cat > /etc/systemd/system/gunicorn.service <<EOF
-                                    [Unit]
-                                    Description=gunicorn daemon
-                                    After=network.target
-
-                                    [Service]
-                                    User=ubuntu  # Replace with your EC2 username
-                                    Group=www-data
-                                    WorkingDirectory=/home/ubuntu/mydjangoapp
-                                    ExecStart=/home/ubuntu/mydjangoapp/venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:/home/ubuntu/mydjangoapp/mydjangoapp.sock mydjangoapp.wsgi:application
-
-                                    [Install]
-                                    WantedBy=multi-user.target
-                                    EOF'
-
-                                    # Start and enable the Gunicorn service
-                                    sudo systemctl start gunicorn
-                                    sudo systemctl enable gunicorn
-
-                                    echo "Django application setup complete!"
-                                    '''
+            # Run Django commands with error handling
+            python manage.py migrate || { echo "Failed to run migrations"; exit 1; }
+            
+            # fixes a bug
+            sudo chmod -R 777 /home/ubuntu/mydjangoapp/aecon/static/media/temp_data/processing
+            
+            #run server
+            python manage.py runserver 0.0.0.0:8000 || { echo "Failed to run server"; exit 1; }
+        
+            '''
 
             instance = ec2_resource.create_instances(
                 ImageId='ami-04cdc91e49cb06165',  # Replace with an appropriate AMI ID for your region
@@ -187,13 +141,21 @@ def create_s3_bucket(bucket_name):
             print(f"Error creating S3 bucket: {e}")
 
 # 4. Create an RDS instance for the Database (PostgreSQL)
-def create_rds_instance(db_instance_id, db_name, username, password):
+def create_rds_instance(db_instance_id, db_name, username, password, region, sql_file_path):
+    # Create a security group for the RDS instance if it doesn't exist
+    security_group_id = create_security_group()
+    if not security_group_id:
+        print("Failed to create or retrieve security group.")
+        return None
+
     try:
         # Check if the RDS instance already exists
         rds_instances = rds_client.describe_db_instances(DBInstanceIdentifier=db_instance_id)
         if rds_instances['DBInstances']:
             print(f"RDS instance {db_instance_id} already exists. Retrieving connection details...")
-            return f"postgres://{username}:{password}@{db_instance_id}.{region}.rds.amazonaws.com:5432/{db_name}"
+            # Retrieve the actual endpoint from the existing instance
+            endpoint = rds_instances['DBInstances'][0]['Endpoint']['Address']
+            return f"mysql://{username}:{password}@{endpoint}:3306/{db_name}"
     except ClientError as e:
         if e.response['Error']['Code'] != 'DBInstanceNotFound':
             print(f"Error checking for RDS instance: {e}")
@@ -204,20 +166,62 @@ def create_rds_instance(db_instance_id, db_name, username, password):
         rds_client.create_db_instance(
             DBInstanceIdentifier=db_instance_id,
             AllocatedStorage=20,
-            DBInstanceClass='db.t3.micro',  # Changed to a more widely available instance type
-            Engine='postgres',
+            DBInstanceClass='db.t3.micro',  # Instance type
+            Engine='mysql',
             MasterUsername=username,
             MasterUserPassword=password,
             DBName=db_name,
             BackupRetentionPeriod=7,  # Keep backups for 7 days
             MultiAZ=False,  # Single AZ deployment for free tier
-            PubliclyAccessible=True
+            PubliclyAccessible=True,
+            VpcSecurityGroupIds=[security_group_id]  # Attach the security group to the RDS instance
         )
         print(f"RDS instance {db_instance_id} is being created.")
-        return f"postgres://{username}:{password}@{db_instance_id}.{region}.rds.amazonaws.com:5432/{db_name}"
+
+        # Wait until the instance is available
+        while True:
+            response = rds_client.describe_db_instances(DBInstanceIdentifier=db_instance_id)
+            status = response['DBInstances'][0]['DBInstanceStatus']
+            print(f"Current status: {status}")
+            if status == 'available':
+                print(f"RDS instance {db_instance_id} is now available.")
+                break
+            elif status in ['failed', 'deleting']:
+                print(f"RDS instance {db_instance_id} is in an unexpected state: {status}.")
+                return None
+            time.sleep(30)  # Check status every 30 seconds
+
+        # Retrieve the actual endpoint after the instance is available
+        endpoint = response['DBInstances'][0]['Endpoint']['Address']
+
+        # Connect to the MySQL instance and upload the default database
+        conn = mysql.connector.connect(
+            host=endpoint,
+            user=username,
+            password=password,
+            database=db_name
+        )
+
+        cursor = conn.cursor()
+
+        # Read the SQL file and execute it
+        with open(sql_file_path, 'r') as sql_file:
+            sql_script = sql_file.read()
+            for statement in sql_script.split(';'):
+                if statement.strip():
+                    cursor.execute(statement)
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        print(f"Default database uploaded to RDS instance {db_instance_id}.")
+        return f"mysql://{username}:{password}@{endpoint}:3306/{db_name}"
+
     except Exception as e:
-        print(f"Error creating RDS instance: {e}")
+        print(f"Error creating RDS instance or uploading database: {e}")
         return None
+
 
 # 5. Create a Security Group with Inbound Rules
 def create_security_group():
@@ -257,6 +261,11 @@ def create_security_group():
                     'FromPort': 8000,
                     'ToPort': 8000,
                     'IpRanges': [{'CidrIp': '0.0.0.0/0'}]  # Allow requests on port 8000
+                },{
+                    'IpProtocol': 'tcp',
+                    'FromPort': 3306,
+                    'ToPort': 3306,
+                    'IpRanges': [{'CidrIp': '0.0.0.0/0'}]  # Allow requests on port 8000
                 }
             ]
         )
@@ -294,7 +303,7 @@ def add_s3_cors_policy(bucket_name):
 def main():
     security_group_id = create_security_group()
 
-    db_url = create_rds_instance(rds_db_instance_id, 'mydatabase', 'myusername', 'mypassword')
+    db_url = create_rds_instance(rds_db_instance_id, 'aecon', 'admin', 'a251m2006', region, 'aecon.sql')
     if db_url is None:
         print("Failed to create or retrieve RDS instance. Exiting...")
         return
