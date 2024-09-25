@@ -15,13 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls import include, url
+from django.conf.urls import include
 from aecon import views
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('aecon/Tracsis_Logo_Circle.ico'))),
+    path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.path('aecon/Tracsis_Logo_Circle.ico'))),
     path('', include('aecon.urls')),
 ]

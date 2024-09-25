@@ -22,7 +22,7 @@ API_KEY = os.environ['API_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ['DEBUG'] == "True"
 
-ALLOWED_HOSTS = ['*'] #if DEBUG else ['dttdemo.azurewebsites.net',  'nottingham.tracsis-tads.com']
+ALLOWED_HOSTS = ['*'] if DEBUG else ['dttdemo.azurewebsites.net',  'nottingham.tracsis-tads.com']
 CSRF_TRUSTED_ORIGINS = [] if DEBUG else ['https://dttdemo.azurewebsites.net/',  'https://nottingham.tracsis-tads.com/']
 
 
