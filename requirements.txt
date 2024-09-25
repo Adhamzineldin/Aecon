@@ -29,7 +29,7 @@ decorator==5.1.1
 defusedxml==0.7.1
 Django==4.2.6   # Upgraded Django for better compatibility with Python 3.12
 django-bulk-update-or-create==0.3.0
-django-extensions==3.2.4  # Latest compatible version
+django-extensions==3.2.3  # Latest compatible version
 djangorestframework==3.15.1
 docopt==0.6.2
 drf-yasg==1.21.7
