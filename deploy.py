@@ -10,7 +10,7 @@ rds_client = boto3.client('rds', region_name=region)
 ec2_resource = boto3.resource('ec2', region_name=region)
 
 # Name of the EC2 instance
-instance_name = 'Aceon1'  # Update with your desired instance name
+instance_name = 'Aceon4'  # Update with your desired instance name
 rds_db_instance_id = 'Aceon-Django-DB'
 
 # 1. Create an EC2 Instance for Django App or update existing one
@@ -23,7 +23,7 @@ def create_or_update_ec2_instance(security_group_id, db_url):
         if existing_instance:
             print(f"Found existing instance: {existing_instance.id}. Updating files...")
             instance_id = existing_instance.id
-            
+
             # Optionally, you can execute commands on the existing instance here
             # e.g., using Systems Manager or SSH
             update_instance_files(instance_id)
@@ -31,7 +31,7 @@ def create_or_update_ec2_instance(security_group_id, db_url):
             existing_instance.reload()
             public_ip = existing_instance.public_ip_address
             public_dns = existing_instance.public_dns_name
-            
+
             print(f"Your website should be accessible at: http://{public_ip} or http://{public_dns}")
             return instance_id
         else:
@@ -40,30 +40,46 @@ def create_or_update_ec2_instance(security_group_id, db_url):
                                     # Update package index
                                     sudo apt update
 
-                                    # Install necessary packages
-                                    sudo apt install -y python3-pip python3-dev libpq-dev postgresql postgresql-contrib nginx curl git
+                                    # Install Python 3.12 and necessary packages
+                                    sudo apt install -y python3.12 python3.12-venv python3.12-dev python3-pip libpq-dev postgresql postgresql-contrib nginx curl git
 
-                                    # Install Python dependencies
-                                    pip3 install django gunicorn psycopg2-binary
+                                    # Create a directory for the Django app
+                                    sudo mkdir -p /home/ubuntu/mydjangoapp
 
                                     # Clone your Django app from your repository
-                                    git clone https://github.com/Adhamzineldin/aecon.git /home/ubuntu/mydjangoapp  # Update this URL
+                                    git clone https://github.com/Adhamzineldin/Aecon.git /home/ubuntu/mydjangoapp  # Update this URL
 
                                     # Navigate to the application directory
                                     cd /home/ubuntu/mydjangoapp
+
+                                    # Create a virtual environment using Python 3.12
+                                    /usr/bin/python3.12 -m venv venv
+
+                                    # Activate the virtual environment
+                                    source venv/bin/activate
+
+                                    # Upgrade pip to the latest version
+                                    pip install --upgrade pip
+
+                                    # Install dependencies from requirements.txt
+                                    pip install -r requirements.txt
 
                                     # Create .env file with database URL
                                     echo "DATABASE_URL={db_url}" > .env
 
                                     # Set environment variables for Django
-                                    export DJANGO_SETTINGS_MODULE=mydjangoapp.settings
-                                    export PYTHONPATH=/home/ubuntu/mydjangoapp
+                                    echo 'export DJANGO_SETTINGS_MODULE=mydjangoapp.settings' | tee -a ~/.bashrc
+                                    echo 'export PYTHONPATH=/home/ubuntu/mydjangoapp' | tee -a ~/.bashrc
+                                    echo 'SECRET_KEY=h6#9_tw1#cc_q7*da(1=ni(-%t45wx)qvlyx+c6wt7+5)aqk0r' | tee -a ~/.bashrc
+                                    echo 'API_KEY=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' | tee -a ~/.bashrc
+                                    echo 'DEBUG=True' | tee -a ~/.bashrc
+                                    echo 'WEBSITE_HOSTNAME=127.0.0.1' | tee -a ~/.bashrc
 
                                     # Migrate database
-                                    python3 manage.py migrate
+                                    /usr/bin/python3.12 manage.py migrate
 
                                     # Collect static files
-                                    python3 manage.py collectstatic --noinput
+                                    /usr/bin/python3.12 manage.py collectstatic --noinput
 
                                     # Start Gunicorn to serve the Django app
                                     gunicorn mydjangoapp.wsgi:application --bind 0.0.0.0:8000 --daemon
@@ -106,7 +122,7 @@ def create_or_update_ec2_instance(security_group_id, db_url):
                                     User=ubuntu  # Replace with your EC2 username
                                     Group=www-data
                                     WorkingDirectory=/home/ubuntu/mydjangoapp
-                                    ExecStart=/usr/local/bin/gunicorn --access-logfile - --workers 3 --bind unix:/home/ubuntu/mydjangoapp/mydjangoapp.sock mydjangoapp.wsgi:application
+                                    ExecStart=/home/ubuntu/mydjangoapp/venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:/home/ubuntu/mydjangoapp/mydjangoapp.sock mydjangoapp.wsgi:application
 
                                     [Install]
                                     WantedBy=multi-user.target
@@ -124,7 +140,6 @@ def create_or_update_ec2_instance(security_group_id, db_url):
                 InstanceType='t3.micro',  # Free tier instance type
                 MinCount=1,
                 MaxCount=1,
-                KeyName='Aceon',  # Replace with your EC2 Key Pair
                 SecurityGroupIds=[security_group_id],
                 UserData=user_data_script,
                 TagSpecifications=[{
@@ -136,14 +151,14 @@ def create_or_update_ec2_instance(security_group_id, db_url):
             print(f"EC2 instance {instance_id} created.")
             instance[0].wait_until_running()
             print(f"EC2 instance {instance_id} is running.")
-            
+
             # Refresh instance data to retrieve the public IP/DNS
             instance[0].reload()
             public_ip = instance[0].public_ip_address
             public_dns = instance[0].public_dns_name
-            
+
             print(f"Your website should be accessible at: http://{public_ip} or http://{public_dns}")
-            
+
             return instance_id
     except Exception as e:
         print(f"Error creating or updating EC2 instance: {e}")
@@ -278,12 +293,12 @@ def add_s3_cors_policy(bucket_name):
 # Main function to orchestrate the creation of resources
 def main():
     security_group_id = create_security_group()
-    
+
     db_url = create_rds_instance(rds_db_instance_id, 'mydatabase', 'myusername', 'mypassword')
     if db_url is None:
         print("Failed to create or retrieve RDS instance. Exiting...")
         return
-    
+
     ec2_instance_id = create_or_update_ec2_instance(security_group_id, db_url)
     create_s3_bucket('aceon-django-app-adham-zineldin')  # Replace with your desired S3 bucket name
     add_s3_cors_policy('aceon-django-app-adham-zineldin')  # Add CORS policy to the bucket

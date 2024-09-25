@@ -65,3 +65,4 @@ sql.txt
 /.vscode
 ./.vscode
 ../.vscode
+deploy.py
