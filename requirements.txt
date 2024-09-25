@@ -19,7 +19,7 @@ click==8.1.7
 click-didyoumean==0.3.1
 click-plugins==1.1.1
 click-repl==0.3.0
-colorama==0.4.6
+colorama==0.4.6  # This may not be needed on Linux, but can be kept for cross-platform compatibility
 contourpy==1.3.0
 coreapi==2.3.3
 coreschema==0.0.4
@@ -109,8 +109,7 @@ python-docx==1.1.2
 python-dotenv==1.0.1
 python-http-client==3.3.7
 pytz==2024.2
-pywin32==306
-pywin32-ctypes==0.2.3
+pywin32-ctypes==0.2.3  # Optional, can be removed
 PyYAML==6.0.2
 reportlab==4.2.2
 requests==2.32.3
@@ -158,3 +157,5 @@ zeep==4.2.1
 zipp==3.20.2
 zope.event==5.0
 zope.interface==7.0.3
+python-dotenv==1.0.1
+python-dateutil==2.9.0.post0
